@@ -1,28 +1,51 @@
 const path = require('path');
 
+const projectOverrideDescriptors = [
+	{pattern: 'config-tools', tsconfig: 'config-tools.tsconfig.json', extraExcludes: ['lib/**/*.js']},
+	{pattern: 'workspace-creation', tsconfig: 'workspace.tsconfig.json'},
+	{pattern: 'elf-explorer', tsconfig: 'elf.tsconfig.json'},
+	{pattern: 'home-page', tsconfig: 'home.tsconfig.json', extraExcludes: ['lib/**/*.js']},
+	{pattern: 'sigma-studio-plus-project', tsconfig: 'sigma-studio-plus-project.tsconfig.json', extraExcludes: ['lib/**/*.js']},
+	{pattern: 'common', tsconfig: 'common/tsconfig.json', extraExcludes: ['lib/**/*.js']}
+];
+
+const projectOverrides = projectOverrideDescriptors.map(({pattern, tsconfig, extraExcludes = []}) => ({
+	files: [`${pattern}/**/*.ts`, `${pattern}/**/*.tsx`],
+	excludedFiles: [`${pattern}/**/*.d.ts`, ...extraExcludes.map(exclude => `${pattern}/${exclude}`)],
+	parserOptions: {
+		project: [path.resolve(__dirname, tsconfig)],
+		tsconfigRootDir: __dirname
+	}
+}));
+
 module.exports = {
-	reportUnusedDisableDirectives: true,
+  root: true, // Ensure this config is treated as root and does not inherit ignore patterns
+  reportUnusedDisableDirectives: true,
 	overrides: [
+		// 1. Directory-specific TypeScript projects wire ESLint to the correct tsconfig
+		...projectOverrides,
 		{
-			files: [
-				'./**/*.ts',
-				'./**/*.tsx',
-			],
-			excludedFiles: ['./**/*.d.ts', './**/lib/**/*.js'],
+			files: ['./*.ts', './*.tsx'],
+			excludedFiles: ['./*.d.ts', './lib/**/*.js'],
+			parserOptions: {
+				project: [path.resolve(__dirname, 'tsconfig.json')],
+				tsconfigRootDir: __dirname,
+			},
+		},
+		// 2. Shared React/TypeScript rules for everything in the webviews bundle
+		{
+			files: ['**/*.ts', '**/*.tsx'],
+			excludedFiles: ['**/*.d.ts', '**/lib/**/*.js'],
 			extends: [
 				'xo',
 				'xo-typescript',
 				'xo-react',
 				'plugin:react/jsx-runtime',
 				'plugin:import/recommended',
-				'prettier'
+				'prettier',
+				'plugin:cypress/recommended'
 			],
-
 			parser: '@typescript-eslint/parser',
-			parserOptions: {
-				project: [path.resolve(process.cwd(), 'src/webviews/tsconfig.json')],
-				tsconfigRootDir: path.resolve(process.cwd(), 'src/webviews'),
-			},
 			plugins: ['unused-imports'],
 			rules: {
 				'unused-imports/no-unused-imports': 'error',
@@ -70,6 +93,16 @@ module.exports = {
 					}
 				]
 			}
+		},
+		// 3. Cypress rules overrides last so specs can use more lenient rules.
+		{
+			files: ['./**/*.cy.ts', './**/*.cy.tsx'],
+			rules: {
+				'@typescript-eslint/no-unsafe-argument': 'off',
+				'cypress/no-assigning-return-values': 'off',
+				'cypress/unsafe-to-chain-command': 'off',
+				'cypress/no-unnecessary-waiting': 'off'
+			}
 		}
 	],
 	ignorePatterns: [
@@ -79,6 +112,8 @@ module.exports = {
 		'**/lib/**/*',
 		'**/*.d.ts',
 		'**/.eslintrc.js',
-		'**/cypress/**/*'
+		'**/cypress/**/*',
+		'./**/*.json',
+		'./**/*.html'
 	]
 };

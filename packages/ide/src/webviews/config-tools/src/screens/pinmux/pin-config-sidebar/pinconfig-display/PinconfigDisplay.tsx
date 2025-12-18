@@ -27,7 +27,7 @@ import {getSocPinResetControlValues} from '../../../../utils/pin-reset-controls'
 import {
 	useActivePeripheral,
 	useActiveSignal,
-	useGetAllocatedProjectId
+	useSignalProjectId
 } from '../../../../state/slices/peripherals/peripherals.selector';
 import {use} from 'cfs-react-library';
 import type {ControlCfg} from '@common/types/soc';
@@ -266,7 +266,7 @@ export default function PinconfigDisplay({
 			.filter((control): control is JSX.Element => control !== null);
 	};
 
-	const activeProjectId = useGetAllocatedProjectId(
+	const signalProjectId = useSignalProjectId(
 		activePeripheral ?? '',
 		activeSignal ?? ''
 	);
@@ -292,7 +292,7 @@ export default function PinconfigDisplay({
 					renderControls(pluginControls)
 				)}
 
-				<PluginInfo projectId={activeProjectId} />
+				<PluginInfo projectId={signalProjectId} />
 			</section>,
 			portalTarget
 		);

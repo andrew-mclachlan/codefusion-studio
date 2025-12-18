@@ -13,9 +13,9 @@
  *
  */
 
-import { By } from "selenium-webdriver";
+import { By, WebElement } from "selenium-webdriver";
 import { until, WebView } from "vscode-extension-tester";
-import { UIUtils } from "../../config-tools-utility/config-utils";
+import { UIUtils } from "../../../ui-test-utils/ui-utils";
 
 // Signal Config Sidebar elements
 export const signalConfigSidebarContainer: By = By.css(
@@ -57,8 +57,49 @@ export async function getValueFromSidebarConfig(
       return element.isDisplayed();
     }
   }, timeout);
-  const currentValue = await UIUtils.getAttributeFromWebElement(element, "current-value");
+  const currentValue = await UIUtils.getAttributeFromWebElement(
+    element,
+    "current-value",
+  );
   console.log("Current value of element is: ", currentValue);
 
   return currentValue;
+}
+
+export async function waitForSidebarToOpen(
+  view: WebView,
+  timeout = 2000,
+): Promise<WebElement> {
+  const driver = view.getDriver();
+
+  // Wait for the container to appear
+  await driver.wait(
+    until.elementLocated(signalConfigSidebarContainer),
+    timeout,
+  );
+
+  // Wait for the inner container to exist and be visible & not minimised
+  let panel = await driver.wait(until.elementLocated(panelContainer), timeout);
+  console.log("INNER Container appeared");
+
+  await driver.wait(
+    async () => {
+      try {
+        const visible = await panel.isDisplayed();
+        const cls = await panel.getAttribute("class");
+        return visible && !/minimis(e)?d/i.test(cls);
+      } catch {
+        // Handle re-render/stale element by re-finding
+        panel = await driver.findElement(panelContainer);
+        const visible = await panel.isDisplayed().catch(() => false);
+        const cls = (await panel.getAttribute("class").catch(() => "")) || "";
+        return visible && !/minimis(e)?d/i.test(cls);
+      }
+    },
+    timeout,
+    "Sidebar did not open (still minimised or hidden)",
+    200,
+  );
+
+  return panel;
 }

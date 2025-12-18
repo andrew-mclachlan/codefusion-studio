@@ -22,6 +22,7 @@ import {
   Workbench,
 } from "vscode-extension-tester";
 import { getConfigPathForFile } from "../config-tools-utility/cfsconfig-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 
 describe("Elf file custom editor", () => {
   let browser: VSBrowser;
@@ -63,7 +64,7 @@ describe("Elf file custom editor", () => {
     view = editor.getWebView();
     await view.switchToFrame();
 
-    const title = await view.findWebElement(
+    const title = await UIUtils.findWebElement(view, 
       By.xpath('//*[@id="root"]/div[1]/div[2]'),
     );
 

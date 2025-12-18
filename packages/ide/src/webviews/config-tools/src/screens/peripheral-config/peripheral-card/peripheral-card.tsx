@@ -14,7 +14,7 @@
  */
 
 import {Button, Card} from 'cfs-react-library';
-import {useCallback, useEffect, useMemo} from 'react';
+import {useCallback, useMemo} from 'react';
 import {memo, type ReactNode} from 'react';
 import styles from './peripheral-card.module.scss';
 import DownArrow from '../../../../../common/icons/DownArrow';
@@ -43,18 +43,23 @@ function PeripheralCard({
 	end,
 	hasAllocatedPeripherals,
 	content,
-	dataTest,
-	isExpandable = true
+	dataTest
 }: PeripheralCardProps) {
 	const dispatch = useDispatch();
 	const openProjectCards = usePeripheralScreenOpenProjectCards();
 
 	const {projectId} = useNewPeripheralAssignment() ?? {};
 
-	const isExpanded = useMemo(
-		() => !!id && openProjectCards.includes(id),
-		[id, openProjectCards]
-	);
+	const isExpanded = useMemo(() => {
+		// If there are no allocated peripherals, do not allow expansion
+		if (!hasAllocatedPeripherals) return false;
+
+		// If the project is the active one, open the card
+		if (projectId === id) return true;
+
+		// Otherwise, check if the card is in the list of open cards
+		return openProjectCards.includes(id ?? '');
+	}, [id, openProjectCards, projectId, hasAllocatedPeripherals]);
 
 	const projectCardOpenChange = useCallback(
 		(projectId: string, open: boolean) => {
@@ -68,25 +73,11 @@ function PeripheralCard({
 		[openProjectCards, dispatch]
 	);
 
-	const handleCardEndClick = () => {
+	const handleCardEndClick = useCallback(() => {
 		if (id) {
 			projectCardOpenChange(id, !isExpanded);
 		}
-	};
-
-	useEffect(() => {
-		if (!hasAllocatedPeripherals) {
-			if (id) {
-				projectCardOpenChange(id, false);
-			}
-		}
-
-		if (projectId === id) {
-			if (id) {
-				projectCardOpenChange(id, true);
-			}
-		}
-	}, [id, projectId, hasAllocatedPeripherals]);
+	}, [id, isExpanded, projectCardOpenChange]);
 
 	return (
 		<Card
@@ -99,7 +90,7 @@ function PeripheralCard({
 				id='peripheralCardContainer'
 				data-test={dataTest}
 				onClick={() => {
-					if (isExpandable) {
+					if (hasAllocatedPeripherals) {
 						handleCardEndClick();
 					}
 				}}
@@ -108,7 +99,7 @@ function PeripheralCard({
 					<div className={styles.title}>{title}</div>
 					{end && (
 						<div
-							className={`${styles.end} ${isExpandable ? styles.expandable : ''}`}
+							className={`${styles.end} ${hasAllocatedPeripherals ? styles.expandable : ''}`}
 							data-test='allocation-details-chevron'
 						>
 							{content ? (
@@ -135,7 +126,9 @@ function PeripheralCard({
 				{isExpanded && (
 					<section
 						className={styles.body}
-						onClick={e => e.stopPropagation()}
+						onClick={e => {
+							e.stopPropagation();
+						}}
 					>
 						<div className={styles.content}>{content}</div>
 					</section>

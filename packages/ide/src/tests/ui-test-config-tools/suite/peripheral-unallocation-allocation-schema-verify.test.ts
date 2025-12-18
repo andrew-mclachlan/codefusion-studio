@@ -27,8 +27,11 @@ import {
   Workbench,
 } from "vscode-extension-tester";
 
-import { UIUtils } from "../config-tools-utility/config-utils";
-import { getConfigPathForFile, parseJSONFile } from "../config-tools-utility/cfsconfig-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
+import {
+  getConfigPathForFile,
+  parseJSONFile,
+} from "../config-tools-utility/cfsconfig-utils";
 import {
   allocateArm,
   allocateRiscv,
@@ -76,24 +79,21 @@ describe("System Planner Peripheral Verification allocation/unallocation", () =>
     await UIUtils.clickElement(view, peripheralTab);
 
     // Clicking on GPIO0 Peripheral Signal and doing Assertion
-    const gpio0Signal = await UIUtils.findWebElement(view, await signalAccordion("GPIO0"));
+    const gpio0Signal = await UIUtils.findWebElement(
+      view,
+      await signalAccordion("GPIO0"),
+    );
     const gpio0SignalText = await gpio0Signal.getText();
     expect(gpio0SignalText).to.include("GPIO0");
     await gpio0Signal.click(); // (This has been for clicking on GPIO0 Peripheral Signal)
 
     // Clicked on GPIO0 peripheral container to assign to RISCV Core
-    await UIUtils.clickElement(
-      view,
-      await signalAssignChevron("P0.7"),
-    );
+    await UIUtils.clickElement(view, await signalAssignChevron("P0.7"));
 
     // This locator is for locating the RISCV core to GPIO0 peripheral Signal
     await UIUtils.clickElement(view, allocateRiscv);
     // Assignining GPIO0 which further have pins and assigning one of them P0.8 to Arm core
-    await UIUtils.clickElement(
-      view,
-      await signalAssignChevron("P0.8"),
-    );
+    await UIUtils.clickElement(view, await signalAssignChevron("P0.8"));
 
     // This allocateArm locator is used to assign the GPIO0 P0.8 signal to Arm Cortex M4 core
     await UIUtils.clickElement(view, allocateArm);
@@ -159,11 +159,15 @@ describe("System Planner Peripheral Verification allocation/unallocation", () =>
     await view.switchToFrame();
     await UIUtils.clickElement(view, peripheralTab);
 
-    const gpio0Signal = await UIUtils.findWebElement(view, await signalAccordion("GPIO0"));
+    const gpio0Signal = await UIUtils.findWebElement(
+      view,
+      await signalAccordion("GPIO0"),
+    );
     gpio0Signal.click();
 
     // Hover over the signal container to reveal delete button
-    const signalContainer = await UIUtils.findWebElement(view,
+    const signalContainer = await UIUtils.findWebElement(
+      view,
       await signalAssignContainer("P0.8"),
     );
     await driver.actions().move({ origin: signalContainer }).perform();

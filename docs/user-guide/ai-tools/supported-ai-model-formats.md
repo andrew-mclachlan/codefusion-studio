@@ -10,7 +10,7 @@ CodeFusion Studio supports multiple AI model formats depending on the processor.
 
 | Processor                                                                 | Supported AI models                          | Supported cores                 |
 |---------------------------------------------------------------------------|----------------------------------------------|---------------------------------|
-| MAX32657                                                                  | TFLM[^tflm]                                  | Arm Cortex-M33                  |
+| [MAX32657](https://www.analog.com/en/products/MAX32657.html)              | TFLM[^tflm]                                  | Arm Cortex-M33                  |
 | [MAX32690](https://www.analog.com/en/products/MAX32690.html)              | TFLM                                         | Arm Cortex-M4                   |
 | [MAX78002](https://www.analog.com/en/products/MAX78002.html)              | PyTorch[^pytorch] (CNN only), TFLM (M4 only) | Arm Cortex-M4 + CNN Accelerator |
 | [ADSP-21834 / 21834W](https://www.analog.com/en/products/adsp-21834.html) | TFLM                                         | SHARC-FX                        |

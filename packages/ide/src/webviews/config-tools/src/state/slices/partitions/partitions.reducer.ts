@@ -109,8 +109,10 @@ const partitionsSlice = createSlice({
 		) {
 			if (!payload) {
 				state.activePartition = undefined;
+
 				return;
 			}
+
 			state.activePartition = {
 				...state.activePartition,
 				...payload
@@ -145,6 +147,7 @@ const partitionsSlice = createSlice({
 			if (!state.activePartition) {
 				return;
 			}
+
 			state.activePartition = {
 				...state.activePartition,
 				displayName: payload
@@ -160,6 +163,7 @@ const partitionsSlice = createSlice({
 			}>
 		) {
 			const startAddress = parseInt(payload.startAddress, 16);
+
 			return {
 				...state,
 				partitions: state.partitions.map(partition =>

@@ -31,7 +31,7 @@ To get started, create a new multi-core workspace using the Workspace Creation W
 
 ## Build the project
 
-Run the [CFS: build](../workspaces/tasks.md) to create the build directory and generate the ELF files needed for debugging.
+Run the [CFS: build](../build-and-flash/tasks.md) to create the build directory and generate the ELF files needed for debugging.
 
 - Click the **CFS icon** ![cfs-icon](../about/images/cfs-icon-light.png#only-light) ![cfs-icon](../about/images/cfs-icon-dark.png#only-dark) in the **Activity Bar**.
 - Select **Build (m4)** in the **Actions** view.

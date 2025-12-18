@@ -9,113 +9,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-from enum import Enum
-from typing import Literal, Optional, Protocol, Self, Union
+from typing import Literal, Protocol
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from cfsai_types.config.verified import VerifiedBackendConfig
 from cfsai_types.support.backend import SupportedBackend
-
-
-class RegistryLoginInfo(BaseModel):
-    """
-    Login information to log into a docker registry.
-
-    Attributes:
-        username: Username to use when logging in.
-        password: Password to use when logging in.
-        registry: Docker registry to log into.
-    """
-    username: str
-    password: str
-    registry: str
-
-    @classmethod
-    def from_env(cls) -> Optional[Self]:
-        """
-        Builder method to construct an object from environment variables.
-        The registry used is "docker.cloudsmith.io/adi/ai-fusion/" for 
-        production and "docker.cloudsmith.io/adi/ai-fusion-dev/" for 
-        development.
-
-        Returns:
-            An instance of `RegistryLoginInfo` if the required information could 
-                be found in the os environment variables else `None`.
-        """
-        username = os.environ.get('CFSAI_USERNAME')
-        password = os.environ.get('CFSAI_API_KEY')
-        app_env = os.environ.get('APP_ENV')
-
-        if username and password:
-            if app_env and app_env == 'development':
-                registry = 'docker.cloudsmith.io/adi/ai-fusion-dev/'
-            else:
-                registry = 'docker.cloudsmith.io/adi/ai-fusion/'
-            return cls(
-                username=username, 
-                password=password,
-                registry=registry
-            )
-        else:
-            return None
-
-class SupportedImage(BaseModel):
-    """
-    Supported container image information.
-
-    Attributes:
-        name: Name of the image.
-        requires_credentials: Whether the image is private and requires 
-            credentials to access.
-    """
-    name: str
-    requires_credentials: bool
-
-
-class BackendProtocol(str, Enum):
-    """
-    Communication protocols to communicate with a backend.
-
-    Attributes:
-        HTTP: Use HTTP as the communication interface.
-        DIRECT: Directly execute the backend.
-    """
-    HTTP = "http"
-    DIRECT = "direct"
-    # Add more protocols here in the future if required
-
-
-class LocalBackend(BaseModel):
-    """
-    Marker type for a 'local' backend which can run in the same interpreter as 
-    the main application.
-
-    Attributes:
-        kind: Discriminator attribute for pydantic to differentiate in a `Union`.
-    """
-    kind: Literal["local"] = "local"
-
-
-class ContainerBackend(BaseModel):
-    """
-    Container backend type supplying information about backend's which run 
-    inside a container environment.
-
-    Attributes:
-        kind: Discriminator attribute from pydantic to differentiate in a `Union`.
-        protocol: Communication protocol the backend expects to use.
-        image: Information about the container image.
-    """
-    kind: Literal["container"] = "container"
-    protocol: BackendProtocol
-    image: SupportedImage
-
-
-# Union type for the enum variants
-BackendKind = Union[LocalBackend, ContainerBackend]
-"""Union of Local and Container backends discriminated using the `kind` attribute."""
 
 
 class BackendInfo(BaseModel):
@@ -124,11 +23,8 @@ class BackendInfo(BaseModel):
     application who they are and how to execute them.
 
     Attributes:
-        kind: Type of backend e.g. LocalBackend or Contained backend and 
-            associated metadata.
         name: Name of the backend.
     """
-    kind: BackendKind = Field(..., discriminator='kind')
     name: str
 
 

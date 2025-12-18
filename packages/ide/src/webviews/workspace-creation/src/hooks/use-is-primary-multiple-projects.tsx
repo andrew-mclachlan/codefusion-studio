@@ -14,7 +14,7 @@
  */
 
 import {useMemo} from 'react';
-import {CatalogCoreInfo} from '../common/types/catalog';
+import {type CatalogCoreInfo} from '../common/types/catalog';
 import {getCoreList} from '../utils/core-list';
 import {useSelectedSoc} from '../state/slices/workspace-config/workspace-config.selector';
 

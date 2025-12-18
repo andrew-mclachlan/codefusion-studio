@@ -16,7 +16,7 @@ import { expect } from "chai";
 import { describe, it } from "mocha";
 import { EditorView, VSBrowser, WebView } from "vscode-extension-tester";
 import { getConfigPathForFile } from "../config-tools-utility/cfsconfig-utils";
-import { UIUtils } from "../config-tools-utility/config-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import { generateCodeTab } from "../page-objects/main-menu";
 import {
   dismissOverwriteModal,

@@ -28,12 +28,13 @@ timestamp = time.ctime()
 logger = logging.getLogger(__name__)
     
 
-def _generate_array(input_fname: Path) -> tuple[int, str]:
+def _generate_array(input_fname: Path, cols:int) -> tuple[int, str]:
     """ 
     Reads tflite file and converts it to a C array of bytes.
 
     Args:
         input_fname: Path to the input file.
+        cols: Number of columns (bytes) to display per line.
 
     Returns:
         Tuple of the size of model in bytes and string hex representation of 
@@ -44,8 +45,9 @@ def _generate_array(input_fname: Path) -> tuple[int, str]:
     size = len(buffer)
 
     # Convert buffer array to hex string
-    hex_values = [hex(buffer[i]) for i in range(len(buffer))]
-    out_string = ','.join(hex_values)
+    hex_values = [f'0x{b:02x}' for b in buffer]
+    lines = [','.join(hex_values[i:i+cols]) for i in range(0, len(hex_values), cols)]
+    out_string = ',\n'.join(lines)
 
     return size, out_string
 
@@ -71,8 +73,8 @@ def _generate_c_file(
             f'/*\n * Generated C representation of {model} on {timestamp}. Do not modify.\n */\n\n' # noqa: E501
             f'#include "{model}.hpp"\n\n'
             f'const unsigned int {model}_len = {size};\n'
-            f'alignas(16) unsigned char {model}[] = {{' +
-            array_contents +
+            f'alignas(16) const unsigned char {model}[] = {{\n' +
+            array_contents + '\n' + 
             '};\n\n' +
             info.get_resolver_code(model)
         )
@@ -111,7 +113,7 @@ def _generate_h_file(
             '#warning TensorFlow Lite Micro sources require C++ for full functionality\n' # noqa: E501
             '#endif /* __cplusplus */\n\n'
             f'extern const unsigned int {model}_len;\n'
-            f'extern unsigned char {model}[] __attribute__(({section}aligned(16)));\n\n'
+            f'extern const unsigned char {model}[] __attribute__(({section}aligned(16)));\n\n' # noqa: E501
         )
         f.write(text)
 
@@ -145,12 +147,12 @@ class LocalCfsaiTflm(BackendApi):
 
         Args:
             cfgs: Array of backend configurations.
-            logger: Host side logger.
 
         Raises:
             CfsaiTflmError: If the user provides backend extensions they are not
                 valid.
         """
+        logger.debug(f'Building TFLM for {cfgs.items[0].target.core}')
         used_symbols = {}
         for cfg in cfgs.items:
             # Get config data
@@ -181,7 +183,7 @@ class LocalCfsaiTflm(BackendApi):
             build_dir.mkdir(exist_ok=True, parents=True)
 
             info = TfliteInfo(model_file)
-            size, array = _generate_array(model_file)
+            size, array = _generate_array(model_file, 16)
 
             # Convert from optional to str
             section = f'section("{ext.section}"), ' if ext.section else ''

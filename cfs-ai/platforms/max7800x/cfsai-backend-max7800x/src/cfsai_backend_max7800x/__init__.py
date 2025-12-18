@@ -14,12 +14,7 @@ import os
 
 from cfsai_backend_max7800x.direct_api import IzerApi
 from cfsai_backend_max7800x.extensions import CfsaiIzerExtensions
-from cfsai_types.backend_api import (
-    Backend,
-    BackendApi,
-    BackendInfo,
-    LocalBackend,
-)
+from cfsai_types.backend_api import Backend, BackendApi, BackendInfo
 from cfsai_types.config.targets import BackendTarget, ExplicitTarget
 from cfsai_types.support.backend import SupportedBackend
 
@@ -42,8 +37,7 @@ class Izer(Backend):
             Backend information.
         """
         return BackendInfo(
-            name='izer',
-            kind=LocalBackend()
+            name='izer'
         )
 
     def api(self) -> BackendApi:

@@ -15,7 +15,7 @@
 import { EditorView, VSBrowser, WebView } from "vscode-extension-tester";
 import { expect } from "chai";
 import { getConfigPathForFile } from "../config-tools-utility/cfsconfig-utils";
-import { UIUtils } from "../config-tools-utility/config-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import { clockTab } from "../page-objects/main-menu";
 import {
   accordion,
@@ -40,7 +40,7 @@ describe("Clock Diagram", () => {
     await UIUtils.sleep(6000);
 
     // Assert diagram rendered
-    expect(await view.findWebElement(clockDiagram)).to.exist;
+    expect(await UIUtils.findWebElement(view, clockDiagram)).to.exist;
 
     const muxAccordion = await UIUtils.findWebElement(view, accordion("MUX"));
     await muxAccordion.click();

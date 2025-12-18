@@ -26,26 +26,27 @@ function PeripheralNavigation({
 }: Readonly<{
 	peripherals: Array<FormattedPeripheral<FormattedPeripheralSignal>>;
 }>) {
-	const orderedPeripherals = useMemo(() => {
-		return groupPeripherals(peripherals);
-	}, [peripherals]);
+	const orderedPeripherals = useMemo(
+		() => groupPeripherals(peripherals),
+		[peripherals]
+	);
 
 	return (
 		<div>
-			{orderedPeripherals.map(p => {
-				if (p.group) {
+			{orderedPeripherals.map(peripheralGroup => {
+				if (peripheralGroup.group) {
 					return (
-						<div key={`group-${p.group}`}>
+						<div key={`group-${peripheralGroup.group}`}>
 							<PeripheralGroup
-								group={p.group}
-								peripherals={p.peripherals}
+								group={peripheralGroup.group}
+								peripherals={peripheralGroup.peripherals}
 							/>
 						</div>
 					);
 				}
 
 				// NOTE peripherals without a group will only have 1 item.
-				const peripheral = p.peripherals[0];
+				const peripheral = peripheralGroup.peripherals[0];
 
 				return (
 					<PeripheralBlock

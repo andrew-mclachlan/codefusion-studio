@@ -23,7 +23,7 @@ import {getProjectInfoList} from '../utils/config';
 export default function useIsPrimaryMultipleProjects(
 	isPrimary: boolean
 ): boolean {
-	const projectInfoList = getProjectInfoList() || [];
+	const projectInfoList = getProjectInfoList() ?? [];
 	const result = useMemo(
 		() => Boolean(projectInfoList.length > 1 && isPrimary),
 		[projectInfoList.length, isPrimary]

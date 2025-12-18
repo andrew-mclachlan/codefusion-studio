@@ -18,7 +18,7 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import Optional, Self
 
-from pydantic import BaseModel, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 logger = logging.getLogger(__name__) 
 
@@ -68,18 +68,24 @@ class CfsPkgMgrIndexEntry(BaseModel):
     full_ref: str
     path: Path
     requires: list[str]
-    description: str
-    license: str
+    description: Optional[str] = Field(
+        default = ""
+    )
+    license: Optional[str] = Field(
+        default = ""
+    )
     cfs_version: str = Field(
         alias='cfsVersion'
     )
-    soc: Optional[list[str]]
-    type: Optional[str]
+    soc: Optional[list[str]] = Field(
+        default = None
+    )
+    type: Optional[str] = Field(
+        default=None
+    )
 
 
-    model_config = {
-        "populate_by_name": True  # allow using field names when loading data
-    }
+    model_config = ConfigDict(populate_by_name=True, extra='allow')
 
     def is_datamodels(self) -> bool:
         """

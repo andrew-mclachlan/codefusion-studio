@@ -27,6 +27,7 @@ class BasicConanfile(ConanFile):
     package_id_unknown_mode = "unrelated_mode"
     exports = "package.json"
     exports_sources = (
+      "LICENSE",
       "build-scripts/generate-data-model-index.js",
       "socs/*.json",
       "!socs/datamodel-schema.json"
@@ -52,5 +53,6 @@ class BasicConanfile(ConanFile):
         self.run("node build-scripts/generate-data-model-index.js")
 
     def package(self):
+        files.copy(self, "LICENSE", self.source_folder, self.package_folder)
         files.copy(self, "*.json", self.source_folder + "/socs", self.package_folder)
         files.copy(self, ".cfsdatamodels", self.source_folder + "/socs", self.package_folder)

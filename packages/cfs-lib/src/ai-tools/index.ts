@@ -194,12 +194,23 @@ export default class AIToolsPlugin {
 
 		const reportPath = path.join(
 			this.tmpModelValidationReportPath,
-			`${aiModel.Name.replace(/\s+/g, "_")}_profiling_report.json`
+			`${aiModel.Name.replace(/\s+/g, "_")}_profiling_report.txt`
 		);
 
 		return new Promise<string>((resolve, reject) => {
-			const args = `profile --text-file ${reportPath} --model ${modelPath} --target ${soc}.${aiModel.Target.Core}${aiModel.Target.Accelerator ? `.${aiModel.Target.Accelerator}` : ""}`;
-			const process = spawn(cfsAiPath, args.split(" "));
+			const args = [
+				"profile",
+				"--text-file",
+				reportPath,
+				"--model",
+				modelPath,
+				"--target",
+				`${soc}.${aiModel.Target.Core}` +
+					(aiModel.Target.Accelerator
+						? `.${aiModel.Target.Accelerator}`
+						: "")
+			];
+			const process = spawn(cfsAiPath, args);
 			process.stderr.on("data", (data) => {
 				console.error(`AI Model analysis error: \n ${String(data)}`);
 			});
@@ -237,8 +248,19 @@ export default class AIToolsPlugin {
 			`${aiModel.Name.replace(/\s+/g, "_")}_compatibility_report.json`
 		);
 		return new Promise<validationResult>((resolve, reject) => {
-			const args = `compat --json-file ${reportPath} --model ${modelPath} --target ${soc}.${aiModel.Target.Core}${aiModel.Target.Accelerator ? `.${aiModel.Target.Accelerator}` : ""}`;
-			const process = spawn(cfsAiPath, args.split(" "));
+			const args = [
+				"compat",
+				"--json-file",
+				reportPath,
+				"--model",
+				modelPath,
+				"--target",
+				`${soc}.${aiModel.Target.Core}` +
+					(aiModel.Target.Accelerator
+						? `.${aiModel.Target.Accelerator}`
+						: "")
+			];
+			const process = spawn(cfsAiPath, args);
 			process.stderr.on("data", (data: Buffer) => {
 				const decodedData = String(data);
 				console.error(`AI Model Validation Error: \n ${decodedData}`);

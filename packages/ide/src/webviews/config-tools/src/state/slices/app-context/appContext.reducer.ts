@@ -46,7 +46,7 @@ type AppContextState = {
 		pinconfig: string;
 	};
 	memoryTypeFilter: string[];
-	coresFilter: string[];
+	projectFilter: string[];
 	selectedProjects: CodeGenerationProject[];
 	memoryScreen: {
 		activeView: 'project' | 'type';
@@ -89,7 +89,7 @@ export const appContextInitialState: AppContextState = {
 		pinconfig: ''
 	},
 	memoryTypeFilter: [],
-	coresFilter: [],
+	projectFilter: [],
 	selectedProjects: [],
 	memoryScreen: {
 		activeView: 'project',
@@ -173,8 +173,8 @@ const appContextSlice = createSlice({
 		setMemoryTypeFilter(state, {payload}: PayloadAction<string[]>) {
 			state.memoryTypeFilter = payload;
 		},
-		setCoresFilter(state, {payload}: PayloadAction<string[]>) {
-			state.coresFilter = payload;
+		setProjectFilter(state, {payload}: PayloadAction<string[]>) {
+			state.projectFilter = payload;
 		},
 		setSelectedProject(
 			state,
@@ -291,7 +291,7 @@ export const {
 	setActiveFilter,
 	setActiveSearchString,
 	setMemoryTypeFilter,
-	setCoresFilter,
+	setProjectFilter,
 	setSelectedProject,
 	removeSelectedProject,
 	setMemoryScreenActiveView,

@@ -27,18 +27,17 @@ import type {
 	FormattedPeripheral,
 	FormattedPeripheralSignal
 } from '../../../../../common/types/soc';
+import type {PeripheralConfig} from '../../../types/peripherals';
 
-interface Props
-	extends FormattedPeripheral<FormattedPeripheralSignal> {
+type Props = Readonly<{
 	allocatedCore?: string;
-	categorizedAllocations: ReturnType<
-		typeof import('../../../utils/soc-peripherals').categorizeAllocationsByName
-	>;
+	categorizedAllocations: Map<string, PeripheralConfig>;
 	isOpen: boolean;
 	setIsOpen: (v: boolean) => void;
-	highlighted: boolean;
+	isHighlighted: boolean;
 	signalName?: string;
-}
+}> &
+	FormattedPeripheral<FormattedPeripheralSignal>;
 
 function GroupedPeripheralSignals({
 	name,
@@ -50,7 +49,7 @@ function GroupedPeripheralSignals({
 	categorizedAllocations,
 	isOpen,
 	setIsOpen,
-	highlighted,
+	isHighlighted,
 	signalName,
 	assignable
 }: Props) {
@@ -59,6 +58,7 @@ function GroupedPeripheralSignals({
 		useTooltipDebouncedHover(800);
 	const [editHovered, setEditHovered] = useState(false);
 	const [lastHovered, setLastHovered] = useState(false);
+	// eslint-disable-next-line react/hook-use-state
 	const [allocatedTarget] = useState<string | undefined>(undefined);
 
 	const getTooltipPosition = useCallback(() => {
@@ -100,7 +100,7 @@ function GroupedPeripheralSignals({
 			return (
 				<div
 					key={`peripheral-signal-${signal.name}`}
-					className={`${isSelected ? styles.focused : ''} ${signal.name === signalName && highlighted ? styles.highlight : ''}`}
+					className={`${isSelected ? styles.focused : ''} ${signal.name === signalName && isHighlighted ? styles.highlight : ''}`}
 				>
 					<PeripheralSignal
 						{...signal}
@@ -134,21 +134,26 @@ function GroupedPeripheralSignals({
 			}}
 		>
 			<Accordion
-				highlight={highlighted}
+				highlight={isHighlighted}
 				icon={
 					categorizedAllocations.get(name) ? (
 						<div
 							data-test={`accordion:allocated:${name}`}
 							id={`${name}-allocated`}
 							className={styles.config}
-							onMouseEnter={() => setEditHovered(true)}
-							onMouseLeave={() => setEditHovered(false)}
+							onMouseEnter={() => {
+								setEditHovered(true);
+							}}
+							onMouseLeave={() => {
+								setEditHovered(false);
+							}}
 						>
 							<ConfigIcon16px
 								onClick={e => {
 									e.stopPropagation();
 									const projectId =
 										categorizedAllocations.get(name)?.projectId;
+
 									if (projectId) {
 										dispatch(
 											setActivePeripheral(`${name}:${projectId}`)
@@ -178,13 +183,19 @@ function GroupedPeripheralSignals({
 				body={
 					<div
 						className={styles.peripheralSignalsContainer}
-						onMouseEnter={() => setLastHovered(true)}
-						onMouseLeave={() => setLastHovered(false)}
+						onMouseEnter={() => {
+							setLastHovered(true);
+						}}
+						onMouseLeave={() => {
+							setLastHovered(false);
+						}}
 					>
 						{bodyContent}
 					</div>
 				}
-				toggleExpand={() => setIsOpen(!isOpen)}
+				toggleExpand={() => {
+					setIsOpen(!isOpen);
+				}}
 			/>
 			{isHovered && !isOpen && (
 				<PeripheralAllocTooltip

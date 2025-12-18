@@ -13,6 +13,7 @@
  *
  */
 
+import type {ConfiguredProject} from 'cfs-plugins-api';
 import type {AiSupportingBackend} from '../../../common/types/ai-fusion-data-model';
 import type {Core, Peripheral} from '../../../common/types/soc';
 import {loadAiBackends} from '../state/slices/ai-tools/ai-backends';
@@ -54,9 +55,16 @@ export function getAICores(): AISupportingCore[] {
 
 export function initializeAiToolsData(
 	cores: Core[],
-	peripherals: Peripheral[]
+	peripherals: Peripheral[],
+	projects?: ConfiguredProject[]
 ): void {
-	const aiSupportingCores = cores.filter(c => c.Ai);
+	const aiSupportingCores = cores.filter(
+		c =>
+			c.Ai &&
+			projects?.some(
+				proj => proj.CoreId === c.Id && !proj.ExternallyManaged
+			)
+	);
 	const aiAccellerators = peripherals.filter(p => p.Ai);
 
 	aiCores = aiSupportingCores.flatMap(core => [

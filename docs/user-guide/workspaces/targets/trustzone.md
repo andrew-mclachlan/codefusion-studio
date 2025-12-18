@@ -62,7 +62,7 @@ For example, in the image below you can see:
 ![TrustZone project flags in Workspace Creation Wizard](./images/trustzone-project-flags_dark.png#only-dark)
 ![TrustZone project flags in Workspace Creation Wizard](./images/trustzone-project-flags_light.png#only-light)
 
-These flags also appear in [System Planner](../../tools/config-tool/index.md), helping you distinguish secure and non-secure configurations.
+These flags also appear in [System Planner](../../tools/index.md), helping you distinguish secure and non-secure configurations.
 
 ![TrustZone project flags in System Planner](./images/trustzone-system-p-flags_dark.png#only-dark)
 ![TrustZone project flags in System Planner](./images/trustzone-system-p-flags_light.png#only-light)

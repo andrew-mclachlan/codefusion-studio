@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2024 Analog Devices, Inc.
+ * Copyright (c) 2024 - 2025 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  *
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import type {DiagramNode, Soc} from '@common/types/soc';
 import {configurePreloadedStore} from '../../../state/store';
 import NodeTooltip from './NodeTooltip';

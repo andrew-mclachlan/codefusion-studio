@@ -190,7 +190,7 @@ describe('Partition Sidebar', () => {
 			// Cores should be reset
 			cy.dataTest('assigned-cores-multiselect')
 				.get('button')
-				.should('have.text', 'Select cores');
+				.should('have.text', 'Select projects');
 			// Address should be reset
 			cy.get('input').eq(0).should('have.value', '');
 			// Size should be reset

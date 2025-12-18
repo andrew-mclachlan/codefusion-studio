@@ -23,7 +23,7 @@ import {
 } from "vscode-extension-tester";
 import { expect } from "chai";
 import { getConfigPathForFile } from "../config-tools-utility/cfsconfig-utils";
-import { UIUtils } from "../config-tools-utility/config-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import { pinTab } from "../page-objects/main-menu";
 import {
   pinDetailsContainer,
@@ -61,29 +61,29 @@ describe("Reset to Default", () => {
       const view = new WebView();
       await view.switchToFrame();
 
-      await (await view.findWebElement(pinTab)).click().then(async () => {
+      await (await UIUtils.findWebElement(view, pinTab)).click().then(async () => {
         await UIUtils.sleep(3000);
-        const pin = await view.findWebElement(
+        const pin = await UIUtils.findWebElement(view,
           await mainPanelPinOnLineAndColumn(1, 2),
         );
 
         await pin.click();
         await UIUtils.sleep(1500);
 
-        expect(await view.findWebElement(pinDetailsContainer)).to.exist;
+        expect(await UIUtils.findWebElement(view, pinDetailsContainer)).to.exist;
 
-        const firstSignalToggle = await view.findWebElement(
+        const firstSignalToggle = await UIUtils.findWebElement(view,
           await signalToggleWithIndex(1),
         );
         await firstSignalToggle.click();
         await UIUtils.sleep(1500);
 
-        const navItem = await view.findWebElement(configButton);
+        const navItem = await UIUtils.findWebElement(view, configButton);
         await navItem.click();
         await UIUtils.sleep(1500);
 
-        await view
-          .findWebElement(searchField)
+        await UIUtils
+          .findWebElement(view, searchField)
           .then(async (dtNameInputField) => {
             expect(dtNameInputField).to.exist;
 
@@ -135,7 +135,7 @@ describe("Reset to Default", () => {
 
             await view.switchToFrame();
 
-            const resetToDefBtn = await view.findWebElement(
+            const resetToDefBtn = await UIUtils.findWebElement(view,
               By.xpath(
                 '//*[@id="root"]/div/div[3]/div[3]/div/section/div[1]/h3',
               ),
@@ -147,8 +147,8 @@ describe("Reset to Default", () => {
               setTimeout(res, 1000);
             });
 
-            await view
-              .findWebElement(
+            await UIUtils
+              .findWebElement(view, 
                 By.xpath(
                   "/html/body/div/div/div[3]/div[3]/div/section/div[6]/div[2]/vscode-text-field",
                 ),

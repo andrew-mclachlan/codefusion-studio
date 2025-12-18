@@ -28,7 +28,7 @@ import {
 } from '../../state/slices/profiling/profiling.reducer';
 
 type ConfigSectionProps = {
-	projectId: string;
+	readonly projectId: string;
 };
 
 export function ZephelinConfigSection({
@@ -42,7 +42,7 @@ export function ZephelinConfigSection({
 	const l10n = useLocaleContext()?.profiling;
 
 	if (!config || !project) {
-		return <></>;
+		return null;
 	}
 
 	const uartPorts = getUARTPorts();
@@ -82,8 +82,9 @@ export function ZephelinConfigSection({
 						isDisabled={!config.Enabled}
 						controlId={`uartSelect-${projectId}`}
 						currentControlValue={
-							config.Port !== undefined
-								? uartPorts[config.Port].Name
+							typeof config.Port === 'number' &&
+							uartPorts[config.Port]
+								? uartPorts[config.Port]?.Name
 								: undefined
 						}
 						options={Object.values(uartPorts).map(p => ({
@@ -94,7 +95,7 @@ export function ZephelinConfigSection({
 							dispatch(
 								setUARTPort({
 									projectId,
-									port: parseInt(selection.substring(4))
+									port: parseInt(selection.substring(4), 10)
 								})
 							)
 						}

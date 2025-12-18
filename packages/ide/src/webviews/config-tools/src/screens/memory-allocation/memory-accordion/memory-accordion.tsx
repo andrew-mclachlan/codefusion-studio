@@ -101,11 +101,11 @@ export default function MemoryAccordion({
 						title={partition.displayName}
 						size={convertBytesToKbOrMb(
 							partition.size ? partition.size : 0,
-							true
+							false
 						)}
 						occupiedMemory={convertBytesToKbOrMb(
 							getOccupiedMemory(partition, memoryBlock),
-							true
+							false
 						)}
 					/>
 				</div>

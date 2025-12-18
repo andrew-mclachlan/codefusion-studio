@@ -43,7 +43,6 @@ from pydantic import BaseModel, Field
 from cfsai_types.hardware_profile import HardwareProfile
 
 # Visualization Constants for Report Formatting
-REPORT_HEADER_WIDTH = 180                    # Console width for report headers
 CRITICAL_RAM_UTILIZATION_THRESHOLD = 95.0  # Threshold for critical RAM status
 WARNING_RAM_UTILIZATION_THRESHOLD = 80.0   # Threshold for warning RAM status
 HIGH_CYCLE_COUNT_THRESHOLD = 1_000_000     # Threshold for high computation layers
@@ -492,24 +491,22 @@ class ResourceProfileReport(BaseModel):
 
         if to_buffer:
             buffer = io.StringIO()
-            console = Console(file=buffer, force_terminal=False, no_color=True)
+            console = Console(
+                file=buffer, force_terminal=False, no_color=True, width=320
+            )
         else:
             console = Console()
 
         # Main header
-        console.print("=" * REPORT_HEADER_WIDTH, style="bold blue")
-        console.print(
-            "RESOURCE PROFILING REPORT", style="bold blue", justify="center"
-        )
-        console.print("=" * REPORT_HEADER_WIDTH, style="bold blue")
+        console.print("=== RESOURCE PROFILING REPORT ===", style="bold blue")
 
         # Model Summary Section
         if self.model_summary:
             console.print("\n=== MODEL SUMMARY ===", style="bold green")
 
             table = Table(show_header=True, header_style="bold magenta")
-            table.add_column("Metric", style="cyan", width=20)
-            table.add_column("Value", style="white", width=40)
+            table.add_column("Metric", style="cyan")
+            table.add_column("Value", style="white")
 
             model = self.model_summary
             if model.model_name:
@@ -537,8 +534,8 @@ class ResourceProfileReport(BaseModel):
             mem = self.memory_analysis
 
             table = Table(show_header=True, header_style="bold magenta")
-            table.add_column("Memory Metric", style="cyan", width=25)
-            table.add_column("Value", style="white", width=35)
+            table.add_column("Memory Metric", style="cyan")
+            table.add_column("Value", style="white")
 
             # Peak RAM with color coding
             peak_ram_text = Text(
@@ -589,8 +586,8 @@ class ResourceProfileReport(BaseModel):
             console.print("\n=== HARDWARE PERFORMANCE ===", style="bold green")
 
             table = Table(show_header=True, header_style="bold magenta")
-            table.add_column("Metric", style="cyan", width=20)
-            table.add_column("Value", style="white", width=35)
+            table.add_column("Metric", style="cyan")
+            table.add_column("Value", style="white")
 
             hw = self.hardware_metrics
             if hw.total_cycles:
@@ -621,23 +618,15 @@ class ResourceProfileReport(BaseModel):
             )
 
             table = Table(show_header=True, header_style="bold magenta")
-            table.add_column("Layer", style="cyan", width=8)
-            table.add_column("Operator", style="blue", width=15)
-            table.add_column("Cycles", style="green", width=10, justify="right")
-            table.add_column(
-                "Latency (ms)", style="yellow", width=12, justify="right"
-            )
-            table.add_column(
-                "Energy (uJ)", style="magenta", width=11, justify="right"
-            )
-            table.add_column(
-                "Power (mW)", style="red", width=11, justify="right"
-            )
-            table.add_column("MACs", style="white", width=10, justify="right")
-            table.add_column(
-                "Memory (KB)", style="cyan", width=12, justify="right"
-            )
-            table.add_column("Accel", style="green", width=6, justify="center")
+            table.add_column("Layer", style="cyan")
+            table.add_column("Operator", style="blue")
+            table.add_column("Cycles", style="green", justify="right")
+            table.add_column("Latency (ms)", style="yellow", justify="right")
+            table.add_column("Energy (uJ)", style="magenta", justify="right")
+            table.add_column("Power (mW)", style="red", justify="right")
+            table.add_column("MACs", style="white", justify="right")
+            table.add_column("Memory (KB)", style="cyan", justify="right")
+            table.add_column("Accel", style="green", justify="center")
 
             for layer in self.layer_performance:
                 layer_name_display = f"{layer.layer_idx}"
@@ -657,7 +646,7 @@ class ResourceProfileReport(BaseModel):
                     layer_name_display,
                     layer.layer_name or "-",
                     cycles_text,
-                    f"{layer.latency_ms:.4f}" if layer.latency_ms else "-",
+                    f"{layer.latency_ms:.2f}" if layer.latency_ms else "-",
                     f"{layer.energy_uj:.2f}" if layer.energy_uj else "-",
                     f"{layer.power_mw:.2f}" if layer.power_mw else "-",
                     f"{layer.macs:,}" if layer.macs else "-",
@@ -674,10 +663,10 @@ class ResourceProfileReport(BaseModel):
             )
 
             table = Table(show_header=True, header_style="bold magenta")
-            table.add_column("Category", style="cyan", width=15)
-            table.add_column("Description", style="white", width=40)
-            table.add_column("Est. Improvement", style="green", width=15)
-            table.add_column("Complexity", style="yellow", width=10)
+            table.add_column("Category", style="cyan")
+            table.add_column("Description", style="white")
+            table.add_column("Est. Improvement", style="green")
+            table.add_column("Complexity", style="yellow")
 
             for suggestion in self.optimization_suggestions:
                 # Color code priority/complexity
@@ -707,8 +696,8 @@ class ResourceProfileReport(BaseModel):
 
             # Summary table
             summary_table = Table(show_header=True, header_style="bold magenta")
-            summary_table.add_column("Metric", style="cyan", width=25)
-            summary_table.add_column("Value", style="white", width=30)
+            summary_table.add_column("Metric", style="cyan")
+            summary_table.add_column("Value", style="white")
 
             summary_table.add_row(
                 "Total Parameter Memory",
@@ -728,16 +717,12 @@ class ResourceProfileReport(BaseModel):
                 mem_table = Table(
                     show_header=True, header_style="bold magenta"
                 )
-                mem_table.add_column("Layer", style="cyan", width=8)
-                mem_table.add_column("Op Type", style="blue", width=15)
-                mem_table.add_column(
-                    "Param Mem (KB)", style="yellow", width=13, justify="right"
-                )
-                mem_table.add_column(
-                    "MACs", style="green", width=10, justify="right"
-                )
-                mem_table.add_column("Kernel Info", style="white", width=12)
-                mem_table.add_column("Suggestion", style="magenta", width=20)
+                mem_table.add_column("Layer", style="cyan")
+                mem_table.add_column("Op Type", style="blue")
+                mem_table.add_column("Param Mem (KB)", style="yellow", justify="right")
+                mem_table.add_column( "MACs", style="green", justify="right")
+                mem_table.add_column("Kernel Info", style="white")
+                mem_table.add_column("Suggestion", style="magenta")
 
                 for layer_opp in opp.layerwise_opportunities:
                     # Color code based on memory usage
@@ -769,16 +754,12 @@ class ResourceProfileReport(BaseModel):
                 mac_table = Table(
                     show_header=True, header_style="bold magenta"
                 )
-                mac_table.add_column("Layer", style="cyan", width=8)
-                mac_table.add_column("Op Type", style="blue", width=15)
-                mac_table.add_column(
-                    "Param Mem (KB)", style="yellow", width=13, justify="right"
-                )
-                mac_table.add_column(
-                    "MACs", style="green", width=10, justify="right"
-                )
-                mac_table.add_column("Kernel Info", style="white", width=12)
-                mac_table.add_column("Suggestion", style="magenta", width=20)
+                mac_table.add_column("Layer", style="cyan")
+                mac_table.add_column("Op Type", style="blue")
+                mac_table.add_column("Param Mem (KB)", style="yellow", justify="right")
+                mac_table.add_column("MACs", style="green", justify="right")
+                mac_table.add_column("Kernel Info", style="white")
+                mac_table.add_column("Suggestion", style="magenta")
 
                 for layer_opp in opp.macs_opportunities:
                     # Color code based on MAC count
@@ -838,8 +819,6 @@ class ResourceProfileReport(BaseModel):
                     console.print(
                         f"    Details: {error.details}", style="dim red"
                     )
-
-        console.print("\n" + "=" * REPORT_HEADER_WIDTH, style="bold blue")
 
         if to_buffer:
             return buffer.getvalue()

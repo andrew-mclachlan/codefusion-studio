@@ -28,6 +28,7 @@ export type WorkspaceCore = {
 	Name: string;
 	IsPrimary: boolean;
 	IsEnabled: boolean;
+	Secure?: boolean;
 	PluginId: string;
 	PluginVersion: string;
 	FirmwarePlatform: string;

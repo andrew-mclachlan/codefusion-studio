@@ -274,7 +274,7 @@ function SystemPlannerConfigToolsList() {
 							<div className={styles.cardContainer}>
 								<div className={styles.cardDetails}>
 									<ProfilingIconSmall />
-									<div>{i10n?.profiling} <Badge appearance='secondary'>BETA</Badge></div>
+									<div>{i10n?.profiling} <Badge appearance='primary'>BETA</Badge></div>
 								</div>
 								<div className={styles.chevronIcon}>
 									<ChevronRight />

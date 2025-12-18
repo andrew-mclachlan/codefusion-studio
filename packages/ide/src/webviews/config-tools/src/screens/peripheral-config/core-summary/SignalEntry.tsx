@@ -87,7 +87,7 @@ function SignalEntry({
 		);
 	}, [dispatch, signal, peripheral]);
 
-	const handleDeleteClick = () => {
+	const handleDeleteClick = useCallback(() => {
 		const payload = {
 			Pin: targetPinId,
 			Peripheral: peripheral,
@@ -102,7 +102,7 @@ function SignalEntry({
 		);
 		dispatch(removeAppliedSignal(payload));
 		dispatch(setActiveSignal(undefined));
-	};
+	}, [dispatch, peripheral, signal, targetPinId]);
 
 	useEffect(() => {
 		if (shouldHighlight) {
@@ -134,6 +134,7 @@ function SignalEntry({
 				</div>
 
 				<div className={styles.iconWrapper}>
+					{/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
 					{isPinAssignmentMissing || isPinConflict ? (
 						<div className={styles.conflictIconWrapper}>
 							<ConflictIcon
@@ -150,6 +151,7 @@ function SignalEntry({
 					) : (
 						<Tooltip title='Configure' type='long'>
 							<Button
+								dataTest='signal-assignment:config-btn'
 								className={`${styles.configIcon} ${isActive ? styles.isActive : ''}`}
 								appearance='icon'
 								onClick={handleConfigClick}
@@ -163,6 +165,7 @@ function SignalEntry({
 					) : (
 						<Tooltip title='Remove' type='long'>
 							<Button
+								dataTest='signal-assignment:delete-btn'
 								className={styles.deleteIcon}
 								appearance='icon'
 								onClick={handleDeleteClick}

@@ -24,7 +24,7 @@
 	--type-ramp-base-line-height: 14px;
 	--list-active-selection-background: #{colors.$list-active-selection-background};
 	--list-active-selection-foreground: #{colors.$list-active-selection-foreground};
-	--list-hover-background: #{colors.$table-row-hover};
+	--list-hover-background: #{colors.$list-inactive-selection-background};
 	--contrast-active-border: transparent;
 
 	border-top: 1px solid colors.$default-border;

@@ -1,8 +1,9 @@
 {
-  "Copyright": "Copyright (c) 2024-2025 Analog Devices, Inc.  All rights reserved. This software is proprietary to Analog Devices, Inc. and its licensors.",
-  "Version": "1.2.148",
+  "Copyright": "Copyright (c) 2024-2025 Analog Devices, Inc.",
+  "License": "Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.",
+  "Version": "1.3.98",
   "Schema": "1.2.0",
-  "Timestamp": "2025-10-22 20:22:42.770712",
+  "Timestamp": "2025-11-26 14:40:13.061933",
   "Name": "MAX32650",
   "Description": "Ultra-Low-Power Arm Cortex-M4 Processor with FPU-Based Microcontroller (MCU) with 3MB Flash and 1MB SRAM",
   "Endianness": "Little",
@@ -24731,13 +24732,13 @@
             {
               "Name": "VDDIO_DIV4",
               "Description": "VDDIO/4",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "VDDIO/4."
             },
             {
               "Name": "VDDIOH_DIV4",
               "Description": "VDDIOH/4",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "VDDIOH/4."
             }
           ]
@@ -25187,13 +25188,13 @@
             {
               "Name": "VDDIO_DIV4",
               "Description": "VDDIO/4",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "VDDIO/4."
             },
             {
               "Name": "VDDIOH_DIV4",
               "Description": "VDDIOH/4",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "VDDIOH/4."
             }
           ]
@@ -25369,13 +25370,13 @@
             {
               "Name": "VDDIO_DIV4",
               "Description": "VDDIO/4",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "VDDIO/4."
             },
             {
               "Name": "VDDIOH_DIV4",
               "Description": "VDDIOH/4",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "VDDIOH/4."
             }
           ]
@@ -25551,13 +25552,13 @@
             {
               "Name": "VDDIO_DIV4",
               "Description": "VDDIO/4",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "VDDIO/4."
             },
             {
               "Name": "VDDIOH_DIV4",
               "Description": "VDDIOH/4",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "VDDIOH/4."
             }
           ]
@@ -25733,13 +25734,13 @@
             {
               "Name": "VDDIO_DIV4",
               "Description": "VDDIO/4",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "VDDIO/4."
             },
             {
               "Name": "VDDIOH_DIV4",
               "Description": "VDDIOH/4",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "VDDIOH/4."
             }
           ]
@@ -26769,7 +26770,7 @@
           "Position": 0,
           "Length": 6,
           "Access": "R",
-          "Reset": 0
+          "Reset": "0x10"
         },
         {
           "Name": "SYSCLK_PRESCALE",
@@ -26837,7 +26838,7 @@
           "Position": 9,
           "Length": 3,
           "Access": "R/W",
-          "Reset": 4,
+          "Reset": 0,
           "Enum": [
             {
               "Name": "CRYPTO",
@@ -26919,7 +26920,7 @@
           "Position": 15,
           "Length": 1,
           "Access": "R",
-          "Reset": 0,
+          "Reset": 1,
           "Enum": [
             {
               "Name": "NON_DIV",
@@ -26946,13 +26947,26 @@
         },
         {
           "Name": "X32K_EN",
-          "Description": "32KHz External Clock Enable",
-          "Documentation": "32KHz External Clock Enable.",
+          "Description": "32 KHz Oscillator Enable",
+          "Documentation": "32 KHz Oscillator Enable.",
           "Position": 17,
           "Length": 1,
           "Access": "R/W",
           "Reset": 0,
-          "Enum": []
+          "Enum": [
+            {
+              "Name": "DIS",
+              "Description": "Is Disabled",
+              "Value": 0,
+              "Documentation": "Is Disabled."
+            },
+            {
+              "Name": "EN",
+              "Description": "Is Enabled",
+              "Value": 1,
+              "Documentation": "Is Enabled."
+            }
+          ]
         },
         {
           "Name": "CRYPTO_EN",
@@ -26961,8 +26975,21 @@
           "Position": 18,
           "Length": 1,
           "Access": "R/W",
-          "Reset": 0,
-          "Enum": []
+          "Reset": 1,
+          "Enum": [
+            {
+              "Name": "DIS",
+              "Description": "Is Disabled",
+              "Value": 0,
+              "Documentation": "Is Disabled."
+            },
+            {
+              "Name": "EN",
+              "Description": "Is Enabled",
+              "Value": 1,
+              "Documentation": "Is Enabled."
+            }
+          ]
         },
         {
           "Name": "HIRC96_EN",
@@ -26971,27 +26998,67 @@
           "Position": 19,
           "Length": 1,
           "Access": "R/W",
-          "Reset": 0,
-          "Enum": []
+          "Reset": 1,
+          "Enum": [
+            {
+              "Name": "DIS",
+              "Description": "Is Disabled",
+              "Value": 0,
+              "Documentation": "Is Disabled."
+            },
+            {
+              "Name": "EN",
+              "Description": "Is Enabled",
+              "Value": 1,
+              "Documentation": "Is Enabled."
+            }
+          ]
         },
         {
           "Name": "HIRC8_EN",
-          "Description": "7.3728MHz High Frequency Internal Reference Clock Enable",
-          "Documentation": "7.3728MHz High Frequency Internal Reference Clock Enable.",
+          "Description": "7.3728 MHz Clock Enable",
+          "Documentation": "7.3728 MHz Clock Enable.",
           "Position": 20,
           "Length": 1,
           "Access": "R/W",
           "Reset": 0,
-          "Enum": []
+          "Enum": [
+            {
+              "Name": "DIS",
+              "Description": "Is Disabled",
+              "Value": 0,
+              "Documentation": "Is Disabled."
+            },
+            {
+              "Name": "EN",
+              "Description": "Is Enabled",
+              "Value": 1,
+              "Documentation": "Is Enabled."
+            }
+          ]
         },
         {
           "Name": "HIRC8_VS",
-          "Description": "7.3728MHz Internal Oscillator Voltage Source Select",
-          "Documentation": "7.3728MHz Internal Oscillator Voltage Source Select.",
+          "Description": "7.3728 MHz High Frequency Internal Reference Clock Voltage Select",
+          "Documentation": "This register bit is used to select the power supply to the IBRO.",
           "Position": 21,
           "Length": 1,
           "Access": "R/W",
-          "Reset": 0
+          "Reset": 0,
+          "Enum": [
+            {
+              "Name": "1V",
+              "Description": "Dedicated 1v Regulated Supply",
+              "Value": 0,
+              "Documentation": "Dedicated 1v Regulated Supply."
+            },
+            {
+              "Name": "VCOR",
+              "Description": "VCore Supply",
+              "Value": 1,
+              "Documentation": "VCore Supply."
+            }
+          ]
         },
         {
           "Name": "RESERVED",
@@ -27004,13 +27071,26 @@
         },
         {
           "Name": "X32K_RDY",
-          "Description": "32KHz External Oscillator Ready",
-          "Documentation": "32KHz External Oscillator Ready.",
+          "Description": "32 KHz Crystal Oscillator Ready",
+          "Documentation": "32 KHz Crystal Oscillator Ready.",
           "Position": 25,
           "Length": 1,
-          "Access": "R/W",
+          "Access": "R",
           "Reset": 0,
-          "Enum": []
+          "Enum": [
+            {
+              "Name": "READY",
+              "Description": "Is Ready",
+              "Value": 1,
+              "Documentation": "Is Ready."
+            },
+            {
+              "Name": "BUSY",
+              "Description": "Is Not Ready",
+              "Value": 0,
+              "Documentation": "Is Not Ready."
+            }
+          ]
         },
         {
           "Name": "CRYPTO_RDY",
@@ -27018,9 +27098,22 @@
           "Documentation": "50MHz Internal Oscillator Ready.",
           "Position": 26,
           "Length": 1,
-          "Access": "R/W",
-          "Reset": 0,
-          "Enum": []
+          "Access": "R",
+          "Reset": 1,
+          "Enum": [
+            {
+              "Name": "BUSY",
+              "Description": "Is Not Ready",
+              "Value": 0,
+              "Documentation": "Is Not Ready."
+            },
+            {
+              "Name": "READY",
+              "Description": "Is Ready",
+              "Value": 1,
+              "Documentation": "Is Ready."
+            }
+          ]
         },
         {
           "Name": "HIRC96_RDY",
@@ -27028,29 +27121,68 @@
           "Documentation": "120MHz Internal Oscillator Ready.",
           "Position": 27,
           "Length": 1,
-          "Access": "R/W",
-          "Reset": 0,
-          "Enum": []
+          "Access": "R",
+          "Reset": 1,
+          "Enum": [
+            {
+              "Name": "BUSY",
+              "Description": "Is Not Ready",
+              "Value": 0,
+              "Documentation": "Is Not Ready."
+            },
+            {
+              "Name": "READY",
+              "Description": "Is Ready",
+              "Value": 1,
+              "Documentation": "Is Ready."
+            }
+          ]
         },
         {
           "Name": "HIRC8_RDY",
-          "Description": "7.3728MHz Internal Oscillator Ready",
-          "Documentation": "7.3728MHz Internal Oscillator Ready.",
+          "Description": "7.3728 MHz Oscillator Ready",
+          "Documentation": "7.3728 MHz Oscillator Ready.",
           "Position": 28,
           "Length": 1,
-          "Access": "R/W",
+          "Access": "R",
           "Reset": 0,
-          "Enum": []
+          "Enum": [
+            {
+              "Name": "READY",
+              "Description": "Is Ready",
+              "Value": 1,
+              "Documentation": "Is Ready."
+            },
+            {
+              "Name": "BUSY",
+              "Description": "Is Not Ready",
+              "Value": 0,
+              "Documentation": "Is Not Ready."
+            }
+          ]
         },
         {
           "Name": "NANORING_RDY",
-          "Description": "Internal Nano Ring Oscillator Low Frequency Reference Clock Ready",
-          "Documentation": "Internal Nano Ring Oscillator Low Frequency Reference Clock Ready.",
+          "Description": "8 KHz Low Frequency Reference Clock Ready",
+          "Documentation": "8 KHz Low Frequency Reference Clock Ready.",
           "Position": 29,
           "Length": 1,
-          "Access": "R/W",
+          "Access": "R",
           "Reset": 0,
-          "Enum": []
+          "Enum": [
+            {
+              "Name": "READY",
+              "Description": "Is Ready",
+              "Value": 1,
+              "Documentation": "Is Ready."
+            },
+            {
+              "Name": "BUSY",
+              "Description": "Is Not Ready",
+              "Value": 0,
+              "Documentation": "Is Not Ready."
+            }
+          ]
         },
         {
           "Name": "RESERVED",
@@ -27059,7 +27191,7 @@
           "Position": 30,
           "Length": 2,
           "Access": "R",
-          "Reset": 0
+          "Reset": 3
         }
       ]
     },
@@ -28146,37 +28278,37 @@
             {
               "Name": "DIV10",
               "Description": "ADC Freq = Periph_Clock/10",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "ADC Freq = Periph_Clock/10."
             },
             {
               "Name": "DIV11",
               "Description": "ADC Freq = Periph_Clock/11",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "ADC Freq = Periph_Clock/11."
             },
             {
               "Name": "DIV12",
               "Description": "ADC Freq = Periph_Clock/12",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "ADC Freq = Periph_Clock/12."
             },
             {
               "Name": "DIV13",
               "Description": "ADC Freq = Periph_Clock/13",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "ADC Freq = Periph_Clock/13."
             },
             {
               "Name": "DIV14",
               "Description": "ADC Freq = Periph_Clock/14",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "ADC Freq = Periph_Clock/14."
             },
             {
               "Name": "DIV15",
               "Description": "ADC Freq = Periph_Clock/15",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "ADC Freq = Periph_Clock/15."
             }
           ]
@@ -62145,37 +62277,37 @@
             {
               "Name": "BITS10",
               "Description": "10 Bits per Character",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "10 Bits per Character."
             },
             {
               "Name": "BITS11",
               "Description": "11 Bits per Character",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "11 Bits per Character."
             },
             {
               "Name": "BITS12",
               "Description": "12 Bits per Character",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "12 Bits per Character."
             },
             {
               "Name": "BITS13",
               "Description": "13 Bits per Character",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "13 Bits per Character."
             },
             {
               "Name": "BITS14",
               "Description": "14 Bits per Character",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "14 Bits per Character."
             },
             {
               "Name": "BITS15",
               "Description": "15 Bits per Character",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "15 Bits per Character."
             }
           ]
@@ -63431,37 +63563,37 @@
             {
               "Name": "BITS10",
               "Description": "10 Bits per Character",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "10 Bits per Character."
             },
             {
               "Name": "BITS11",
               "Description": "11 Bits per Character",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "11 Bits per Character."
             },
             {
               "Name": "BITS12",
               "Description": "12 Bits per Character",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "12 Bits per Character."
             },
             {
               "Name": "BITS13",
               "Description": "13 Bits per Character",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "13 Bits per Character."
             },
             {
               "Name": "BITS14",
               "Description": "14 Bits per Character",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "14 Bits per Character."
             },
             {
               "Name": "BITS15",
               "Description": "15 Bits per Character",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "15 Bits per Character."
             }
           ]
@@ -64703,37 +64835,37 @@
             {
               "Name": "BITS10",
               "Description": "10 Bits per Character",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "10 Bits per Character."
             },
             {
               "Name": "BITS11",
               "Description": "11 Bits per Character",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "11 Bits per Character."
             },
             {
               "Name": "BITS12",
               "Description": "12 Bits per Character",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "12 Bits per Character."
             },
             {
               "Name": "BITS13",
               "Description": "13 Bits per Character",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "13 Bits per Character."
             },
             {
               "Name": "BITS14",
               "Description": "14 Bits per Character",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "14 Bits per Character."
             },
             {
               "Name": "BITS15",
               "Description": "15 Bits per Character",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "15 Bits per Character."
             }
           ]
@@ -68306,37 +68438,37 @@
             {
               "Name": "10BITS",
               "Description": "10 Bits per Character",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "10 Bits per Character."
             },
             {
               "Name": "11BITS",
               "Description": "11 Bits per Character",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "11 Bits per Character."
             },
             {
               "Name": "12BITS",
               "Description": "12 Bits per Character",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "12 Bits per Character."
             },
             {
               "Name": "13BITS",
               "Description": "13 Bits per Character",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "13 Bits per Character."
             },
             {
               "Name": "14BITS",
               "Description": "14 Bits per Character",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "14 Bits per Character."
             },
             {
               "Name": "15BITS",
               "Description": "15 Bits per Character",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "15 Bits per Character."
             }
           ]
@@ -73348,9 +73480,9 @@
             },
             {
               "Name": "2POW27",
-              "Description": "2^27 Clock Cycles",
+              "Description": "2**27 Clock Cycles",
               "Value": 4,
-              "Documentation": "2^27 Clock Cycles."
+              "Documentation": "2**27 Clock Cycles."
             },
             {
               "Name": "2POW26",
@@ -73385,37 +73517,37 @@
             {
               "Name": "2POW21",
               "Description": "2**21 Clock Cycles",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "2**21 Clock Cycles."
             },
             {
               "Name": "2POW20",
               "Description": "2**20 Clock Cycles",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "2**20 Clock Cycles."
             },
             {
               "Name": "2POW19",
               "Description": "2**19 Clock Cycles",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "2**19 Clock Cycles."
             },
             {
               "Name": "2POW18",
               "Description": "2**18 Clock Cycles",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "2**18 Clock Cycles."
             },
             {
               "Name": "2POW17",
               "Description": "2**17 Clock Cycles",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "2**17 Clock Cycles."
             },
             {
               "Name": "2POW16",
               "Description": "2**16 Clock Cycles",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "2**16 Clock Cycles."
             }
           ]
@@ -73455,9 +73587,9 @@
             },
             {
               "Name": "2POW27",
-              "Description": "2^27 Clock Cycles",
+              "Description": "2**27 Clock Cycles",
               "Value": 4,
-              "Documentation": "2^27 Clock Cycles."
+              "Documentation": "2**27 Clock Cycles."
             },
             {
               "Name": "2POW26",
@@ -73492,37 +73624,37 @@
             {
               "Name": "2POW21",
               "Description": "2**21 Clock Cycles",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "2**21 Clock Cycles."
             },
             {
               "Name": "2POW20",
               "Description": "2**20 Clock Cycles",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "2**20 Clock Cycles."
             },
             {
               "Name": "2POW19",
               "Description": "2**19 Clock Cycles",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "2**19 Clock Cycles."
             },
             {
               "Name": "2POW18",
               "Description": "2**18 Clock Cycles",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "2**18 Clock Cycles."
             },
             {
               "Name": "2POW17",
               "Description": "2**17 Clock Cycles",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "2**17 Clock Cycles."
             },
             {
               "Name": "2POW16",
               "Description": "2**16 Clock Cycles",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "2**16 Clock Cycles."
             }
           ]
@@ -73694,9 +73826,9 @@
             },
             {
               "Name": "2POW27",
-              "Description": "2^27 Clock Cycles",
+              "Description": "2**27 Clock Cycles",
               "Value": 4,
-              "Documentation": "2^27 Clock Cycles."
+              "Documentation": "2**27 Clock Cycles."
             },
             {
               "Name": "2POW26",
@@ -73731,37 +73863,37 @@
             {
               "Name": "2POW21",
               "Description": "2**21 Clock Cycles",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "2**21 Clock Cycles."
             },
             {
               "Name": "2POW20",
               "Description": "2**20 Clock Cycles",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "2**20 Clock Cycles."
             },
             {
               "Name": "2POW19",
               "Description": "2**19 Clock Cycles",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "2**19 Clock Cycles."
             },
             {
               "Name": "2POW18",
               "Description": "2**18 Clock Cycles",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "2**18 Clock Cycles."
             },
             {
               "Name": "2POW17",
               "Description": "2**17 Clock Cycles",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "2**17 Clock Cycles."
             },
             {
               "Name": "2POW16",
               "Description": "2**16 Clock Cycles",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "2**16 Clock Cycles."
             }
           ]
@@ -73801,9 +73933,9 @@
             },
             {
               "Name": "2POW27",
-              "Description": "2^27 Clock Cycles",
+              "Description": "2**27 Clock Cycles",
               "Value": 4,
-              "Documentation": "2^27 Clock Cycles."
+              "Documentation": "2**27 Clock Cycles."
             },
             {
               "Name": "2POW26",
@@ -73838,37 +73970,37 @@
             {
               "Name": "2POW21",
               "Description": "2**21 Clock Cycles",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "2**21 Clock Cycles."
             },
             {
               "Name": "2POW20",
               "Description": "2**20 Clock Cycles",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "2**20 Clock Cycles."
             },
             {
               "Name": "2POW19",
               "Description": "2**19 Clock Cycles",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "2**19 Clock Cycles."
             },
             {
               "Name": "2POW18",
               "Description": "2**18 Clock Cycles",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "2**18 Clock Cycles."
             },
             {
               "Name": "2POW17",
               "Description": "2**17 Clock Cycles",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "2**17 Clock Cycles."
             },
             {
               "Name": "2POW16",
               "Description": "2**16 Clock Cycles",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "2**16 Clock Cycles."
             }
           ]

@@ -71,7 +71,13 @@ function SocList({
 				data-test='no-search-results'
 			>
 				<h2>No Search Results</h2>
-				<p>{`We couldn't find any results for "${searchString}", please change your search query and try again.`}</p>
+				<p data-test='no-results-description'>
+					We couldn&apos;t find any results for&nbsp;
+					<span className={styles.searchString}>
+						&quot;{searchString}
+					</span>
+					&quot;, please change your search query and try again.
+				</p>
 			</aside>
 		);
 	}

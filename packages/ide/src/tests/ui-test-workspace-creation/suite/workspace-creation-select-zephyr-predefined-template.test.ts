@@ -21,7 +21,7 @@ import { expect } from "chai";
 import { WebView, Workbench, By, VSBrowser } from "vscode-extension-tester";
 
 import { Locatorspaths } from "../pageElements/pageobjects";
-import { UIUtils } from "../utility-workspace/workspace-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import { TextData } from "../pageElements/text-data";
 import * as os from "os";
 import { existsSync } from "node:fs";
@@ -144,7 +144,7 @@ describe("Workspace MAX78XXX creation using predefined template", () => {
       blinkyTemplate,
     );
 
-    await blinkyTemplate.click();
+    await UIUtils.clickElement(view, blinkyTemplate);
     console.log("Clicked on blinky template");
     await await UIUtils.sleep(3000);
 
@@ -187,14 +187,13 @@ describe("Workspace MAX78XXX creation using predefined template", () => {
     );
     const workspaceName = await pathInput.getAttribute("current-value");
 
-    const createwsBtn = await view.findWebElement(
+    const createwsBtn = await UIUtils.findWebElement(view,
       By.xpath('//*[@id="root"]/div/div[3]/div/div/vscode-button[2]'),
     );
 
     console.log("Found create workspace button");
-    await createwsBtn.click();
+    await UIUtils.clickElement(view, createwsBtn);
     console.log("Clicked on create workspace button");
-    UIUtils.sleep(5000);
 
     // Assert that the workspace is created successfully
     const userHome = os.homedir();
@@ -210,7 +209,6 @@ describe("Workspace MAX78XXX creation using predefined template", () => {
     const fileContent = fs.readFileSync(cfsWorkspaceFile, "utf-8");
     // Parsing json content to verify the SOC
     const workspaceData = JSON.parse(fileContent);
-    UIUtils.sleep(3000);
     console.log("Parsed workspace data: below and verifying the schema");
     // Persistance assertions and verification of schema of workspaceData
     if (!workspaceData) throw new Error("workspaceData is undefined or null");

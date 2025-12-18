@@ -16,7 +16,7 @@ import {memo} from 'react';
 import styles from './error.module.scss';
 import {useLocaleContext} from '../../../../common/contexts/LocaleContext';
 import ConflictIcon from '../../../../common/icons/Conflict';
-import {TLocaleContext} from '../../../../common/types/l10n';
+import type {TLocaleContext} from '../../../../common/types/l10n';
 
 function UnknownError() {
 	const i10n: TLocaleContext | undefined =

@@ -88,7 +88,7 @@ describe('Manage Pin Assignments from Peripheral Config Sidebar', () => {
 						signalName
 					);
 
-					cy.dataTest('pin-assignment-info').should(
+					cy.dataTest('pin-assignment-label').should(
 						'contain',
 						`${pinLabel} (${pinId})`
 					);
@@ -230,7 +230,7 @@ describe('Manage Pin Assignments from Peripheral Config Sidebar', () => {
 						signalName
 					);
 
-					cy.dataTest('pin-assignment-info').should(
+					cy.dataTest('pin-assignment-label').should(
 						'contain',
 						`${pinLabel} (${pinId})`
 					);
@@ -252,7 +252,7 @@ describe('Manage Pin Assignments from Peripheral Config Sidebar', () => {
 					'false'
 				);
 
-				//should show error message
+				// Should show error message
 				cy.dataTest('signal-assignment:error').should('exist');
 
 				cy.dataTest('signal-assignment:error').should(
@@ -319,7 +319,7 @@ describe('Manage Pin Assignments from Peripheral Config Sidebar', () => {
 						signalName
 					);
 
-					cy.dataTest('pin-assignment-info').should(
+					cy.dataTest('pin-assignment-label').should(
 						'contain',
 						`${pinLabel} (${pinId})`
 					);
@@ -332,7 +332,7 @@ describe('Manage Pin Assignments from Peripheral Config Sidebar', () => {
 					'true'
 				);
 
-				//should show error message
+				// Should show error message
 				cy.dataTest('signal-assignment:error').should('exist');
 
 				cy.dataTest('signal-assignment:error').should(
@@ -343,7 +343,7 @@ describe('Manage Pin Assignments from Peripheral Config Sidebar', () => {
 				// Click to toggle off to un-assign the pin
 				cy.dataTest(`${GPIO1}-${pinLabel}-span`).click();
 
-				// should show unassign error message if signal is required
+				// Should show unassign error message if signal is required
 				cy.dataTest('signal-assignment:error').should('exist');
 
 				cy.dataTest('signal-assignment:error').should(

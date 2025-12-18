@@ -35,7 +35,7 @@ cfsai --help
 # Building the released package
 uv build --all-packages
 cargo build --release --manifest-path cli/Cargo.toml
-uv run python scripts/package.py 3.13
+uv run python scripts/package.py 3.11
 
 # Invoking the built release
 cfsai --help

@@ -22,6 +22,7 @@
 	padding: layout.$secondary-layout-padding-top-bottom
 		layout.$secondary-layout-padding-left-right;
 	box-sizing: border-box;
+	overflow: auto;
 	.low-density {
 		padding: 40px;
 	}

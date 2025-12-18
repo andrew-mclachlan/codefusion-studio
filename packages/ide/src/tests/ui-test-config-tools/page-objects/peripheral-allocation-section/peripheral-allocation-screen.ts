@@ -13,7 +13,9 @@
  *
  */
 
-import { By } from "vscode-extension-tester";
+import { By, WebView } from "vscode-extension-tester";
+import { expect } from "chai";
+import { UIUtils } from "../../../ui-test-utils/ui-utils";
 
 export const peripheralListContainer: By = By.css(
   `[data-test='Peripheral-List']`,
@@ -79,4 +81,34 @@ export async function signalDeleteButton(signalName: string): Promise<By> {
 
 export async function signalPeripheralBlock(signalName: string): Promise<By> {
   return By.css(`[data-test='peripheral-block-${signalName}']`);
+}
+
+/**
+ * Assigns a peripheral to a specified core in the UI and verifies the assignment by checking the displayed checkmark.
+ *
+ * @param view - The WebView instance representing the current UI context.
+ * @param peripheralConfig - An object containing:
+ *  @property peripheral - The name of the peripheral to assign (e.g., "CAN0").
+ *  @property core - The name of the core to assign the peripheral to (e.g., "arm_cortex").
+ * @returns A Promise that resolves when the assignment and verification are complete.
+ */
+export async function assignPeripheralToCore(
+  view: WebView,
+  peripheralConfig: {
+    peripheral: string;
+    coreProjectId: string;
+    core: string;
+  },
+): Promise<void> {
+  const { peripheral, core, coreProjectId } = peripheralConfig;
+  await UIUtils.clickElement(view, `allocate-${peripheral}-button`);
+  await UIUtils.clickElement(view, `core-${coreProjectId}`);
+  const peripheralAssignedToCore = await UIUtils.dataTest(
+    view,
+    `core-${coreProjectId}`,
+  );
+  const coreName = await peripheralAssignedToCore.getText();
+  expect(
+    `Peripheral '${peripheral}' not found for core '${coreName}'`,
+  ).to.include(core);
 }

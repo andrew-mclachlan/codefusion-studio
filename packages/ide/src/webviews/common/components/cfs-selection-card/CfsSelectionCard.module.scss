@@ -50,11 +50,12 @@
 
 		.end {
 			display: flex;
+			align-items: center;
 			gap: 6px;
-			padding: 16px 16px 0 16px;
+			padding: 16px;
 
 			.icon {
-				display: flex;
+				display: none;
 				justify-content: center;
 				align-items: center;
 				width: 20px;
@@ -63,7 +64,7 @@
 				&.interactable {
 					svg {
 						path {
-							fill: colors.$default-foreground;
+							fill: colors.$icon-foreground;
 						}
 					}
 				}
@@ -81,6 +82,10 @@
 						transform: rotate(180deg);
 					}
 				}
+			}
+
+			.show {
+				display: flex;
 			}
 		}
 	}

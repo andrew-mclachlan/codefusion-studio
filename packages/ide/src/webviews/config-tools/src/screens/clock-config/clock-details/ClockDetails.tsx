@@ -34,7 +34,7 @@ import {
 } from '../../../utils/node-error';
 import {
 	ShortDescErrors,
-	TControlTypes
+	type TControlTypes
 } from '@common/types/errorTypes';
 import {useEvaluateClockCondition} from '../../../hooks/use-evaluate-clock-condition';
 import {memo, useMemo} from 'react';
@@ -91,7 +91,7 @@ function ClockDetails({
 	}, [clockControls, activeClockNodeDetails]);
 
 	const aggregatedClockNodeConfig = (
-		activeClockNodeDetails.ConfigUIOrder || []
+		activeClockNodeDetails.ConfigUIOrder ?? []
 	)
 		.filter(controlId => formattedControls[controlId])
 		.map(controlId => {

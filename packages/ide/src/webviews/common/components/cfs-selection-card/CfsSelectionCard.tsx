@@ -110,20 +110,14 @@ function CfsSelectionCard({
 					<div className={styles.title}>{titleSlot}</div>
 					{Boolean(endSlot.length) && (
 						<div className={styles.end} onClick={handleCardEndClick}>
-							{contentSlot.length ? (
-								<>
-									{endSlot}
-									<span
-										className={`${styles.icon} ${styles.interactable} ${isExpanded ? styles.expanded : null}`}
-										data-test={`${testId}:endSlot:icon`}
-										onClick={handleAccordionExpansion}
-									>
-										<DownArrow width='10' height='8' />
-									</span>
-								</>
-							) : (
-								endSlot
-							)}
+							{endSlot}
+							<span
+								className={`${styles.icon} ${contentSlot.length && !alwaysShowContent && styles.show} ${styles.interactable} ${isExpanded ? styles.expanded : null}`}
+								data-test={`${testId}:endSlot:icon`}
+								onClick={handleAccordionExpansion}
+							>
+								<DownArrow width='10' height='8' />
+							</span>
 						</div>
 					)}
 				</section>

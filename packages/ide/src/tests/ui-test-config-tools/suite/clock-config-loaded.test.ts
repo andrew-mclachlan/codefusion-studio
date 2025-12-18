@@ -26,7 +26,7 @@ import {
   Workbench,
 } from "vscode-extension-tester";
 
-import { UIUtils } from "../config-tools-utility/config-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import {
   accordion,
   backButton,
@@ -36,7 +36,12 @@ import {
   toggle,
 } from "../page-objects/clock-config-section/clock-config-screen";
 import { clockTab } from "../page-objects/main-menu";
-import { getConfigPathForFile, parseJSONFile } from "../config-tools-utility/cfsconfig-utils";
+import {
+  getConfigPathForFile,
+  parseJSONFile,
+} from "../config-tools-utility/cfsconfig-utils";
+import { exec } from "child_process";
+import path from "path";
 
 /*
   * Feature: System Planner clock configuration diagram for frequencies used by different peripherals
@@ -91,7 +96,7 @@ describe("System Planner clock configuration for already loaded pins", () => {
     await UIUtils.sleep(3000);
   });
 
-  it("1.Should display the clock screen correctly for a pre-configured file", async () => {
+  it("Should display the clock screen correctly for a pre-configured file", async () => {
     await browser.openResources(configPath);
     workbench = new Workbench();
     view = new WebView();
@@ -109,8 +114,7 @@ describe("System Planner clock configuration for already loaded pins", () => {
     ).to.be.true;
 
     // ===And I click on the "clock" navigation tab===
-    await UIUtils.clickElement(view, clockTab);
-
+    await UIUtils.clickElement(view, clockTab, 5000, 5);
     // === Then click on the MUX accordion and select the LPM node===
     await UIUtils.clickElement(view, accordion("MUX"));
     await UIUtils.clickElement(view, muxType("LPM"));
@@ -223,5 +227,16 @@ describe("System Planner clock configuration for already loaded pins", () => {
       clockNodeNamesAndValues.filter((node: any) => node.name === "DMA"),
       "DMA peripheral is not present in config",
     ).to.be.empty;
+
+    // Teardown - reset cfsconfig files //
+    exec(
+      `git checkout ${path.join(
+        "src",
+        "tests",
+        "ui-test-config-tools",
+        "fixtures",
+        "max32690-wlp.cfsconfig",
+      )}`,
+    );
   }).timeout(120000);
 });

@@ -13,11 +13,7 @@
  *
  */
 
-import {
-	Badge,
-	MultiSelect,
-	type MultiSelectOption
-} from 'cfs-react-library';
+import {MultiSelect, type MultiSelectOption} from 'cfs-react-library';
 import styles from './AssignedCores.module.scss';
 import {type PartitionCore} from '../../../state/slices/partitions/partitions.reducer';
 import {CorePermissions} from '../core-permissions/core-permissions';
@@ -33,6 +29,7 @@ import {
 	useActivePartitionProjects,
 	useActivePartitionType
 } from '../../../state/slices/partitions/partitions.selector';
+import ProjectOption from '../../../components/project-option/project-option';
 
 type AssignedCoresSectionProps = Readonly<{
 	errors: {
@@ -45,61 +42,71 @@ type AssignedCoresSectionProps = Readonly<{
 	onCoreChange: (cores: PartitionCore[]) => void;
 }>;
 
+// Get the cores that can access this memory type
+function getOptionsFromProjects(
+	projects: ProjectInfo[] | undefined,
+	memoryType: string
+) {
+	if (!projects || projects?.length === 0) {
+		return [];
+	}
+
+	const socCores = getSocCoreList();
+
+	return projects
+		?.filter(project => {
+			const socCore = socCores.find(
+				core => core.Id === project.CoreId
+			);
+
+			return socCore?.Memory.some(
+				memory => 'Type' in memory && memory.Type === memoryType
+			);
+		})
+		.map(project => ({
+			label: <ProjectOption project={project} />,
+			value: project.ProjectId,
+			coreId: project.CoreId
+		}));
+}
+
+function formatDropdownText(assignedCores: PartitionCore[]) {
+	if (assignedCores.length === 0) {
+		return 'Select projects';
+	}
+
+	if (assignedCores.length === 1) {
+		return assignedCores[0].label;
+	}
+
+	return `${assignedCores.length} Projects Selected`;
+}
+
 export function AssignedCoresSection({
 	errors,
 	onCoreChange
 }: AssignedCoresSectionProps) {
 	const i10n: TLocaleContext | undefined =
 		useLocaleContext()?.memory?.['user-partition'];
-	const socCores = getSocCoreList();
 	const projects = getProjectInfoList();
-	const assignedCores = useActivePartitionProjects() ?? [];
+	const activePartitionProjects = useActivePartitionProjects();
 	const memoryType = useActivePartitionType() ?? '';
 
-	const sortedCores = [...assignedCores].sort((a, b) =>
-		a.projectId.localeCompare(b.projectId)
+	const assignedCores = useMemo(() => {
+		if (activePartitionProjects === undefined) {
+			return [];
+		}
+
+		return activePartitionProjects;
+	}, [activePartitionProjects]);
+
+	const sortedCores = useMemo(
+		() =>
+			[...assignedCores].sort((a, b) =>
+				a.projectId.localeCompare(b.projectId)
+			),
+		[assignedCores]
 	);
-
-	const formatDropdownText = () => {
-		if (assignedCores.length === 0) {
-			return 'Select cores';
-		}
-
-		if (assignedCores.length === 1) {
-			return assignedCores[0].label;
-		}
-
-		return `${assignedCores.length} Cores Selected`;
-	};
-
-	// Get the cores that can access this memory type
-	const optionsFromProjects = (projects: ProjectInfo[] | undefined) =>
-		projects
-			?.filter(project => {
-				const socCore = socCores.find(
-					core => core.Id === project.CoreId
-				);
-
-				return socCore?.Memory.some(
-					memory => 'Type' in memory && memory.Type === memoryType
-				);
-			})
-			.map(project => ({
-				label: (
-					<div>
-						{project.Description}&nbsp;
-						{project.Secure ? (
-							<Badge appearance='secondary'>S</Badge>
-						) : project.Secure === false ? (
-							<Badge appearance='secondary'>NS</Badge>
-						) : (
-							''
-						)}
-					</div>
-				),
-				value: project.ProjectId,
-				coreId: project.CoreId
-			})) ?? [];
 
 	const chipText = useMemo(() => {
 		if (assignedCores.length !== 1) {
@@ -117,21 +124,38 @@ export function AssignedCoresSection({
 		}
 	}, [assignedCores, projects]);
 
+	const formattedDropdownText = useMemo(
+		() => formatDropdownText(assignedCores),
+		[assignedCores]
+	);
+
+	const optionsFromProjects = useMemo(
+		() => getOptionsFromProjects(projects, memoryType),
+		[projects, memoryType]
+	);
+
+	const initialSelectedOptions = useMemo(
+		() =>
+			getOptionsFromProjects(
+				projects?.filter(core =>
+					assignedCores.some(c => c.projectId === core.ProjectId)
+				),
+				memoryType
+			),
+		[projects, memoryType, assignedCores]
+	);
+
 	return (
 		<div className={styles.section}>
 			<h3>{i10n?.['assigned-cores']?.label}</h3>
 			<MultiSelect
 				error={errors?.cores}
-				disabled={!optionsFromProjects(projects).length}
-				dropdownText={formatDropdownText()}
-				options={optionsFromProjects(projects)}
+				disabled={!optionsFromProjects?.length}
+				dropdownText={formattedDropdownText}
+				options={optionsFromProjects}
 				dataTest='assigned-cores-multiselect'
 				chipText={chipText}
-				initialSelectedOptions={optionsFromProjects(
-					projects?.filter(core =>
-						assignedCores.some(c => c.projectId === core.ProjectId)
-					)
-				)}
+				initialSelectedOptions={initialSelectedOptions}
 				onSelection={(selectedCores: MultiSelectOption[]) => {
 					onCoreChange(
 						selectedCores.map(core => {

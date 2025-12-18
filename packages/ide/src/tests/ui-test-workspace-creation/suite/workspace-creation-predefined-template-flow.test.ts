@@ -21,7 +21,7 @@ import { expect } from "chai";
 import { WebView, Workbench, By, VSBrowser } from "vscode-extension-tester";
 
 import { Locatorspaths } from "../pageElements/pageobjects";
-import { UIUtils } from "../utility-workspace/workspace-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import { TextData } from "../pageElements/text-data";
 import * as os from "os";
 import { existsSync } from "node:fs";
@@ -138,7 +138,7 @@ describe("Workspace MAX32690 creation", () => {
     console.log("Template name:", templateName);
     expect(templateName).to.include("com.analog.zephyr.workspace.blinky");
 
-    await blinkyTemplate.click();
+    await UIUtils.clickElement(view, blinkyTemplate);
     console.log("Clicked on blinky template");
     await UIUtils.sleep(3000);
 
@@ -184,12 +184,12 @@ describe("Workspace MAX32690 creation", () => {
 
     console.log("Sent workspace name to input element");
 
-    const createwsBtn = await view.findWebElement(
+    const createwsBtn = await UIUtils.findWebElement(view,
       By.xpath('//*[@id="root"]/div/div[3]/div/div/vscode-button[2]'),
     );
 
     console.log("Found create workspace button");
-    await createwsBtn.click();
+    await UIUtils.clickElement(view, createwsBtn);
     console.log("Clicked on create workspace button");
     await UIUtils.sleep(5000);
 

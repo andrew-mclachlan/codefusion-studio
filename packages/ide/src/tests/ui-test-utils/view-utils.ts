@@ -70,14 +70,9 @@ export async function getNotificationByMessage(
   const notifications = await notificationCenter.getNotifications(
     NotificationType.Info,
   );
-
-  for (const notification of notifications) {
-    // eslint-disable-next-line no-await-in-loop
-    const foundMessage = await notification.getMessage();
-    if (foundMessage === message) {
-      return notification;
-    }
-  }
-
-  return null;
+  const messages = await Promise.all(
+    notifications.map((notification) => notification.getMessage()),
+  );
+  const matchIndex = messages.findIndex((msg) => msg === message);
+  return matchIndex === -1 ? null : notifications[matchIndex];
 }

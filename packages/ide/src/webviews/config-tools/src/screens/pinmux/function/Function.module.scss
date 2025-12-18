@@ -89,6 +89,10 @@
 	--design-unit: 3;
 	vscode-button {
 		border: 1px solid transparent;
+
+		&:disabled {
+			cursor: default;
+		}
 	}
 
 	path {

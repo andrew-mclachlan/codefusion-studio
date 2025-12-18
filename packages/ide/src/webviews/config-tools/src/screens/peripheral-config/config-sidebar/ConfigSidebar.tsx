@@ -15,7 +15,8 @@
 import {CfsSuspense, SlidingPanel} from 'cfs-react-library';
 import {
 	useActivePeripheral,
-	useActiveSignal
+	useActiveSignal,
+	useSignalProjectId
 } from '../../../state/slices/peripherals/peripherals.selector';
 import {
 	setActivePeripheral,
@@ -32,8 +33,8 @@ import {useMemo} from 'react';
 import {getControlsForProjectIds} from '../../../utils/api';
 import {CONTROL_SCOPES} from '../../../constants/scopes';
 import {getIsExternallyManagedProyect} from '../../../utils/config';
-import PeripheralError from '../peripheral-error/peripheral-error';
-import {usePeripheralErrorCount} from '../../../state/slices/app-context/appContext.selector';
+import ErrorCount from './error-count/error-count';
+import useProjectPeripheralErrorCount from '../../../hooks/use-project-peripheral-error-count';
 
 type ConfigSidebarProps = {
 	readonly isMinimised: boolean;
@@ -41,16 +42,22 @@ type ConfigSidebarProps = {
 
 function ConfigSidebar({isMinimised}: ConfigSidebarProps) {
 	const dispatch = useAppDispatch();
-	const [activePeripheral, projectId] =
+	const [activePeripheral, peripheralProjectId] =
 		useActivePeripheral(true)?.split(':') ?? [];
 	const activeSignal = useActiveSignal();
 	const signalName = activeSignal?.split(' ')[1] ?? '';
-	const peripheralName = activeSignal?.split(' ')[0] ?? '';
+	const peripheralName =
+		activeSignal?.split(' ')[0] ?? activePeripheral;
 	// If both are active, signal takes precedence
 	const activeConfig = activeSignal ?? activePeripheral;
-	const errorCount =
-		usePeripheralErrorCount(peripheralName || activePeripheral) || 0;
-
+	const projectIdForErrors =
+		useSignalProjectId(peripheralName, signalName ?? '') ||
+		peripheralProjectId;
+	const errorCount = useProjectPeripheralErrorCount(
+		projectIdForErrors ?? '',
+		peripheralName,
+		signalName
+	);
 	const description =
 		activePeripheral && !signalName
 			? getSocPeripheralDictionary()[activePeripheral ?? '']
@@ -58,29 +65,26 @@ function ConfigSidebar({isMinimised}: ConfigSidebarProps) {
 			: getPeripheralSignals(peripheralName ?? '')[signalName]
 					?.description;
 
-	const isExternalllyManagedProject =
-		getIsExternallyManagedProyect(projectId);
+	const isExternalllyManagedProject = getIsExternallyManagedProyect(
+		peripheralProjectId
+	);
 
 	const controlsPromise = useMemo(
 		async () =>
-			projectId && !isExternalllyManagedProject
+			peripheralProjectId && !isExternalllyManagedProject
 				? getControlsForProjectIds(
-						[projectId],
+						[peripheralProjectId],
 						CONTROL_SCOPES.PERIPHERAL
 					)
 				: Promise.resolve({}),
-		[projectId, isExternalllyManagedProject]
+		[peripheralProjectId, isExternalllyManagedProject]
 	);
 
 	return (
 		<SlidingPanel
 			title={(activeConfig ?? '').toUpperCase()}
 			description={description}
-			errorHeader={
-				errorCount ? (
-					<PeripheralError errorCount={errorCount} />
-				) : null
-			}
+			errorHeader={<ErrorCount count={errorCount} />}
 			isMinimised={isMinimised}
 			closeSlider={() => {
 				if (activeSignal) {

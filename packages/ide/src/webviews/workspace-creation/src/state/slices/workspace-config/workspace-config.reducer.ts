@@ -23,8 +23,13 @@ import type {
 
 import {workspaceConfigInitialState} from '../../constants/workspace-config';
 import {getCatalogCoreInfo} from '../../../utils/core-list';
-import {getTrustZoneIds} from '../../../utils/workspace-config';
+import {getTrustZoneProjectIds} from '../../../utils/workspace-config';
 import type {CfsPluginInfo} from 'cfs-lib';
+
+import {
+	TRUSTZONE_SECURE_LABEL as S_LABEL,
+	TRUSTZONE_NON_SECURE_LABEL as NS_LABEL
+} from '../../../common/constants/identifiers';
 
 const WorkspaceConfigSlice = createSlice({
 	name: 'workspaceConfig',
@@ -68,7 +73,7 @@ const WorkspaceConfigSlice = createSlice({
 				state.cores[payload.id].platformConfig = platformConfig;
 			}
 		},
-		resetCorePlayformConfig(
+		resetCorePlatformConfig(
 			state,
 			{
 				payload
@@ -87,21 +92,23 @@ const WorkspaceConfigSlice = createSlice({
 						name,
 						isPrimary,
 						dataModelCoreID,
-						supportsTrustZone
+						isTrustZoneSupported
 					} = getCatalogCoreInfo(state.socId, id) ?? {};
 
-					state.cores[id] = {
+					const newCore: WorkspaceConfigState['cores'][string] = {
 						id,
 						coreId: dataModelCoreID ?? '',
 						pluginId: '',
 						pluginVersion: '',
 						name,
 						isPrimary,
-						supportsTrustZone,
+						isTrustZoneSupported: isTrustZoneSupported ?? false, // Here we don't need to add "Secure" key because this is the core in state on first init
 						// enable primary core by default
 						isEnabled: Boolean(isPrimary),
 						platformConfig: {}
 					};
+
+					state.cores[id] = newCore;
 				}
 			});
 		},
@@ -114,49 +121,19 @@ const WorkspaceConfigSlice = createSlice({
 			}
 
 			state.cores[coreId].isEnabled = !state.cores[coreId].isEnabled;
-
-			// Handles TrustZone core and base core syncing (when both the secure/non-secure is unchecked, base core should be disabled))
-			const isTrustZoneCore =
-				coreId.endsWith('-secure') || coreId.endsWith('-nonsecure');
-
-			if (isTrustZoneCore) {
-				const baseId = coreId.replace(/-(secure|nonsecure)$/, '');
-				const {secureCoreId, nonSecureCoreId} =
-					getTrustZoneIds(baseId);
-
-				// Check if TrustZone is enabled for this base core
-				const isTrustZoneEnabled =
-					state.isTrustZoneEnabled?.[baseId] || false;
-
-				if (isTrustZoneEnabled) {
-					const isSecureEnabled =
-						state.cores[secureCoreId]?.isEnabled || false;
-					const isNonSecureEnabled =
-						state.cores[nonSecureCoreId]?.isEnabled || false;
-					const shouldBaseBeEnabled =
-						isSecureEnabled || isNonSecureEnabled;
-
-					if (
-						state.cores[baseId] &&
-						state.cores[baseId].isEnabled !== shouldBaseBeEnabled
-					) {
-						state.cores[baseId].isEnabled = shouldBaseBeEnabled;
-					}
-				}
-			}
 		},
 		removeSelectedCores(state, action: PayloadAction<string[]>) {
 			const coreIdsToRemove = new Set(action.payload);
 
-			state.cores = Object.keys(state.cores).reduce(
-				(acc, coreId) => {
-					if (!coreIdsToRemove.has(coreId)) {
-						acc[coreId] = state.cores[coreId];
-					}
-					return acc;
-				},
-				{} as typeof state.cores
-			);
+			state.cores = Object.keys(state.cores).reduce<
+				typeof state.cores
+			>((acc, coreId) => {
+				if (!coreIdsToRemove.has(coreId)) {
+					acc[coreId] = state.cores[coreId];
+				}
+
+				return acc;
+			}, {});
 		},
 		setWorkspaceTemplateType(
 			state,
@@ -202,81 +179,100 @@ const WorkspaceConfigSlice = createSlice({
 		setCurrentCoreConfigStep(state, action: PayloadAction<number>) {
 			state.currentCoreConfigStep = action.payload;
 		},
-		addOrUpdateTrustZoneCores(
+		addProjects(
 			state,
 			{
 				payload
 			}: PayloadAction<{
 				baseId: string;
-				secureEnabled: boolean;
-				nonSecureEnabled: boolean;
 			}>
 		) {
-			const {baseId, secureEnabled, nonSecureEnabled} = payload;
+			// This action adds TrustZone projects (Secure and Non-Secure) for a given base core (and removes the base core), but can be expanded to other project types
+			const {baseId} = payload;
 			const baseCore = state.cores[baseId];
 			if (!baseCore) return;
 
-			const secureId = `${baseId}-secure`;
-			const nonSecureId = `${baseId}-nonsecure`;
+			const {secureProjectId, nonSecureProjectId} =
+				getTrustZoneProjectIds(baseId);
 
-			// Add or update secure core
-			const secureCore = {
-				...baseCore,
-				id: secureId,
-				name: `${baseCore.name} (Secure)`,
-				Secure: true,
-				isEnabled: secureEnabled
-			};
+			const cores: typeof state.cores = {};
 
-			// Add or update non-secure core
-			const nonSecureCore = {
-				...baseCore,
-				id: nonSecureId,
-				name: `${baseCore.name} (Non-Secure)`,
-				Secure: false,
-				isEnabled: nonSecureEnabled
-			};
-
-			// Rebuild the cores object with secure/non-secure inserted after baseId
-			const newCores: typeof state.cores = {};
-
-			for (const key of Object.keys(state.cores)) {
-				newCores[key] = state.cores[key];
-
-				if (key === baseId) {
-					newCores[secureId] = secureCore;
-					newCores[nonSecureId] = nonSecureCore;
+			for (const coreId of Object.keys(state.cores)) {
+				if (coreId === baseId) {
+					[
+						{id: secureProjectId, suffix: S_LABEL},
+						{id: nonSecureProjectId, suffix: NS_LABEL}
+					].forEach(({id, suffix}) => {
+						cores[id] = {
+							id,
+							coreId: baseCore.coreId,
+							name: baseCore.name,
+							isPrimary: baseCore.isPrimary,
+							Secure: suffix === S_LABEL,
+							isEnabled: baseCore.isEnabled,
+							platformConfig: {},
+							pluginId: '',
+							pluginVersion: '',
+							isTrustZoneSupported: baseCore.isTrustZoneSupported
+						};
+					});
+				} else {
+					cores[coreId] = state.cores[coreId];
 				}
 			}
 
-			state.cores = newCores;
+			state.cores = cores;
 		},
-		removeTrustZoneCores(
+		toggleProjects(
+			state,
+			{
+				payload
+			}: PayloadAction<{
+				projectIds: string[];
+				isChecked: boolean;
+			}>
+		) {
+			const {projectIds, isChecked} = payload;
+
+			projectIds.forEach(projectId => {
+				if (state.cores[projectId]) {
+					state.cores[projectId].isEnabled = isChecked;
+				}
+			});
+		},
+		removeProjects(
 			state,
 			{payload}: PayloadAction<{baseId: string}>
 		) {
 			const {baseId} = payload;
-			const {secureCoreId, nonSecureCoreId} = getTrustZoneIds(baseId);
+			const {secureProjectId, nonSecureProjectId} =
+				getTrustZoneProjectIds(baseId);
 
 			const {
-				[secureCoreId]: _secure,
-				[nonSecureCoreId]: _nonSecure,
+				[secureProjectId]: _secure,
+				[nonSecureProjectId]: _nonSecure,
 				...remainingCores
 			} = state.cores;
 
-			state.cores = remainingCores;
-		},
-		setIsTrustZoneEnabled(
-			state,
-			action: PayloadAction<{id: string; enabled: boolean}>
-		) {
-			const {id, enabled} = action.payload;
-			state.isTrustZoneEnabled[id] = enabled;
+			// Replace the trust zone projects with the base core
+			const {name, isPrimary, dataModelCoreID, isTrustZoneSupported} =
+				getCatalogCoreInfo(state.socId, baseId) ?? {};
 
-			// When TrustZone is enabled, ensure the base core is enabled
-			if (enabled && state.cores[id]) {
-				state.cores[id].isEnabled = true;
-			}
+			const baseCore: WorkspaceConfigState['cores'][string] = {
+				id: baseId,
+				coreId: dataModelCoreID ?? '',
+				pluginId: '',
+				pluginVersion: '',
+				name,
+				isPrimary,
+				isTrustZoneSupported: isTrustZoneSupported ?? false,
+				isEnabled: Boolean(isPrimary),
+				platformConfig: {}
+			};
+
+			remainingCores[baseId] = baseCore;
+
+			state.cores = remainingCores;
 		}
 	}
 });
@@ -288,7 +284,7 @@ export const {
 	setCoreConfig,
 	toggleCoreEnabled,
 	removeSelectedCores,
-	resetCorePlayformConfig,
+	resetCorePlatformConfig,
 	setCoreToConfigId,
 	setWorkspaceTemplate,
 	setWorkspaceTemplateType,
@@ -296,9 +292,9 @@ export const {
 	setWorkspaceName,
 	setWorkspacePath,
 	setCurrentCoreConfigStep,
-	addOrUpdateTrustZoneCores,
-	removeTrustZoneCores,
-	setIsTrustZoneEnabled
+	addProjects,
+	removeProjects,
+	toggleProjects
 } = WorkspaceConfigSlice.actions;
 
 export const workspaceConfigReducer = WorkspaceConfigSlice.reducer;

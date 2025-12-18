@@ -30,7 +30,7 @@ type ConfigurationFormProps = Readonly<{
 	errors?: Record<string, string>;
 	resetValues: Record<string, TFormFieldValue>;
 	onControlChange: (fieldId: string, value: TFormFieldValue) => void;
-	onReset?: (controls: TFormControl[]) => void;
+	onReset?: () => void;
 	testId?: string;
 	emptyMessage?: string;
 }>;
@@ -70,14 +70,17 @@ function ConfigurationForm({
 				);
 			}
 
-			if ((control.type === 'integer') && (control.base === 'Hexadecimal')) {
+			if (
+				control.type === 'integer' &&
+				control.base === 'Hexadecimal'
+			) {
 				map[control.id] = (
 					<HexInputField
 						dataTest={`${control.id}-hex-input`}
 						value={data[control.id] as string}
 						error={errors?.[control.id]}
-						onValueChange={(hexValue) => {
-								onControlChange(control.id, hexValue);
+						onValueChange={hexValue => {
+							onControlChange(control.id, hexValue);
 						}}
 					/>
 				);
@@ -127,9 +130,9 @@ function ConfigurationForm({
 					<label
 						className={styles.reset}
 						data-test={`${testId}:reset-to-default`}
-						onClick={() => {
-							onReset(controls);
-						}}
+						// NOTE: Reset should be handled by the parent component,
+						// since some parts of the controls may be hidden or not passed down.
+						onClick={onReset}
 					>
 						Reset to default
 					</label>

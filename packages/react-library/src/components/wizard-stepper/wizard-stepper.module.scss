@@ -81,9 +81,12 @@
 
 	.substepTitle {
 		@include fonts.body-b3;
+		flex-grow: 1;
 	}
 
 	.substepBadges {
+		display: flex;
+		gap: 2px;
 		flex-grow: 1;
 	}
 }

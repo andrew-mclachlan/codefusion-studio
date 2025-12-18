@@ -17,7 +17,7 @@ import styles from './error.module.scss';
 import {VSCodeLink} from '@vscode/webview-ui-toolkit/react';
 import {useLocaleContext} from '../../../../common/contexts/LocaleContext';
 import ConflictIcon from '../../../../common/icons/Conflict';
-import {TLocaleContext} from '../../../../common/types/l10n';
+import type {TLocaleContext} from '../../../../common/types/l10n';
 import ViewDocumentationIcon from '../../../../common/icons/view-documentation';
 
 export type MissingPlugins = Array<{id: string; version: string}>;
@@ -52,7 +52,7 @@ function MissingPluginsError({plugins}: MissingPluginsErrorProps) {
 				{multipleErrors && (
 					<div className={styles.errorList}>
 						{plugins.map(p => (
-							<div>{`- ${p.id} ${p.version}`}</div>
+							<div key={p.id}>{`- ${p.id} ${p.version}`}</div>
 						))}
 					</div>
 				)}

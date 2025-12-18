@@ -1,7 +1,7 @@
 ---
 description: List of supported processors
 author: Analog Devices
-date: 2025-09-24
+date: 2025-12-1
 ---
 
 # Supported processors
@@ -16,7 +16,8 @@ Microcontroller Software Development Kit (MSDK) processors support bare-metal pr
 |----------------------------------------------------------------|---------------------|--------|--------------------|---------------|---------------------------------------------------|
 | [MAX32650](https://www.analog.com/en/products/max32650.html)   | Yes                 | Yes    | Yes                | No            | Yes                                               |
 | [MAX32655](https://www.analog.com/en/products/MAX32655.html)   | Yes                 | Yes    | Yes                | No            | Partial                                           |
-| MAX32657                                                       | No                  | Yes    | Yes                | Yes           | Yes                                               |
+| [MAX32657](https://www.analog.com/en/products/MAX32657.html)   | No                  | Yes    | Yes                | Yes           | Yes                                               |
+| [MAX32658](https://www.analog.com/en/products/MAX32658.html)   | No                  | Yes    | Yes                | No            | Yes*                                              |
 | [MAX32660](https://www.analog.com/en/products/max32660.html)   | Yes                 | Yes    | No                 | No            | No                                                |
 | [MAX32662](https://www.analog.com/en/products/max32662.html)   | Yes                 | Yes    | No                 | No            | Partial                                           |
 | [MAX32666](https://www.analog.com/en/products/max32666.html)   | No                  | Yes    | No                 | No            | No                                                |
@@ -46,3 +47,4 @@ W variants (automotive-grade) are listed as separate plugin entries in CodeFusio
 [^cfg]: Indicates support for configuration flows in System Planner. **Yes** = Full support,  **Partial** = Pin Mux only, **No** = Not supported.
 [^ai]: Indicates AI Tools support in CodeFusion Studio, including model integration and advanced analysis for embedded AI applications. For details on supported AI model formats see [supported processors and model formats](../ai-tools/supported-ai-model-formats.md).
 [^tesa]: TESA security support: **Yes** = Full TESA support including UCL and USS, **Partial** = UCL support only, **No** = Not supported.
+\* For MAX32658, use the MAX32657 USS and UCL examples.

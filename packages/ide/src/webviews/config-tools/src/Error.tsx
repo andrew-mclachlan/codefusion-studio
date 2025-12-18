@@ -14,10 +14,10 @@
  */
 import {LocalizationProvider} from '../../common/contexts/LocaleContext';
 import DataModelError, {
-	DataModel
+	type DataModel
 } from './screens/error/data-model-error';
 import MissingPluginsError, {
-	MissingPlugins
+	type MissingPlugins
 } from './screens/error/missing-plugins-error';
 import UnknownError from './screens/error/unknown-error';
 
@@ -27,7 +27,7 @@ export type WebviewError = {
 };
 
 type ErrorViewProps = {
-	error: WebviewError;
+	readonly error: WebviewError;
 };
 
 function ErrorView({error}: ErrorViewProps) {

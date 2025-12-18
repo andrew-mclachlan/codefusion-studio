@@ -2,6 +2,18 @@
 
 # Release Notes
 
+## 2.0.1
+
+### ✨ New Features
+- Added support for the MAX32658 SoC, including System Planner integration, Zephyr support, and TESA security configuration.
+- Added Zephyr 4.3.0 support for MAX32657 and MAX32658.
+
+### 📦 Workspace Templates
+- Added 16 new MSDK and Zephyr workspace templates.
+
+### 🐞 Bug fixes, Minor Improvements
+- General stability and performance improvements across project setup, AI Tools, System Planner, and Package Manager workflows.
+
 ## 2.0.0
 
 ## ⛔ Breaking Changes

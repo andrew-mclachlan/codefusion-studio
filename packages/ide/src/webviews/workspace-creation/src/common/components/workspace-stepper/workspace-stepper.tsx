@@ -37,7 +37,7 @@ export default function WorkspaceStepper() {
 	const {packageId, boardId} = useSelectedBoardPackage();
 	const selectedTemplate = useWorkspaceTemplate();
 	const selectedCoresObject = useSelectedCores();
-	const {name, path, templateType} = useWorkspaceConfig();
+	const {name, templateType} = useWorkspaceConfig();
 
 	let currentStep = activeScreen;
 	const isPredefined = templateType === 'predefined';
@@ -47,40 +47,37 @@ export default function WorkspaceStepper() {
 	const stepItems: StepItem[] = useMemo(() => {
 		// Descriptions for some of the steps
 		const boardDesc =
-			boardId && packageId
-				? `${boardId} & ${packageId}`
-				: packageId || '';
+			boardId && packageId ? `${boardId} & ${packageId}` : packageId;
 		const optionsDesc =
 			selectedSoc &&
 			packageId &&
 			(isPredefined
-				? selectedTemplate?.pluginName || selectedTemplate?.pluginId
+				? (selectedTemplate?.pluginName ?? selectedTemplate?.pluginId)
 				: 'Manual Configuration');
 
-		let steps: StepItem[] = initializeSteps(
+		const steps: StepItem[] = initializeSteps({
 			navigationItems,
 			isPredefined,
-			selectedCoresObject,
-			name,
+			cores: selectedCoresObject,
+			workspaceName: name,
 			isSingleCore,
-			{
+			context: {
 				selectedSoc,
 				boardDesc,
 				optionsDesc
 			}
-		);
+		});
 
 		return steps;
 	}, [
-		activeScreen,
 		selectedSoc,
 		boardId,
 		packageId,
 		selectedTemplate,
 		selectedCoresObject,
 		name,
-		path,
-		templateType
+		isPredefined,
+		isSingleCore
 	]);
 
 	const getCurrentStepIndex = useMemo(() => {
@@ -89,13 +86,13 @@ export default function WorkspaceStepper() {
 		);
 
 		return activeStepIndex;
-	}, [stepItems]);
+	}, [stepItems, currentStep]);
 
 	return (
 		<StepList
 			steps={stepItems}
 			activeStepIndex={getCurrentStepIndex}
-			onStepClick={() => void 0}
+			onStepClick={() => undefined}
 		/>
 	);
 }

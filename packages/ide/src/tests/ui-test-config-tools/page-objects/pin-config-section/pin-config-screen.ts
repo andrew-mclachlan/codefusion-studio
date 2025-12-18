@@ -13,12 +13,14 @@
  *
  */
 
-import { By } from "vscode-extension-tester";
+import { By, WebView } from "vscode-extension-tester";
+import { expect } from "chai";
+import { UIUtils } from "../../../ui-test-utils/ui-utils";
 
 export const searchField: By = By.css(`#control-input`);
 export const assignedPinsList: By = By.css("#peripheral-navigation > section");
 export const pinDetailsContainer: By = By.css("#details-container");
-export const configButton: By = By.css("#config");
+export const configButton: By = By.css("[class^='_configButtonContainer_']");
 export const pinTooltipTitle: By = By.css(
   "#pin-details-title > div:first-of-type > h3:first-of-type",
 );
@@ -72,4 +74,28 @@ export async function mainPanelPinOnLineAndColumn(
   return By.css(
     `#pin-rows-container > div:nth-child(${lineIndex}) > div:nth-child(${columnIndex}) > div:nth-child(1)`,
   );
+}
+
+/**
+ * Assigns a peripheral pin to a signal in the UI and verifies the assignment by checking the 'data-checked' attribute.
+ *
+ * @param view - The WebView instance representing the current UI context.
+ * @param pinconfig - An object containing:
+ *   @property peripheral - The name of the peripheral to assign (e.g., "OWM").
+ *   @property signal - The name of the signal to assign the peripheral to (e.g., "OWM-IO").
+ * @returns A Promise that resolves when the assignment and verification are complete.
+ */
+export async function assignPinToSignal(
+  view: WebView,
+  pinconfig: {
+    peripheral: string;
+    signal: string;
+  },
+): Promise<void> {
+  const { peripheral, signal } = pinconfig;
+  await UIUtils.clickElement(view, `accordion:${peripheral}`);
+  const pinValue = await (
+    await UIUtils.clickElement(view, `${signal}-span`)
+  ).getAttribute("data-checked");
+  expect(pinValue).to.equal("true");
 }

@@ -20,7 +20,6 @@ class CfsaiIzerExtensions(BaseModel):
     Izer extensions type.
 
     Attributes:
-        section: Optional memory section to map data. Default is `None`.
         softmax: Enable softmax layer generation. Default is False
         verbose: Enable verbose output. Default is False
         timer: Specify timer for measurements the inference time(e.g., 0-3).
@@ -35,12 +34,6 @@ class CfsaiIzerExtensions(BaseModel):
             space. Default is True.
         riscv: Use RISC-V processor. Default is False
     """
-    section: Optional[str] = Field(
-        alias='Section', default=None,
-        description="Optional memory section to map data. Note: ai8xize.py " \
-        "may not directly use this; it could be intended for post-processing " \
-        "of generated code or if ai8xize.py is extended."
-    )
     # Fields from previous example, retained and potentially enhanced
     softmax: bool = Field(
         alias='Softmax', default=False,

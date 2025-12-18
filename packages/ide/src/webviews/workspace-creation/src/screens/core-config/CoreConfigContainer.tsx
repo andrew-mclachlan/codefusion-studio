@@ -36,7 +36,7 @@ import {
 import type {CfsPluginInfo} from 'cfs-lib';
 import {useAppDispatch} from '../../state/store';
 import {
-	resetCorePlayformConfig,
+	resetCorePlatformConfig,
 	setConfigErrors
 } from '../../state/slices/workspace-config/workspace-config.reducer';
 
@@ -81,7 +81,8 @@ function CoreConfigContainer({
 			return fetchPluginProperties(selectedPluginInfo, {
 				soc: selectedSocId,
 				coreId: core.coreId,
-				boardId
+				boardId,
+				secure: core.Secure
 			});
 		}
 
@@ -117,7 +118,7 @@ function CoreConfigContainer({
 				p => p.pluginId === id && p.pluginVersion === version
 			);
 
-			dispatch(resetCorePlayformConfig({id: coreId ?? ''}));
+			dispatch(resetCorePlatformConfig({id: coreId ?? ''}));
 
 			if (targetPluginInfo) {
 				targetPluginInfo.properties?.project?.forEach(project => {

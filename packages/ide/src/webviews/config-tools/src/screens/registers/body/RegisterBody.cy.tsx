@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /**
  *
  * Copyright (c) 2024 Analog Devices, Inc.
@@ -450,7 +449,7 @@ describe('Register body component', () => {
 
 				cy.dataTest('bit-group').should('be.visible');
 
-				cy.get('[data-test="Modified"]').should('contain.text', '2');
+				cy.get('[data-test="Modified"]').should('contain.text', '1');
 
 				cy.dataTest('Modified').click();
 
@@ -503,7 +502,7 @@ describe('Register body component', () => {
 
 				cy.dataTest('bit-group').should('be.visible');
 
-				cy.get('[data-test="Modified"]').should('contain.text', '4');
+				cy.get('[data-test="Modified"]').should('contain.text', '3');
 
 				cy.dataTest('Modified').click();
 

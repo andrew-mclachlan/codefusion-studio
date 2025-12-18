@@ -32,13 +32,17 @@ import {
 	getProjectProperty
 } from './config';
 import {isCypressEnvironment} from '@common/utils/env';
-import type {AIModel, DFGStream, GasketConfig} from 'cfs-plugins-api';
+import type {
+	AIModel,
+	DFGStream,
+	GasketConfig,
+	Profiling
+} from 'cfs-plugins-api';
 import type {
 	CodeGenerationProject,
 	CodeGenerationResult
 } from 'cfs-lib/dist/types/code-generation';
 import type {AiSupportingBackend} from '../../../common/types/ai-fusion-data-model';
-import {Profiling} from 'cfs-plugins-api';
 
 export async function getSocAndCfsconfigData(): Promise<ConfigOptionsReturn> {
 	return request(

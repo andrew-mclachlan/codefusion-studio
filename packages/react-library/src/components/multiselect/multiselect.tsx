@@ -183,12 +183,14 @@ export default function MultiSelect({
 					)}
 				</div>
 			)}
-			<div
-				className={styles.errorMessage}
-				data-test={`${dataTest}-error`}
-			>
-				{error}
-			</div>
+			{error && (
+				<div
+					className={styles.errorMessage}
+					data-test={`${dataTest}-error`}
+				>
+					{error}
+				</div>
+			)}
 		</div>
 	);
 }

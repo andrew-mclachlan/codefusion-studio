@@ -1,7 +1,7 @@
 ---
 description: The Trusted Edge Security Architecture installer from ADI.
 author: Analog Devices
-date: 2025-10-14
+date: 2025-12-1
 ---
 
 # Trusted Edge Security Architecture (TESA)
@@ -141,12 +141,14 @@ The TESA toolkit is available on GitHub at [:octicons-link-external-24: TESA-Too
     - [:octicons-link-external-24: FTHR](https://www.analog.com/en/resources/evaluation-hardware-and-software/evaluation-boards-kits/max32650fthr.html){:target="_blank"}
     - [:octicons-link-external-24: AD-SWIOT1L-SL](https://www.analog.com/en/resources/evaluation-hardware-and-software/evaluation-boards-kits/ad-swiot1l-sl.html){:target="_blank"}
 - **MAX32657**
-    - EVKit
+    - [:octicons-link-external-24: EVKit V1](https://www.analog.com/en/products/MAX32657.html)
+- **MAX32658**
+    - [:octicons-link-external-24: EVKit V1](https://www.analog.com/en/products/MAX32658.html)
 - **MAX32670**
     - [:octicons-link-external-24: EVKit V1](https://www.analog.com/en/resources/evaluation-hardware-and-software/evaluation-boards-kits/max32670evkit.html){:target="_blank"}
 - **MAX32690**
     - [:octicons-link-external-24: AD-APARD32690-SL](https://www.analog.com/en/resources/evaluation-hardware-and-software/evaluation-boards-kits/ad-apard32690-sl.html){:target="_blank"}
     - [:octicons-link-external-24: EVKit V1](https://www.analog.com/en/resources/evaluation-hardware-and-software/evaluation-boards-kits/max32690evkit.html){:target="_blank"}
-    - [:octicons-link-external-24: FTHR](https://www.analog.com/en/resources/evaluation-hardware-and-software/evaluation-boards-kits/max32620fthr.html){:target="_blank"}
+    - [:octicons-link-external-24: FTHR](https://developer.analog.com/solutions/max32690){:target="_blank"}
     - [:octicons-link-external-24: EVAL-ADIN1110](https://www.analog.com/en/resources/evaluation-hardware-and-software/evaluation-boards-kits/eval-adin1110.html){:target="_blank"}
     - [:octicons-link-external-24: MAXQ1065EVKIT](https://www.analog.com/en/resources/evaluation-hardware-and-software/evaluation-boards-kits/maxq1065evkit.html){:target="_blank"}

@@ -1,7 +1,7 @@
 import { describe, before } from "mocha";
 import * as path from "path";
 import { By, EditorView, VSBrowser, Workbench } from "vscode-extension-tester";
-import { UIUtils } from "../utility-workspace/workspace-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 
 let workbench: Workbench;
 

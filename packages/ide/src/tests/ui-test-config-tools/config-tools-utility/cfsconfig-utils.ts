@@ -61,9 +61,9 @@ export function parseJSONFile(filePath: string): any {
   }
 
   const fileContent = fs.readFileSync(filePath, "utf-8");
-  const peripheralData = JSON.parse(fileContent);
+  const configData = JSON.parse(fileContent);
 
-  return peripheralData;
+  return configData;
 }
 
 /**
@@ -128,6 +128,24 @@ export function getPeripheralNames(peripheralData: any): string[] {
   );
   console.log("Peripheral names: ", peripheralNames);
   return peripheralNames;
+}
+
+// Calculates end address based on the JSON file StartAddress read
+export function computeEndAddress(startHex: string, size: number): string {
+  const start = parseInt(startHex, 16);
+  const end = start + size - 1;
+  return "0x" + end.toString(16).toUpperCase();
+}
+
+/**
+ * @param config - The parsed configuration object containing a ClockFrequencies property.
+ * @returns An object representing clock frequencies, or an empty object if not present.
+ */
+export function getClockFrequencies(config: any) {
+  return Object.entries(config.ClockFrequencies ?? {}).map(([name, value]) => ({
+    Name: name,
+    Value: value,
+  }));
 }
 
 export function getPartitionsByCoreId(data: any, coreId: string): any[] {

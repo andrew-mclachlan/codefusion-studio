@@ -14,6 +14,24 @@
  */
 import {type ReactNode, useLayoutEffect, useRef} from 'react';
 import styles from './tooltip.module.scss';
+import {NOTCH_POS} from '../../constants/tooltip';
+
+type NotchPos = (typeof NOTCH_POS)[keyof typeof NOTCH_POS];
+
+function computeTooltipStyling(
+	offsetPx: number,
+	top?: number,
+	bottom?: number,
+	notchPos?: NotchPos
+): React.CSSProperties {
+	return {
+		top: top ? `-${offsetPx}px` : 'unset',
+		bottom: bottom ? `-${offsetPx}px` : 'unset',
+		transform: bottom ? 'rotate(180deg)' : 'unset',
+		left: notchPos === NOTCH_POS.RIGHT ? 'unset' : '16px',
+		right: notchPos === NOTCH_POS.RIGHT ? '16px' : 'unset'
+	};
+}
 
 function CfsTooltip({
 	id,
@@ -23,17 +41,19 @@ function CfsTooltip({
 	left,
 	classNames,
 	children,
-	isShowingNotch = true
-}: {
-	readonly id: string;
-	readonly header?: ReactNode | string;
-	readonly top?: number;
-	readonly bottom?: number;
-	readonly left?: number;
-	readonly children?: ReactNode;
-	readonly classNames?: string;
-	readonly isShowingNotch?: boolean;
-}) {
+	isShowingNotch = true,
+	notchPos = NOTCH_POS.LEFT
+}: Readonly<{
+	id: string;
+	header?: ReactNode | string;
+	top?: number;
+	bottom?: number;
+	left?: number;
+	children?: ReactNode;
+	classNames?: string;
+	isShowingNotch?: boolean;
+	notchPos?: NotchPos;
+}>) {
 	const tooltipBodyRef = useRef<HTMLDivElement>(null);
 	const tooltipContainerRef = useRef<HTMLDivElement>(null);
 
@@ -69,19 +89,11 @@ function CfsTooltip({
 					<>
 						<div
 							className={styles.notchBorder}
-							style={{
-								top: top ? '-12px' : 'unset',
-								bottom: bottom ? '-12px' : 'unset',
-								transform: bottom ? 'rotate(180deg)' : 'unset'
-							}}
+							style={computeTooltipStyling(12, top, bottom, notchPos)}
 						/>
 						<div
 							className={styles.notch}
-							style={{
-								top: top ? '-11px' : 'unset',
-								bottom: bottom ? '-11px' : 'unset',
-								transform: bottom ? 'rotate(180deg)' : 'unset'
-							}}
+							style={computeTooltipStyling(11, top, bottom, notchPos)}
 						/>
 					</>
 				)}

@@ -17,7 +17,8 @@ import {
 	useRef,
 	memo,
 	type MouseEventHandler,
-	useEffect
+	useEffect,
+	useCallback
 } from 'react';
 import ZoomInIcon from '@common/icons/ZoomIn';
 import ZoomOutIcon from '@common/icons/ZoomOut';
@@ -37,7 +38,8 @@ function getComputedTranslateValues(
 
 	const translateValues = translate
 		.slice(10, translate.length - 1)
-		.split(', ');
+		.split(', ')
+		.map(val => val.replace('px', ''));
 
 	return translateValues as [string, string];
 }
@@ -58,33 +60,45 @@ function ZoomableAreaControl({
 	const startTransformY = useRef(0);
 	const isPanning = useRef(false);
 
-	const zoomIn = () => {
+	const zoomIn = useCallback(() => {
 		if (zoomableAreaRef.current) {
 			const [x, y] = getComputedTranslateValues(zoomableAreaRef);
 
-			zoomableAreaRef.current.style.transform = `scale(${zoomLevel.current + zoomStep}) translate(${x}, ${y})`;
+			zoomableAreaRef.current.style.transform = `scale(${zoomLevel.current + zoomStep}) translate(${x}px, ${y}px)`;
 
 			zoomLevel.current += zoomStep;
 
 			onZoom?.(zoomLevel.current);
 		}
-	};
+	}, [onZoom]);
 
-	const resetZoom = () => {
+	const resetZoom = useCallback(() => {
 		if (zoomableAreaRef.current && zoomableAreaParentRef.current) {
-			zoomableAreaRef.current.style.transform = `scale(1) translate(0, 0)`;
+			const parent = zoomableAreaParentRef.current;
+			const child = zoomableAreaRef.current;
+
+			// This is to temporarily reset transform to get true dimensions and not be affected by current scale
+			child.style.transform = 'scale(1) translate(0px, 0px)';
+
+			const parentRect = parent.getBoundingClientRect();
+			const childRect = child.getBoundingClientRect();
+
+			const centerX = (parentRect.width - childRect.width) / 2;
+			const centerY = (parentRect.height - childRect.height) / 2;
+
+			child.style.transform = `scale(1) translate(${centerX}px, ${centerY}px)`;
 			zoomLevel.current = 1;
-			startTransformX.current = 0;
-			startTransformY.current = 0;
+			startTransformX.current = centerX;
+			startTransformY.current = centerY;
 			startX.current = 0;
 			startY.current = 0;
 			isPanning.current = false;
-			zoomableAreaParentRef.current.style.cursor = 'default';
+			parent.style.cursor = 'default';
 			onZoom?.(zoomLevel.current);
 		}
-	};
+	}, [onZoom]);
 
-	const zoomOut = () => {
+	const zoomOut = useCallback(() => {
 		const currentZoom = zoomLevel.current;
 
 		if (currentZoom < 0.8) return;
@@ -94,13 +108,13 @@ function ZoomableAreaControl({
 
 			zoomableAreaRef.current.style.transform = `scale(${
 				currentZoom - zoomStep
-			}) translate(${x}, ${y})`;
+			}) translate(${x}px, ${y}px)`;
 		}
 
 		zoomLevel.current -= zoomStep;
 
 		onZoom?.(zoomLevel.current);
-	};
+	}, [onZoom]);
 
 	const onMouseDown: MouseEventHandler<HTMLDivElement> = e => {
 		// Enable panning using the middle mouse button or the left mouse button
@@ -176,7 +190,7 @@ function ZoomableAreaControl({
 		return () => {
 			ref?.removeEventListener('wheel', handleWheelZoom);
 		};
-	}, [onZoom]);
+	}, [zoomIn, zoomOut]);
 
 	return (
 		<>
@@ -192,7 +206,7 @@ function ZoomableAreaControl({
 					ref={zoomableAreaRef}
 					id='mcu-zoomable-area'
 					className={styles.zoomableArea}
-					style={{transform: 'scale(1) translate(0, 0)'}}
+					style={{transform: 'scale(1) translate(0px, 0px)'}}
 				>
 					{children}
 				</div>

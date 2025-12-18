@@ -20,7 +20,7 @@
 	position: absolute;
 	display: flex;
 	width: var(--tooltip-width, 200px);
-	z-index: 100;
+	z-index: var(--cfs-tooltip-z-index, layout.getZIndex('tooltip'));
 	pointer-events: none;
 
 	.tooltipLayout {

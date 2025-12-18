@@ -14,7 +14,7 @@
  */
 
 import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
-import {Zephelin} from 'cfs-plugins-api';
+import type {Zephelin} from 'cfs-plugins-api';
 
 export type ZephilinConfig = Partial<Zephelin>;
 

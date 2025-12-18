@@ -1,17 +1,17 @@
 ---
 description: Use the CFS command-line utility (cfsutil) to install, view, or remove packages in CodeFusion Studio.
 author: Analog Devices
-date: 2025-10-30
+date: 2025-12-15
 ---
 
 # Manage packages from the command line (`cfsutil`)
 
 You can use `cfsutil` to install, view, and remove packages in CodeFusion Studio as they become available.
 
-To access `cfsutil`, open a new terminal (**View > Terminal** or `Ctrl+``). Then complete the following steps:
+To access `cfsutil`, open a new terminal (**View > Terminal** or ``Ctrl+` ``). Then complete the following steps:
 
 !!! note
-    To run cfsutil from a system terminal outside VS Code, see [CFS command line utility](../../tools/cfsutil.md)
+    To run cfsutil from a system terminal outside VS Code, see [CFS command line utility](../../developer-tools/cfsutil.md).
 
 1. In the terminal panel, click the dropdown arrow next to the **+** icon.
 2. Select **CFS Terminal** from the list.
@@ -24,7 +24,7 @@ To access `cfsutil`, open a new terminal (**View > Terminal** or `Ctrl+``). Then
 ![Accessing cfsutil ](./images/access-cfs-terminal-dark.png#only-dark)
 ![Accessing cfsutil ](./images/access-cfs-terminal-light.png#only-light)
 
-For additional information see [CFS Terminal](../../workspaces/cfs-terminal.md).
+For additional information see [CFS Terminal](../../build-and-flash/cfs-terminal.md).
 
 ## Find available packages
 
@@ -128,21 +128,29 @@ cfsutil pkg uninstall <name>
 
 ## Clean up unused packages
 
-After uninstalling packages, you can remove any unused cached packages from your local storage:
+1. After uninstalling packages, you can remove any unused cached packages from your local storage:
 
-```sh
-cfsutil pkg delete "*"
-```
+    ```sh
+    cfsutil pkg delete "*"
+    ```
 
-This command deletes all packages that are not actively installed. If some packages are still in use, the command reports which ones remain. You can then uninstall those with:
+    This command deletes all packages that are not actively installed.
 
-```sh
-cfsutil pkg uninstall <name>
-```
+2. Run the following command to view the remaining installed packages.
 
-and run the delete command again to complete the cleanup.
+    ```sh
+    cfsutil pkg list <name>
+    ```
+
+3. You can then uninstall any additional packages using the following command:
+
+    ```sh
+    cfsutil pkg uninstall <name>
+    ```
+
+4. Run the delete command again to complete the cleanup.
 
 !!! Tip
-    To view the full list of commands, run `cfsutil pkg --help` or refer to [cfsutil](../../tools/cfsutil.md#package-manager).
+    To view the full list of commands, run `cfsutil pkg --help` or refer to [cfsutil](../../developer-tools/cfsutil.md#package-manager).
 
     Each command also provides its own help. For example: `cfsutil pkg install --help`.

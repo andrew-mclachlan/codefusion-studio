@@ -343,6 +343,10 @@ def strip(dist_path: Path):
             if not exe_files:
                 logger.info("No executables found to strip on Windows.")
                 return
+
+            # Remove files that cause problems when stripped
+            excluded_files = {"libiomp5md.dll"}
+            exe_files = [p for p in exe_files if p.name not in excluded_files]
             
             logger.info(f"Stripping {len(exe_files)} files")
             batch_size = 50

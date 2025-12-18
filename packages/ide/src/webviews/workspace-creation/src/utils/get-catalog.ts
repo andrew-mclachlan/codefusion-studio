@@ -8,7 +8,7 @@ import type {SoCFamily} from '../common/types/catalog';
 // Cache for raw catalog data
 let rawCatalog: SoC[] = [];
 // Cache for formatted catalog data
-let formattedCatalog: SoCFamily[] | undefined = undefined;
+let formattedCatalog: SoCFamily[] | undefined;
 
 if (isCypressEnvironment()) {
 	// Use mocked data for Cypress or development environment

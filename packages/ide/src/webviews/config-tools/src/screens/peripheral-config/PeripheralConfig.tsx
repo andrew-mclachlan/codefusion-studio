@@ -24,7 +24,7 @@ import {
 	setActiveSignal
 } from '../../state/slices/peripherals/peripherals.reducer';
 import {
-	setCoresFilter,
+	setProjectFilter,
 	setIsAllocatingCore
 } from '../../state/slices/app-context/appContext.reducer';
 import {
@@ -60,7 +60,7 @@ function PeripheralConfig() {
 
 		return () => {
 			// Clear the cores filter when navigating away from the peripheral config screen
-			dispatch(setCoresFilter([]));
+			dispatch(setProjectFilter([]));
 			dispatch(setIsAllocatingCore(false));
 		};
 	}, [dispatch]);

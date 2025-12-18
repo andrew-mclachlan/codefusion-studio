@@ -18,7 +18,7 @@
 .container {
 	position: sticky;
 	top: 0;
-	z-index: 100;
+	z-index: var(--cfs-tooltip-z-index, layout.getZIndex('tooltip'));
 	display: flex;
 	justify-content: space-between;
 	align-items: center;

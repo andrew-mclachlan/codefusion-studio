@@ -31,11 +31,12 @@ import type {
 	FormattedPeripheralSignal
 } from '../../../../../common/types/soc';
 
-type Props = FormattedPeripheral<FormattedPeripheralSignal> & {
-	allocatedCore?: string;
-	highlighted: boolean;
-	isAllocateHovered: (isHovered: boolean) => void;
-};
+type Props = FormattedPeripheral<FormattedPeripheralSignal> &
+	Readonly<{
+		allocatedCore?: string;
+		isHighlighted: boolean;
+		isAllocateHovered: (isHovered: boolean) => void;
+	}>;
 
 function AssignablePeripheral({
 	name,
@@ -43,7 +44,7 @@ function AssignablePeripheral({
 	signals,
 	security,
 	allocatedCore,
-	highlighted,
+	isHighlighted,
 	isAllocateHovered
 }: Props) {
 	const dispatch = useAppDispatch();
@@ -51,6 +52,7 @@ function AssignablePeripheral({
 	const [editHovered, setEditHovered] = useState(false);
 	const [deleteHovered, setDeleteHovered] = useState(false);
 	const [allocateHovered, setAllocateHovered] = useState(false);
+	// eslint-disable-next-line react/hook-use-state
 	const [_, setAllocatedTarget] = useState<string | undefined>(
 		undefined
 	);
@@ -92,7 +94,7 @@ function AssignablePeripheral({
 
 	return (
 		<div
-			className={`${styles.noGroupContainer} ${highlighted ? styles.highlight : ''}`}
+			className={`${styles.noGroupContainer} ${isHighlighted ? styles.highlight : ''}`}
 			data-test={`no-group-${name}-container`}
 		>
 			<div className={styles.noGroupTitleContainer}>
@@ -107,8 +109,12 @@ function AssignablePeripheral({
 				<div className={styles.actionButton}>
 					<div
 						className={styles.configureButton}
-						onMouseEnter={() => setEditHovered(true)}
-						onMouseLeave={() => setEditHovered(false)}
+						onMouseEnter={() => {
+							setEditHovered(true);
+						}}
+						onMouseLeave={() => {
+							setEditHovered(false);
+						}}
 					>
 						<ConfigIcon16px
 							onClick={() =>
@@ -124,8 +130,12 @@ function AssignablePeripheral({
 						)}
 					</div>
 					<div
-						onMouseEnter={() => setDeleteHovered(true)}
-						onMouseLeave={() => setDeleteHovered(false)}
+						onMouseEnter={() => {
+							setDeleteHovered(true);
+						}}
+						onMouseLeave={() => {
+							setDeleteHovered(false);
+						}}
 					>
 						<DeleteIcon
 							onClick={() => {

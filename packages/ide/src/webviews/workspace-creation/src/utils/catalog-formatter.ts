@@ -59,7 +59,7 @@ const formatCores = (cores: CorePart[]): CatalogCoreInfo[] =>
 		isPrimary: Object.prototype.hasOwnProperty.call(core, 'primary')
 			? core.primary
 			: undefined,
-		supportsTrustZone: core?.supportsTrustZone ?? undefined
+		isTrustZoneSupported: core?.supportsTrustZone ?? false
 	}));
 
 const formatStandardBoards = (

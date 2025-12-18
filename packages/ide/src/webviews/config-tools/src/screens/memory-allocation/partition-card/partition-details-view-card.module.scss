@@ -18,7 +18,6 @@
 
 .memoryCardDetails {
 	@include fonts.body-b3;
-	line-height: 0px;
 	font-family: monospace;
 	color: colors.$description-foreground;
 
@@ -88,7 +87,7 @@
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 8px;
+	gap: 4px;
 }
 
 .partitionEnd {

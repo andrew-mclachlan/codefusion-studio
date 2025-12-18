@@ -1,7 +1,7 @@
 ---
 description: Software Requirements for CodeFusion Studio
 author: Analog Devices
-date: 2024-09-26
+date: 2025-11-06
 ---
 
 # Software requirements
@@ -35,3 +35,9 @@ sudo apt install libfontconfig1 libdbus-1-3 libxcb-icccm4 libxcb-image0 libxcb-k
 
 !!! note
     These packages are included in default Ubuntu installations, but may need to be added to headless installations.
+
+## Windows support
+
+The AI Tools (including the [Embedded AI Tools](../tools/manage-ai-models.md) panel and the [`cfsai`](../ai-tools/cli/index.md) command-line utility) require the [:octicons-link-external-24: Visual C++ Redistributable for Visual Studio 2015](https://aka.ms/vs/16/release/vc_redist.x64.exe){:target="_blank"} to be installed.
+
+Install this redistributable manually before running the AI Tools.

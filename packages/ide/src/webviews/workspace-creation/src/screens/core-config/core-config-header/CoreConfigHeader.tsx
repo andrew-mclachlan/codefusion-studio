@@ -16,14 +16,18 @@
 import {Badge} from 'cfs-react-library';
 import {type StateProject} from '../../../common/types/state';
 import styles from '../CoreConfigContainer.module.scss';
-import {PRIMARY} from '@common/constants/core-properties';
+import {
+	NON_SECURE,
+	PRIMARY,
+	SECURE
+} from '@common/constants/core-properties';
 import {
 	useCurrentCoreConfigStep,
-	useSelectedCores
+	useEnabledCores
 } from '../../../state/slices/workspace-config/workspace-config.selector';
 import {
-	getBaseCoreName,
-	getEnabledCores
+	doesCoreHaveProperty,
+	getBaseCoreName
 } from '../../../utils/workspace-config';
 import useIsPrimaryMultipleProjects from '../../../hooks/use-is-primary-multiple-projects';
 
@@ -32,8 +36,7 @@ type CoreConfigHeaderProps = Readonly<{
 }>;
 
 function CoreConfigHeader({core}: CoreConfigHeaderProps) {
-	const selectedCores = useSelectedCores();
-	const enabledCores = getEnabledCores(selectedCores);
+	const enabledCores = useEnabledCores();
 	const currentStep = useCurrentCoreConfigStep();
 	const shouldShowPrimaryBadge = useIsPrimaryMultipleProjects(
 		core?.isPrimary ?? false
@@ -54,9 +57,10 @@ function CoreConfigHeader({core}: CoreConfigHeaderProps) {
 				{shouldShowPrimaryBadge && (
 					<Badge appearance='secondary'>{PRIMARY}</Badge>
 				)}
-				{core.Secure && <Badge appearance='secondary'>Secure</Badge>}
-				{core.Secure === false && (
-					<Badge appearance='secondary'>Non-Secure</Badge>
+				{doesCoreHaveProperty(core, 'Secure') && (
+					<Badge appearance='secondary'>
+						{core?.Secure ? SECURE : NON_SECURE}
+					</Badge>
 				)}
 			</div>
 		</div>

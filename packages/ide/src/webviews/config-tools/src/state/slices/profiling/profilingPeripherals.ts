@@ -13,7 +13,7 @@
  *
  */
 
-import {SocPeripheral} from 'cfs-plugins-api';
+import type {SocPeripheral} from 'cfs-plugins-api';
 
 let uartPorts: Record<number, SocPeripheral> = {};
 
@@ -30,7 +30,9 @@ export function initializeProfilingPeripherals(
 		?.filter(p => uartRegex.test(p.Name))
 		.reduce<typeof uartPorts>((acc, p) => {
 			const portNumber = Number(p.Name.substring(4));
+
 			acc[portNumber] = p;
+
 			return acc;
 		}, {});
 }

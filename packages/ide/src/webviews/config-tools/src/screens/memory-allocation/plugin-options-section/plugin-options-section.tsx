@@ -64,9 +64,9 @@ export const PluginOptionsSection = memo(
 									onChange={(controlId, value) => {
 										dispatch(
 											updateActivePartitionConfig({
-												projectId: projectId,
+												projectId,
 												key: controlId,
-												value: value
+												value
 											})
 										);
 									}}

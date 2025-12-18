@@ -59,15 +59,15 @@ export const useIsAllocatingProject = () =>
 export const useMemoryTypeFilters = () =>
 	useAppSelector(state => state.appContextReducer.memoryTypeFilter);
 
-export const useCoreFilters = () =>
-	useAppSelector(state => state.appContextReducer.coresFilter);
+export const useProjectFilters = () =>
+	useAppSelector(state => state.appContextReducer.projectFilter);
 
 export const useSelectedProjects = () =>
 	useAppSelector(state => state.appContextReducer.selectedProjects);
 
 export const useFilteredMemoryBlocks = (): MemoryBlock[] => {
 	const memoryTypeFilter = useMemoryTypeFilters();
-	const coreFilter = useCoreFilters();
+	const projectFilter = useProjectFilters();
 	const cores = useFilteredCores();
 
 	const blockNamesInCores = [
@@ -94,7 +94,7 @@ export const useFilteredMemoryBlocks = (): MemoryBlock[] => {
 		)
 		.filter(
 			block =>
-				coreFilter.length === 0 ||
+				projectFilter.length === 0 ||
 				blockNamesInCores.includes(block.Name)
 		);
 };
@@ -102,7 +102,7 @@ export const useFilteredMemoryBlocks = (): MemoryBlock[] => {
 export const useFilteredPartitions = (): Partition[] => {
 	const partitions = usePartitions();
 	const memoryTypeFilter = useMemoryTypeFilters();
-	const coreFilter = useCoreFilters();
+	const projectFilter = useProjectFilters();
 	const blockNames = useFilteredMemoryBlocks().map(
 		block => block.Name
 	);
@@ -115,9 +115,9 @@ export const useFilteredPartitions = (): Partition[] => {
 		)
 		.filter(
 			partition =>
-				coreFilter.length === 0 ||
+				projectFilter.length === 0 ||
 				partition.projects.some(project =>
-					coreFilter.includes(project.label)
+					projectFilter.includes(project.projectId)
 				)
 		);
 };
@@ -129,13 +129,14 @@ export const useFilteredBlockTypes = (): string[] =>
 
 export const useFilteredCores = (): ProjectInfo[] => {
 	const memoryTypeFilter = useMemoryTypeFilters();
-	const coreFilter = useCoreFilters();
+	const projectFilter = useProjectFilters();
 
 	return (
 		getProjectInfoList()
 			?.filter(
 				project =>
-					coreFilter.length === 0 || coreFilter.includes(project.Name)
+					projectFilter.length === 0 ||
+					projectFilter.includes(project.ProjectId)
 			)
 			.filter(project => {
 				const dataModelCore = getSocCoreList().find(
@@ -186,14 +187,6 @@ export function useNewPeripheralAssignment() {
 export function useNewSignalAssignment() {
 	return useAppSelector(
 		state => state.appContextReducer.newSignalAssignment
-	);
-}
-
-export function usePeripheralErrorCount(peripheral: string) {
-	return useAppSelector(
-		state =>
-			state.appContextReducer.peripheralErrorCount[peripheral]
-				?.totalErrors ?? 0
 	);
 }
 

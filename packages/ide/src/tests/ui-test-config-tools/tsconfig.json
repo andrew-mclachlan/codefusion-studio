@@ -3,11 +3,11 @@
     "module": "CommonJS",
     "target": "es2020",
     "lib": ["es2020"],
-    "outDir": "../../../out/tests/ui-test-config-tools",
-    "rootDir": ".",
+    "outDir": "../../../out/tests", // compiled JS goes here
     "strict": true,
     "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "esModuleInterop": true
   }
 }

@@ -23,7 +23,10 @@ out/ui-test-utils/**
 test-resources/**
 
 *.run
+.env
 .env*
+**/.env
+**/.env*
 .vscode-test.js
 .markdownlint.json
 .stylelintrc.json

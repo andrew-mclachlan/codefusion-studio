@@ -88,10 +88,8 @@ import {
 	persistedAIToolsActions,
 	getAiToolsPersistenceListenerMiddleware
 } from './utils/ai-tools-persistence-middleware';
-import {
-	profilingReducer,
-	ProfilingState
-} from './slices/profiling/profiling.reducer';
+import {profilingReducer} from './slices/profiling/profiling.reducer';
+import type {ProfilingState} from './slices/profiling/profiling.reducer';
 import {
 	getProfilingPersistenceListenerMiddleware,
 	persistedProfilingActions
@@ -265,6 +263,7 @@ export function configurePreloadedStore(
 					AIEnabled: project.Profiling?.Zephelin?.AIEnabled ?? false,
 					Port: project.Profiling?.Zephelin?.Port ?? 0
 				};
+
 				return acc;
 			}, {}) ?? {}
 	};

@@ -10,7 +10,7 @@ A default debug configuration is automatically generated with each new project. 
 
 !!! warning
 
-    Make sure you have a successful build for the core you intend to debug. Each project generates a build directory in the respective project folder. For more information, refer to [CFS build task](../workspaces/tasks.md).
+    Make sure you have a successful build for the core you intend to debug. Each project generates a build directory in the respective project folder. For more information, refer to [CFS build task](../build-and-flash/tasks.md).
 
 ## Supported microcontrollers
 
@@ -23,7 +23,7 @@ Debug configuration settings are automatically selected using your CFS workspace
 When using the **CFS: Debug with GDB and OpenOCD (Arm Embedded)** configuration, CFS automatically searches for and adds the SVD file from the CMSIS Pack directory.
 For other parts, the SVD file can be selected manually when prompted.
 
-For more information regarding these settings, refer to [CFS Settings](../workspaces/cfs-settings.md).
+For more information regarding these settings, refer to [CFS Settings](../build-and-flash/cfs-settings.md).
 
 ## Activate single debug session
 

@@ -72,12 +72,6 @@ export function registerPackageManagerCommands(
       () => manageRemotes(pkgManager),
     ),
   );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand("cfs.getSdkPath", (sdkName: string) =>
-      getSdkPath(sdkName, pkgManager),
-    ),
-  );
 }
 
 async function installPackages(pkgManager?: CfsPackageManagerProvider) {
@@ -289,27 +283,6 @@ async function uninstallPackage(pkgManager?: CfsPackageManagerProvider) {
   }
 }
 
-async function getSdkPath(
-  sdkName: string,
-  pkgManager?: CfsPackageManagerProvider,
-) {
-  if (!pkgManager) {
-    vscode.window.showErrorMessage(
-      "CFS: Package Manager commands cannot be run because the package manager failed to initialize.",
-    );
-    return;
-  }
-  try {
-    const sdkPath = await pkgManager.getPath(sdkName);
-    return sdkPath;
-  } catch (err) {
-    vscode.window.showErrorMessage(
-      `CFS: Encountered error while searching for SDK ${sdkName}. ${err}`,
-    );
-    return undefined;
-  }
-}
-
 async function manageRemotes(pkgManager?: CfsPackageManagerProvider) {
   if (!pkgManager) {
     void vscode.window.showErrorMessage(
@@ -355,7 +328,7 @@ async function manageRemotes(pkgManager?: CfsPackageManagerProvider) {
         ...(remote.custom
           ? [
               {
-                iconPath: new vscode.ThemeIcon("remove"),
+                iconPath: new vscode.ThemeIcon("trash"),
                 tooltip: "Remove",
               },
             ]
@@ -364,7 +337,7 @@ async function manageRemotes(pkgManager?: CfsPackageManagerProvider) {
         ...(remote.custom && remote.auth
           ? [
               {
-                iconPath: new vscode.ThemeIcon("sign-out"),
+                iconPath: new vscode.ThemeIcon("account"),
                 tooltip: "Logout",
               },
             ]
@@ -373,7 +346,7 @@ async function manageRemotes(pkgManager?: CfsPackageManagerProvider) {
         ...(remote.custom && !remote.auth
           ? [
               {
-                iconPath: new vscode.ThemeIcon("sign-in"),
+                iconPath: new vscode.ThemeIcon("account"),
                 tooltip: "Login",
               },
             ]
@@ -436,6 +409,10 @@ async function manageRemotes(pkgManager?: CfsPackageManagerProvider) {
               case "Login":
                 resolve(["login", e.item.label]);
                 break;
+              default:
+                throw new Error(
+                  `Unknown button action "${e.button.tooltip}" triggered.`,
+                );
             }
           }
         });
@@ -471,6 +448,8 @@ async function manageRemotes(pkgManager?: CfsPackageManagerProvider) {
         case "login":
           await loginRemoteAction(pkgManager, remote, false);
           break;
+        default:
+          throw new Error(`Unknown action "${action}" selected.`);
       }
     }
   } catch (err) {
@@ -765,16 +744,16 @@ async function loginRemoteAction(
     });
   }
   if (remote.custom) {
-    // Can only control myAnalog SSO setting for custom remotes
+    // Can only control myAnalog setting for custom remotes
     loginChoices.push({
-      label: "myAnalog SSO",
-      description: "Use your myAnalog single sign-on session",
+      label: "myAnalog",
+      description: "Login using your myAnalog account",
     });
   }
   // Always offer username/password option
   loginChoices.push({
     label: "Username/Password",
-    description: "Login using your username and password",
+    description: "Login with a username and password",
   });
 
   const loginMethod = await vscode.window.showQuickPick(loginChoices, {
@@ -837,8 +816,8 @@ async function loginRemoteAction(
           // Login with username and password
           await pkgManager.login(remote.name, username!, password!);
           break;
-        case "myAnalog SSO":
-          // Login with myAnalog SSO
+        case "myAnalog":
+          // Login with myAnalog
           await pkgManager.setRemoteCredentialProvider(
             remote.name,
             PACKAGE_MANAGER_CREDENTIAL_PROVIDER,
@@ -853,6 +832,10 @@ async function loginRemoteAction(
           }
           await promptMyAnalogLogin([updatedRemote]);
           break;
+        default:
+          throw new Error(
+            `Unknown login method "${loginMethod.label}" selected.`,
+          );
       }
     });
 

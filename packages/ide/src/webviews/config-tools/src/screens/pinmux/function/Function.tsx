@@ -38,7 +38,7 @@ import {
 	useActivePeripheral,
 	useActiveSignal,
 	useCurrentSignalTarget,
-	useGetAllocatedProjectId
+	useSignalProjectId
 } from '../../../state/slices/peripherals/peripherals.selector';
 import {
 	removePeripheralAssignment,
@@ -82,7 +82,7 @@ function Function({
 		useActiveConfiguredSignal();
 	const openSignal = useActiveSignal();
 
-	const allocatedProjectId = useGetAllocatedProjectId(
+	const signalProjectId = useSignalProjectId(
 		peripheralGroup,
 		signalName
 	);
@@ -216,9 +216,9 @@ function Function({
 			}
 		} else {
 			const primaryProjectId = getPrimaryProjectId();
-			let projectToAllocate: string | undefined = allocatedProjectId;
+			let projectToAllocate: string | undefined = signalProjectId;
 
-			if (!isPeripheralConfigurable && !allocatedProjectId) {
+			if (!isPeripheralConfigurable && !signalProjectId) {
 				projectToAllocate = primaryProjectId;
 				dispatch(
 					setSignalGroupAssignment({

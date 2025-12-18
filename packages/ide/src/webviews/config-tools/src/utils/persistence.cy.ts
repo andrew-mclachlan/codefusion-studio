@@ -206,18 +206,14 @@ describe('Persistance', () => {
 			MAX32655ctbga,
 			[]
 		);
-		expect(defaultConfig['OWM'].signalsTargets['IO']).to.equal('G7');
-		expect(defaultConfig['OWM'].signalsTargets['PE']).to.equal('G4');
+		expect(defaultConfig.OWM.signalsTargets.IO).to.equal('G7');
+		expect(defaultConfig.OWM.signalsTargets.PE).to.equal('G4');
 
 		const persistedPinsConfig = formatPeripheralSignalsTargets(
 			MAX32655ctbga,
 			persistedPins
 		);
-		expect(persistedPinsConfig['OWM'].signalsTargets['IO']).to.equal(
-			'H5'
-		);
-		expect(persistedPinsConfig['OWM'].signalsTargets['PE']).to.equal(
-			'H9'
-		);
+		expect(persistedPinsConfig.OWM.signalsTargets.IO).to.equal('H5');
+		expect(persistedPinsConfig.OWM.signalsTargets.PE).to.equal('H9');
 	});
 });

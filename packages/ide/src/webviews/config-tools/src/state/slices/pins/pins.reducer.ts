@@ -18,10 +18,9 @@ import type {
 	ControlCfg,
 	PinCanvas,
 	PinDictionary
-} from '@common/types/soc';
+,ConfigFields} from '@common/types/soc';
 import {getControlsFromCache} from '../../../utils/api';
 import type {ControlErrorTypes} from '@common/types/errorTypes';
-import type {ConfigFields} from '@common/types/soc';
 import {CONTROL_SCOPES} from '../../../constants/scopes';
 import {getSocPinDictionary} from '../../../utils/soc-pins';
 import {computeNextPinConfig} from '../../../utils/pin-reset-controls';
@@ -431,11 +430,13 @@ const pinsSlice = createSlice({
 				};
 			}>
 		) {
-			//added to atomicly update both removal and addition of signal in signal Assignment
+			// Added to atomicly update both removal and addition of signal in signal Assignment
 			removeSignalFromPin(state, payload.removeSignal);
 
 			// Add the new signal
+
 			const targetPin = state.pins[payload.addSignal.Pin];
+
 			if (targetPin) {
 				targetPin.appliedSignals.push(payload.addSignal);
 			}

@@ -15,7 +15,7 @@
 
 import {use} from 'cfs-react-library';
 import ConflictIcon from '../../../../../common/icons/Conflict';
-import usePeripheralError from '../../../hooks/use-peripheral-error';
+import useHasPeripheralError from '../../../hooks/use-has-peripheral-error';
 import type {ControlCfg} from '../../../../../common/types/soc';
 
 export default function PeripheralErrorIcon({
@@ -34,7 +34,7 @@ export default function PeripheralErrorIcon({
 		controlDict[projectIds[index]] = use(promise);
 	});
 
-	const hasPeripheralError = usePeripheralError(
+	const hasPeripheralError = useHasPeripheralError(
 		controlDict,
 		projectIds
 	);

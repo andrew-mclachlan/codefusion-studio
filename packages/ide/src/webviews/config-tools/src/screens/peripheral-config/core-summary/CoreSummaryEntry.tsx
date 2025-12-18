@@ -27,19 +27,15 @@ import {
 	PRIMARY,
 	SECURE
 } from '../../../../../common/constants/core-properties';
-import {getControlsFromCache} from '../../../utils/api';
-import {CONTROL_SCOPES} from '../../../constants/scopes';
 import {useAssignedPins} from '../../../state/slices/pins/pins.selector';
-import {
-	getPeripheralError,
-	hasPeripheralPinConflicts
-} from '../../../utils/peripheral-errors';
+import {hasPeripheralPinConflicts} from '../../../utils/peripheral-errors';
 import ConflictIcon from '../../../../../common/icons/Conflict';
 import {
 	type TLocaleContext,
 	useLocaleContext
 } from '../../../../../common/contexts/LocaleContext';
 import useIsPrimaryMultipleProjects from '../../../hooks/use-is-primary-multiple-projects';
+import useProjectHasPeripheralError from '../../../hooks/use-project-has-peripheral-error';
 
 type CoreSummaryCardProps = Readonly<{
 	project: ProjectInfo;
@@ -86,15 +82,8 @@ function CoreSummaryCard({project}: CoreSummaryCardProps) {
 		.sort((a, b) => naturalCompare(a.name, b.name));
 	const hasAllocations = sortedAllocations.length > 0;
 
-	const projectControls = getControlsFromCache(
-		CONTROL_SCOPES.PERIPHERAL,
+	const projectHasPeripheralError = useProjectHasPeripheralError(
 		project.ProjectId
-	);
-
-	const hasPeripheralUnnasignedPinError = getPeripheralError(
-		pins,
-		allocations,
-		projectControls ?? {}
 	);
 
 	const hasPeripheralPinConflictError = hasPeripheralPinConflicts(
@@ -137,7 +126,7 @@ function CoreSummaryCard({project}: CoreSummaryCardProps) {
 				</div>
 			</div>
 		),
-		[project]
+		[project, shouldShowPrimaryBadge]
 	);
 
 	const end = (
@@ -149,8 +138,12 @@ function CoreSummaryCard({project}: CoreSummaryCardProps) {
 							? i10n?.num_peripherals?.one?.label?.title
 							: i10n?.num_peripherals?.other?.label?.title
 					}`}</span>
-					{(Boolean(hasPeripheralUnnasignedPinError) ||
-						hasPeripheralPinConflictError) && <ConflictIcon />}
+					{(projectHasPeripheralError ||
+						hasPeripheralPinConflictError) && (
+						<ConflictIcon
+							dataTest={project.ProjectId + '-error-icon'}
+						/>
+					)}
 				</>
 			) : (
 				<span className={styles.noPeripherals}>No peripherals</span>
@@ -163,7 +156,6 @@ function CoreSummaryCard({project}: CoreSummaryCardProps) {
 			<ProjectAllocations
 				allocations={sortedAllocations}
 				project={project}
-				projectControls={projectControls}
 			/>
 		</div>
 	);
@@ -173,10 +165,9 @@ function CoreSummaryCard({project}: CoreSummaryCardProps) {
 			id={project.ProjectId}
 			title={title}
 			end={end}
-			hasAllocatedPeripherals={Boolean(sortedAllocations.length)}
+			hasAllocatedPeripherals={hasAllocations}
 			content={content}
 			data-test={`core:${project.ProjectId}`}
-			isExpandable={hasAllocations}
 		/>
 	);
 }

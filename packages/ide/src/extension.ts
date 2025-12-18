@@ -46,7 +46,6 @@ import {
   SELECT_ZEPHYR_WORKSPACE,
   LAUNCH_DEBUG_WITH_OZONE_COMMAND_ID,
   QUICK_ACCESS_TREE_VIEW_ID,
-  SET_SDK_PATH_COMMAND_ID,
   RUN_JLINK_FLASH_TASK_COMMAND_ID,
   DEVICE_TREE_VIEW_ID,
   CONTEXT_VIEW_ID,
@@ -67,9 +66,7 @@ import {
   MSDK_PACKAGE_PATH_COMMAND_ID,
   CLOUD_CATALOG_AUTH,
   PACKAGE_MANAGER_COMMANDS,
-  BROWSE_SDK_PATH_COMMAND_ID,
   OPEN_OPENOCD_TARGET_SETTING_COMMAND_ID,
-  OPEN_SDK_PATH_SETTINGS_COMMAND_ID,
   OPEN_SDK_SETTINGS_COMMAND_ID,
   SELECT_SDK_PATH_COMMAND_ID,
 } from "./commands/constants";
@@ -246,8 +243,18 @@ export async function activate(
   // Not using performance.now() as the timer can stop when the browser freezes
   // https://developer.mozilla.org/en-US/docs/Web/API/Performance/now#ticking_during_sleep
   const activationStart = Date.now();
-  // Fix backslashes in Windows paths
-  await verifyPathSettings();
+
+  await SdkPath.verifyPathSettings();
+
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration(
+      async (event: vscode.ConfigurationChangeEvent) => {
+        if (event.affectsConfiguration(`${EXTENSION_ID}.${SDK_PATH}`)) {
+          SdkPath.verifyPathSettings();
+        }
+      },
+    ),
+  );
 
   // Load default translations
   try {
@@ -490,19 +497,6 @@ export async function deactivate(): Promise<Response | undefined> {
   return telemetryManager.logAction("Extension deactivated", {});
 }
 
-// --- Configuration & Path Utilities ---
-
-/**
- * Fix Windows paths by swapping backslashes with forwardslashes
- */
-async function verifyPathSettings() {
-  let conf = vscode.workspace.getConfiguration(EXTENSION_ID);
-  const sdkPath = conf.get(SDK_PATH) as string;
-  if (sdkPath && sdkPath.includes("\\")) {
-    await conf.update(SDK_PATH, sdkPath.replace(/\\/g, "/"), true);
-  }
-}
-
 // --- Terminal Provider ---
 
 /**
@@ -512,7 +506,6 @@ async function registerTerminalProvider(shellEnvProvider: IDEShellEnvProvider) {
   // Register terminal profile
   vscode.window.registerTerminalProfileProvider(CFS_TERMINAL_ID, {
     async provideTerminalProfile(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       _token: vscode.CancellationToken,
     ): Promise<vscode.TerminalProfile | null | undefined> {
       const profile = new vscode.TerminalProfile({
@@ -634,20 +627,6 @@ async function registerCommands(
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand(
-      SET_SDK_PATH_COMMAND_ID,
-      SdkPath.setSdkPathCommandHandler,
-    ),
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      BROWSE_SDK_PATH_COMMAND_ID,
-      SdkPath.browseSdkPathCommandHandler,
-    ),
-  );
-
-  context.subscriptions.push(
     vscode.commands.registerCommand(MSDK_PACKAGE_PATH_COMMAND_ID, async () => {
       return await toolManager.getToolPath("msdk");
     }),
@@ -667,15 +646,6 @@ async function registerCommands(
       vscode.commands.executeCommand(
         VSCODE_OPEN_SETTINGS_COMMAND_ID,
         `${EXTENSION_ID}`,
-      );
-    }),
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(OPEN_SDK_PATH_SETTINGS_COMMAND_ID, () => {
-      vscode.commands.executeCommand(
-        VSCODE_OPEN_SETTINGS_COMMAND_ID,
-        `${EXTENSION_ID}.${SDK_PATH}`,
       );
     }),
   );
@@ -1622,8 +1592,6 @@ const selectZephyrWorkspace = async () => {
       if (uri === undefined) {
         return;
       }
-
-      const conf = vscode.workspace.getConfiguration(EXTENSION_ID);
     });
 };
 

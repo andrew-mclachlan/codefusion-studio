@@ -369,11 +369,6 @@ export class CoreDumpTreeProvider
     const threadAddress =
       !task.address || task.address === "" ? "Unknown" : task.address;
 
-    let threadAddressHex =
-      threadAddress !== "Unknown"
-        ? threadAddress.match(/^0x\S*/)?.[0] || "Unknown"
-        : "Unknown";
-
     const stackFrame: CoreDumpNode[] = [];
 
     // Handle multiple trace entries

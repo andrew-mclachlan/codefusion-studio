@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /**
  *
  * Copyright (c) 2024 Analog Devices, Inc.
@@ -69,7 +68,7 @@ describe('Clock config side component', () => {
 		cy.dataTest('LPM Mux').should('exist');
 	});
 
-	it('Opens and closes clock node details view correctly', async () => {
+	it('Opens and closes clock node details view correctly', () => {
 		const store = {...reduxStore};
 
 		store.dispatch(setClockNodeDetailsTargetNode('32KIN'));
@@ -78,25 +77,34 @@ describe('Clock config side component', () => {
 
 		cy.dataTest('side-32KIN').should('exist');
 
-		cy.dataTest('Mux')
+		cy.dataTest('accordion:MUX')
 			.should('not.exist')
 			.then(() => {
 				cy.wrap(
 					store.dispatch(setClockNodeDetailsTargetNode(undefined))
-				).then(() => {
-					cy.dataTest('Mux').should('exist');
-				});
+				);
+			})
+			.then(() => {
+				cy.dataTest('accordion:MUX').should('exist');
 			});
 	});
 
-	it('Adds an input error and checks title correctly renders conflict icon', async () => {
+	it('Adds an input error and checks title correctly renders conflict icon', () => {
 		const store = {...reduxStore};
 
 		store.dispatch(setClockNodeDetailsTargetNode('P0.23'));
 
+		reduxStore.dispatch(
+			setAppliedSignal({
+				Pin: 'F4',
+				Peripheral: 'MISC',
+				Name: 'CLKEXT'
+			})
+		);
+
 		cy.mount(<ClockConfigSideContainer />, store);
 
-		cy.dataTest('FREQ-P0.23-control-input')
+		cy.dataTest('P0_23_FREQ-P0.23-control-input')
 			.shadow()
 			.within(() => {
 				cy.get('#control').type('test');
@@ -143,8 +151,6 @@ describe('Clock config side component', () => {
 
 			cy.dataTest('accordion:PIN INPUT').click();
 
-			cy.wait(500);
-
 			cy.dataTest('accordion-item:conflict:P0.23').should('exist');
 		});
 	});
@@ -182,15 +188,13 @@ describe('Clock config side component', () => {
 
 			cy.dataTest('accordion:PIN INPUT').click();
 
-			cy.wait(500);
-
 			cy.dataTest('accordion-item:conflict:P0.23').should(
 				'not.exist'
 			);
 		});
 	});
 
-	it('Does not display an error icon for disabled control values', async () => {
+	it('Does not display an error icon for disabled control values', () => {
 		const store = {...reduxStore};
 
 		store.dispatch(

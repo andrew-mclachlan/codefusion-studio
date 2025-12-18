@@ -1,13 +1,13 @@
-import {SubStep} from 'cfs-react-library';
-import {StateProject} from '../types/state';
+import {type SubStep} from 'cfs-react-library';
+import {type StateProject} from '../types/state';
 
 import {
 	PRIMARY_ABBR as P,
 	SECURE_ABBR as S,
 	NON_SECURE_ABBR as NS
 } from '@common/constants/core-properties';
-import {STEPS_LABELS_DICTIONARY as STEP_LABELS_DICT} from '../constants/workspace-stepper';
 import {
+	STEPS_LABELS_DICTIONARY as STEP_LABELS_DICT,
 	SOC,
 	BOARD,
 	OPTIONS,
@@ -21,27 +21,34 @@ type DescriptionContext = {
 	optionsDesc?: string;
 };
 
-export const initializeSteps = (
-	navigationItems: Record<string, string>,
-	isPredefined: boolean,
-	cores: Record<string, StateProject>,
-	workspaceName: string,
-	isSingleCore: boolean,
-	context: DescriptionContext
-) => {
-	return Object.keys(navigationItems)
+export const initializeSteps = ({
+	navigationItems,
+	isPredefined,
+	cores,
+	workspaceName,
+	isSingleCore,
+	context
+}: {
+	navigationItems: Record<string, string>;
+	isPredefined: boolean;
+	cores: Record<string, StateProject>;
+	workspaceName: string;
+	isSingleCore: boolean;
+	context: DescriptionContext;
+}) =>
+	Object.keys(navigationItems)
 		.filter(key =>
 			Object.prototype.hasOwnProperty.call(STEP_LABELS_DICT, key)
 		)
 		.map(key => {
-			const id = navigationItems[key as keyof typeof navigationItems];
-			const value = getStepValue(
-				id,
+			const id = navigationItems[key];
+			const value = getStepValue({
+				stepId: id,
 				isPredefined,
 				cores,
 				workspaceName,
 				context
-			);
+			});
 
 			return {
 				id,
@@ -66,7 +73,6 @@ export const initializeSteps = (
 				)
 			};
 		});
-};
 
 // Helper functions to find and update steps
 const getCompleteStatus = (
@@ -81,13 +87,19 @@ const getCompleteStatus = (
 	return Boolean(value);
 };
 
-const getStepValue = (
-	stepId: string,
-	isPredefined: boolean,
-	cores: Record<string, StateProject>,
-	workspaceName: string,
-	context: DescriptionContext
-): string => {
+const getStepValue = ({
+	stepId,
+	isPredefined,
+	cores,
+	workspaceName,
+	context
+}: {
+	stepId: string;
+	isPredefined: boolean;
+	cores: Record<string, StateProject>;
+	workspaceName: string;
+	context: DescriptionContext;
+}): string => {
 	switch (stepId) {
 		case SOC:
 			return context.selectedSoc ?? '';
@@ -96,14 +108,9 @@ const getStepValue = (
 		case OPTIONS:
 			return context.optionsDesc ?? '';
 		case CORES:
-			const {coreSelDesc} = getCoreStepData(
-				isPredefined,
-				cores,
-				false
-			);
-			return coreSelDesc;
+			return getCoreStepData(isPredefined, cores, false).coreSelDesc;
 		case LOCATION:
-			return workspaceName || '';
+			return workspaceName ?? '';
 		default:
 			return '';
 	}
@@ -124,8 +131,8 @@ const getCoreStepData = (
 	selectedCoresObject: Record<string, StateProject>,
 	isSingleCore: boolean
 ) => {
-	let coreSelDesc: string = '';
-	let substeps: SubStep[] | undefined = undefined;
+	let coreSelDesc = '';
+	let substeps: SubStep[] | undefined;
 
 	if (!isPredefined) {
 		const selectedCores = Object.values(selectedCoresObject).filter(
@@ -151,14 +158,10 @@ const getSubstepsForStep = (
 ): SubStep[] | undefined => {
 	switch (stepId) {
 		case CORES:
-			const {substeps} = getCoreStepData(
-				isPredefined,
-				cores,
-				isSingleCore
-			);
-			return substeps;
+			return getCoreStepData(isPredefined, cores, isSingleCore)
+				.substeps;
 		default:
-			return;
+			return undefined;
 	}
 };
 
@@ -169,10 +172,8 @@ const getBadges = (
 	const badges: string[] = [];
 
 	if (core?.isPrimary && isSingleCore) badges.push(P);
-	if ((core as StateProject & {Secure?: boolean})?.Secure)
-		badges.push(S);
-	if ((core as StateProject & {Secure?: boolean})?.Secure === false)
-		badges.push(NS);
+	if (core?.Secure) badges.push(S);
+	else if (core?.Secure === false) badges.push(NS);
 
 	return badges.length ? badges : undefined;
 };

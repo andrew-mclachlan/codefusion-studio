@@ -12,7 +12,7 @@ Explore all the features CodeFusion Studio has to offer.
 
 Use the System Planner to visually configure every aspect of your system — from memory and peripheral allocation to pin and clock behavior — and generate ready-to-build source code in one step.
 
-[Learn more →](../tools/config-tool/index.md)
+[Learn more →](../tools/index.md)
 
 ![System Planner Walkthrough](../about/images/ide-system-planner.gif)
 
@@ -20,7 +20,7 @@ Use the System Planner to visually configure every aspect of your system — fro
 
 Build and optimize AI models directly inside your embedded workflow. Use the Embedded AI Tools in System Planner to import models, assign them to cores, validate compatibility, and generate deployment-ready source code.
 
-[Learn more →](../tools/config-tool/manage-ai-models.md)
+[Learn more →](../tools/manage-ai-models.md)
 
 ![Embedded AI Tools Walkthrough](../about/images/ide-ai-tools.gif)
 
@@ -43,7 +43,7 @@ CodeFusion Studio provides an extended debugging ecosystem for multi-core system
 
 ## Debugging and analysis tools
 
-Inspect, automate, and analyze your system behavior with built-in debugging and analysis utilities — including multi-core debugging, the Core Dump Analysis Tool, the GDB Toolbox, and the [Zephelin profiler](../tools/config-tool/profiling.md).
+Inspect, automate, and analyze your system behavior with built-in debugging and analysis utilities — including multi-core debugging, the Core Dump Analysis Tool, the GDB Toolbox, and the [Zephelin profiler](../tools/profiling.md).
 
 [Learn more →](../debugging/debug-tools/index.md)
 
@@ -75,11 +75,11 @@ Download SDKs, toolchains, and plugins on demand with the integrated Package Man
 
 ## ELF file explorer
 
-[ELF File Explorer](../tools/elf-file-explorer.md) provides a graphical interface to help understand and analyze the contents of ELF files.
+[ELF File Explorer](../developer-tools/elf-file-explorer.md) provides a graphical interface to help understand and analyze the contents of ELF files.
 
 Visualize memory usage, run SQL queries to inspect symbols, and browse segments, sections, and symbols with the interactive memory map.
 
-[Learn more →](../tools/elf-file-explorer.md)
+[Learn more →](../developer-tools/elf-file-explorer.md)
 
 ![Memory layout](./images/memorylayout-light.gif#only-light)
 ![Memory layout](./images/memorylayout-dark.gif#only-dark)

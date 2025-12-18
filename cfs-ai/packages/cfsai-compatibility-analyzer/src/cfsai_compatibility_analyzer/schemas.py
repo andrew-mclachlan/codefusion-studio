@@ -672,7 +672,7 @@ class CompatibilityReport(BaseModel):
         try:
             Path(filepath).parent.mkdir(parents=True, exist_ok=True)
             with open(filepath, 'w', encoding='utf-8') as f:
-                json.dump(self.model_dump(), f, indent=2)
+                json.dump(self.model_dump(exclude={"json_format"}), f, indent=2)
             logger.info(f"Compatibility report saved to {filepath}")
             return True
         except Exception as e:

@@ -17,7 +17,6 @@ import {useMemo} from 'react';
 import type {PeripheralConfig} from '../../../types/peripherals';
 import {type RootState, useAppSelector} from '../../store';
 import {getProjectInfoList} from '../../../utils/config';
-import {getSocPeripheralDictionary} from '../../../utils/soc-peripherals';
 import {createSelector} from '@reduxjs/toolkit';
 
 /**
@@ -50,14 +49,14 @@ export function useCurrentSignalsTargets() {
 }
 
 export function useCurrentSignalTarget(
-	peripheralGroup: string,
-	signalName: string
+	peripheralGroup: string | undefined,
+	signalName: string | undefined
 ) {
 	return useAppSelector(
 		state =>
 			state.peripheralsReducer.peripheralSignalsTargets[
-				peripheralGroup
-			].signalsTargets[signalName]
+				peripheralGroup ?? ''
+			]?.signalsTargets[signalName ?? '']
 	);
 }
 
@@ -196,37 +195,48 @@ export const usePeripheralProjectId = (peripheralId: string) =>
 	);
 
 /**
- * Custom hook to get the core allocations for a given peripheral signal.
+ * Selector to get the project ID for a given peripheral signal.
+ * Since each signal only has one project ID, this returns a single string.
+ */
+const selectSignalProjectId = createSelector(
+	[
+		(state: RootState) => state.peripheralsReducer.assignments,
+		(_: RootState, peripheralName: string) => peripheralName,
+		(_: RootState, _peripheralName: string, signalName: string) =>
+			signalName
+	],
+	(assignments, peripheralName, signalName) => {
+		const peripheral = assignments[peripheralName];
+
+		if (!peripheral) {
+			return '';
+		}
+
+		// If the peripheral has a project ID (signal group), return it
+		if (peripheral.projectId) {
+			return peripheral.projectId;
+		}
+
+		// Otherwise, find the signal and return its project ID
+		const signal = peripheral.signals[signalName];
+
+		return signal?.projectId ?? '';
+	}
+);
+
+/**
+ * Custom hook to get the project ID for a given peripheral or signal.
  * @param peripheralName The peripheral name.
  * @param signalName The signal name.
- * @returns {string[]} The allocated projectId's.
+ * @returns {string} The allocated project ID or an empty string.
  */
-export const usePeripheralSignalAllocations = (
+export const useSignalProjectId = (
 	peripheralName: string,
 	signalName: string
-): string[] => {
-	const assignments = useAppSelector(
-		state => state.peripheralsReducer.assignments
+): string =>
+	useAppSelector(state =>
+		selectSignalProjectId(state, peripheralName, signalName)
 	);
-
-	const allocatedProjects = useMemo(
-		() =>
-			Object.values(assignments)
-				.filter(peripheral => peripheral.name === peripheralName)
-				.flatMap(peripheral =>
-					Object.values(peripheral.signals)
-						.filter(
-							signal =>
-								signal.name === signalName &&
-								(peripheral.projectId ?? signal.projectId)
-						)
-						.map(signal => peripheral.projectId ?? signal.projectId)
-				),
-		[assignments, peripheralName, signalName]
-	);
-
-	return allocatedProjects;
-};
 
 /**
  * Custom hook to get the peripheral assignments for a given project.
@@ -267,53 +277,6 @@ export const useSignalDescription = (
 				signalName
 			]?.description ?? ''
 	);
-
-/**
- * Custom hook to get the allocated core ID for a specific peripheral signal.
- * @param peripheral The peripheral name.
- * @param signal The signal name.
- * @returns {string} The allocated core ID.
- */
-export const useGetAllocatedProjectId = (
-	peripheral: string,
-	signal: string
-) => {
-	const peripheralAllocations = usePeripheralAllocations();
-
-	return useMemo(() => {
-		const peripheralDict = getSocPeripheralDictionary();
-		const peripheralDefinition = peripheralDict[peripheral];
-		const isSignalGroup =
-			Boolean(peripheralDefinition?.assignable) ||
-			Object.values(peripheralDefinition?.signals ?? {}).length === 0;
-
-		for (const projectId in peripheralAllocations) {
-			if (
-				Object.prototype.hasOwnProperty.call(
-					peripheralAllocations,
-					projectId
-				)
-			) {
-				const peripheralConfig =
-					peripheralAllocations[projectId]?.[peripheral];
-
-				if (!peripheralConfig) continue;
-
-				if (isSignalGroup) {
-					return projectId;
-				}
-
-				const signalConfig = peripheralConfig.signals[signal];
-
-				if (signalConfig) {
-					return signalConfig.projectId;
-				}
-			}
-		}
-
-		return '';
-	}, [peripheral, signal, peripheralAllocations]);
-};
 
 /**
  * Selects peripheral allocations for a specific project.

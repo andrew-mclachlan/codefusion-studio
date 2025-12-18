@@ -24,8 +24,6 @@ export type WorkspaceConfigState = {
 	workspaceConfig: WorkspaceConfig;
 	configErrors: ConfigErrors;
 	currentCoreConfigStep: number;
-	supportsTrustZone?: boolean;
-	isTrustZoneEnabled: Record<string, boolean>;
 };
 
 type WorkspaceConfig = {
@@ -61,12 +59,11 @@ export type StateProject = {
 	pluginVersion: string;
 	firmwarePlatform?: string;
 	isPrimary?: boolean;
-	Secure?: boolean;
 	isEnabled: boolean;
-	supportsTrustZone?: boolean;
+	Secure?: boolean;
+	isTrustZoneSupported: boolean;
 	platformConfig: Record<string, string | boolean | number>;
 };
 
 export type StatePlatformConfig = StateProject['platformConfig'];
-
 export type WorkspaceTemplateType = 'predefined' | 'custom';

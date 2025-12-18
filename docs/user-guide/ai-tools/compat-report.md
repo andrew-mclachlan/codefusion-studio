@@ -13,7 +13,7 @@ The Compatibility Analyzer report checks whether your model fits the target hard
 - Data type compatibility issues — Unsupported data types.
 
 !!! tip
-    You can generate this report with the [`cfsai profile`](../ai-tools/cli/cfsai-report.md) command, or from the System Planner UI in [Embedded AI Tools](../tools/config-tool/manage-ai-models.md).
+    You can generate this report with the [`cfsai profile`](../ai-tools/cli/cfsai-report.md) command, or from the System Planner UI in [Embedded AI Tools](../tools/manage-ai-models.md).
 
 ## Memory constraint issues
 

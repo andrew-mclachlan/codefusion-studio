@@ -26,7 +26,7 @@ An overview of the CodeFusion Studio layout and navigation.
    Displays tasks such as build, clean, erase, flash, and debug. The available actions update dynamically based on the selected project in the **Context** view(2).
 
     !!! Tip
-        Click **Copy and Edit** ![Copy and Edit tasks in the Actions view](../workspaces/images/copy_and_edit-tasks-actions-view-dark.png#only-dark)![Copy and Edit tasks in the Actions view](../workspaces/images/copy_and_edit-tasks-actions-view-light.png#only-light) next to a task to create a new custom task.
+        Click **Copy and Edit** ![Copy and Edit tasks in the Actions view](../build-and-flash/images/copy_and_edit-tasks-actions-view-dark.png#only-dark)![Copy and Edit tasks in the Actions view](../build-and-flash/images/copy_and_edit-tasks-actions-view-light.png#only-light) next to a task to create a new custom task.
 
 5. **Device tree view**  
    Displays hardware components when opening a device tree file.  

@@ -23,7 +23,10 @@ import {
 	setClockNodeControlValue,
 	setDiagramData
 } from '../../state/slices/clock-nodes/clockNodes.reducer';
-import {setSignalGroupAssignment} from '../../state/slices/peripherals/peripherals.reducer';
+import {
+	setSignalAssignment,
+	setSignalGroupAssignment
+} from '../../state/slices/peripherals/peripherals.reducer';
 
 const wlp = (await import('@socs/max32690-wlp.json'))
 	.default as unknown as Soc;
@@ -644,6 +647,105 @@ describe('Generate Screen', () => {
 				cy.dataTest(
 					`generate-code:core:${projectRvId}:checkbox`
 				).should('have.attr', 'aria-checked', 'true');
+			});
+		});
+
+		it('Should display peripheral error when a required pin is missing', () => {
+			const reduxStore = configurePreloadedStore(wlp);
+
+			reduxStore.dispatch(
+				setSignalAssignment({
+					peripheral: 'GPIO0',
+					signalName: 'P0.9',
+					projectId: projectRvId
+				})
+			);
+			reduxStore.dispatch(
+				setSignalAssignment({
+					peripheral: 'GPIO0',
+					signalName: 'P0.7',
+					projectId: projectCm4Id
+				})
+			);
+			reduxStore.dispatch(
+				setAppliedSignal({
+					Pin: 'G2',
+					Peripheral: 'GPIO0',
+					Name: 'P0.7'
+				})
+			);
+
+			cy.mount(<GenerateCode />, reduxStore).then(() => {
+				// RV project should show peripheral error
+				cy.dataTest(
+					`generate-code:core:${projectRvId}:endSlot:icon`
+				).click();
+				cy.dataTest(
+					`cfsSelectionCard:${projectRvId}:content:errors-container`
+				).should('exist');
+				cy.dataTest(
+					`cfsSelectionCard:${projectRvId}:content:errors-container`
+				).should(
+					'contain.text',
+					'1 errors in Peripheral Allocation.'
+				);
+
+				// M4 project should NOT show peripheral error
+				cy.dataTest(
+					`generate-code:core:${projectCm4Id}:endSlot:icon`
+				).click();
+				cy.dataTest(
+					`cfsSelectionCard:${projectCm4Id}:content:errors-container`
+				).should('not.exist');
+			});
+		});
+
+		it('Should display two errors when both projects have missing required pins', () => {
+			const reduxStore = configurePreloadedStore(wlp);
+
+			reduxStore.dispatch(
+				setSignalAssignment({
+					peripheral: 'GPIO0',
+					signalName: 'P0.9',
+					projectId: projectRvId
+				})
+			);
+			reduxStore.dispatch(
+				setSignalAssignment({
+					peripheral: 'GPIO0',
+					signalName: 'P0.4',
+					projectId: projectCm4Id
+				})
+			);
+
+			cy.mount(<GenerateCode />, reduxStore).then(() => {
+				// RV project should show peripheral error
+				cy.dataTest(
+					`generate-code:core:${projectRvId}:endSlot:icon`
+				).click();
+				cy.dataTest(
+					`cfsSelectionCard:${projectRvId}:content:errors-container`
+				).should('exist');
+				cy.dataTest(
+					`cfsSelectionCard:${projectRvId}:content:errors-container`
+				).should(
+					'contain.text',
+					'1 errors in Peripheral Allocation.'
+				);
+
+				// M4 project should show peripheral error
+				cy.dataTest(
+					`generate-code:core:${projectCm4Id}:endSlot:icon`
+				).click();
+				cy.dataTest(
+					`cfsSelectionCard:${projectCm4Id}:content:errors-container`
+				).should('exist');
+				cy.dataTest(
+					`cfsSelectionCard:${projectCm4Id}:content:errors-container`
+				).should(
+					'contain.text',
+					'1 errors in Peripheral Allocation.'
+				);
 			});
 		});
 	});

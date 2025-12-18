@@ -19,7 +19,10 @@
 $item-height: 48px;
 $item-width: 48px;
 $tooltip-left-offset: 4px;
-$tooltip-z-index: 50;
+$tooltip-z-index: var(
+	--cfs-tooltip-z-index,
+	layout.getZIndex('tooltip')
+);
 
 .icon {
 	box-sizing: border-box;
@@ -98,7 +101,7 @@ $tooltip-z-index: 50;
 	border-color: transparent colors.$default-background transparent
 		transparent;
 	opacity: 0;
-	z-index: calc(2 * $tooltip-z-index); 
+	z-index: calc(2 * $tooltip-z-index);
 }
 
 .active {

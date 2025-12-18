@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import ClassVar
 
 from cfsai_tflite.schema.Model import Model
+from cfsai_tflite.schema.SubGraph import SubGraph
 
 
 class OperatorInfo:
@@ -168,7 +169,7 @@ class TfliteInfo:
         Args:
             fname: Path to the `tflite` file.
         """
-        self.__ops: dict[str, int] = {}
+        self.__ops: set[str] = set()
         self.__summary: str = ''
         self.__graph: str = ''
         self.__num_inputs: int = 0
@@ -186,11 +187,14 @@ class TfliteInfo:
 
         # Index of all operators used in model
         op_codes_length = model.OperatorCodesLength()
-        op_codes = []
+        self.op_codes = []
         for o in range(op_codes_length):
             code = model.OperatorCodes(o)
-            op_codes.append(code)
-            bcode = code.BuiltinCode()
+            self.op_codes.append(code)
+            # Use DeprecatedBuiltinCode() instead of BuiltinCode() for 
+            # compatibility with older models. We only have enumerations for the
+            # first 119 codes so a byte is sufficient. 
+            bcode = code.DeprecatedBuiltinCode()
             self.add_op(OperatorInfo.get_op_name(bcode))
         self.__num_ops = len(self.__ops)
 
@@ -199,10 +203,11 @@ class TfliteInfo:
             subgraph = model.Subgraphs(i)
             name = subgraph.Name()
             name = name.decode('utf-8') if name else '(no name)'
+            subgraph_ops, num_subgraph_ops = self.get_subgraph_operators(subgraph)
             self.add_to_graph(f'Subgraph {i} "{name}": ' + \
                             f'Inputs: {subgraph.InputsLength()}, ' + \
                             f'Outputs: {subgraph.OutputsLength()}, ' + \
-                            f'Operators: {subgraph.OperatorsLength()}, ' + \
+                            f'Operators: {num_subgraph_ops}, ' + \
                             f'Tensors: {subgraph.TensorsLength()}')
 
 
@@ -228,18 +233,11 @@ class TfliteInfo:
                 name = tensor.Name().decode('utf-8') if name else '(no name)'
                 self.add_to_graph(f'    {j}: {name}: {shape}')
 
-            num_graph_ops = subgraph.OperatorsLength()
-            graph_ops = {}
-            self.add_to_graph(f'  Operators ({num_graph_ops}):')
-            for j in range(num_graph_ops):
-                op = subgraph.Operators(j)
-                opcode = op_codes[op.OpcodeIndex()]
-                bcode = opcode.BuiltinCode()
-                name = OperatorInfo.get_op_name(bcode)
-                # Only emit the first instance of an op for each subgraph
-                if name not in graph_ops:
-                    graph_ops[name] = 1
-                    self.add_to_graph(f'    {j}: {name}')
+            self.add_to_graph(f'  Operators ({num_subgraph_ops}):')
+            j = 0
+            for op in subgraph_ops:
+                self.add_to_graph(f'    {j}: {op}')
+                j = j + 1
 
             num_graph_tensors = subgraph.TensorsLength()
             self.add_to_graph(f'  Tensors ({num_graph_tensors}):')
@@ -266,8 +264,7 @@ class TfliteInfo:
         Args:
             key: Operator name.
         """
-        if key not in self.__ops:
-            self.__ops[key] = 1
+        self.__ops.add(key)
 
     def add_to_graph(self, s: str) -> None:
         """
@@ -322,7 +319,7 @@ class TfliteInfo:
         Returns:
             List of the supported names.
         """
-        return list(self.__ops.keys())
+        return sorted(list(self.__ops))
 
     @property
     def graph(self) -> str:
@@ -354,6 +351,23 @@ class TfliteInfo:
         """
         return self.__num_ops
 
+    def get_subgraph_operators(self, subgraph: SubGraph) -> tuple[list[str], int]:
+        """
+        Get set of operators in the specified subgraph.
+
+        Returns:
+            Set of opcodes, number of opcodes
+        """ 
+        graph_ops = set()
+        num_graph_ops = subgraph.OperatorsLength()
+        for j in range(num_graph_ops):
+            op = subgraph.Operators(j)
+            opcode = self.op_codes[op.OpcodeIndex()]
+            bcode = opcode.DeprecatedBuiltinCode()
+            name = OperatorInfo.get_op_name(bcode)
+            graph_ops.add(name)
+        return sorted(graph_ops), len(graph_ops)
+
     def get_resolver_code(self, n:str) -> str:
         """
         Builds the C tflite resolver code.
@@ -365,7 +379,7 @@ class TfliteInfo:
             Operator resolve code.
         """
         text = f'TfLiteStatus adi_resolve_ops_{n} (tflite::MicroMutableOpResolver<{n.upper()}_NUM_OPERATORS>& resolver) {{\n' # noqa: E501
-        for o in self.__ops:
+        for o in self.operators:
             text += f'    TF_LITE_ENSURE_STATUS(resolver.Add{o}());\n'
         text += '    return kTfLiteOk;\n' + \
                 '}\n'

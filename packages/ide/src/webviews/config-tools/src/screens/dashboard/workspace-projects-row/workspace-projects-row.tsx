@@ -16,31 +16,25 @@
 import {
 	Badge,
 	Button,
-	CfsSuspense,
 	DataGridCell,
 	DataGridRow
 } from 'cfs-react-library';
 import ChevronRight from '../../../../../common/icons/ChevronRight';
 import styles from './workspace-projects-row.module.scss';
 import {type ProjectInfo} from '../../../utils/config';
-import {
-	useAssignedPeripherals,
-	usePeripheralAllocations
-} from '../../../state/slices/peripherals/peripherals.selector';
+import {useAssignedPeripherals} from '../../../state/slices/peripherals/peripherals.selector';
 import {useProjectAssignedPins} from '../../../state/slices/pins/pins.selector';
 import {useAssignedPartitions} from '../../../state/slices/partitions/partitions.selector';
 import {useAppDispatch} from '../../../state/store';
 import {
 	setActiveScreen,
-	setCoresFilter,
+	setProjectFilter,
 	setPeripheralScreenOpenProjectCards
 } from '../../../state/slices/app-context/appContext.reducer';
 import {type NavigationItem} from '../../../../../common/types/navigation';
 import Tooltip from '../../../../../common/components/tooltip/Tooltip';
 import {usePinErrors} from '../../../hooks/use-pin-errors';
 import ConflictIcon from '../../../../../common/icons/Conflict';
-import ErrorIcon from './error-icon';
-import {usePeripheralControls} from '../../../hooks/use-peripheral-controls';
 import useIsPrimaryMultipleProjects from '../../../hooks/use-is-primary-multiple-projects';
 
 import {
@@ -51,6 +45,7 @@ import {
 } from '@common/constants/core-properties';
 import {updateProjectCardOpenState} from '../../../utils/peripheral';
 import {useCallback} from 'react';
+import useProjectHasPeripheralError from '../../../hooks/use-project-has-peripheral-error';
 
 type WorkspaceProjectsRowProps = {
 	readonly project: ProjectInfo;
@@ -65,11 +60,13 @@ function WorkspaceProjectsRow({project}: WorkspaceProjectsRowProps) {
 	const assignedPartitions = useAssignedPartitions(project.ProjectId);
 	const hasCorePinErrors =
 		(usePinErrors().get(project.ProjectId) ?? 0) >= 1;
-	const allocations = usePeripheralAllocations();
+
+	const hasPeripheralError = useProjectHasPeripheralError(
+		project.ProjectId
+	);
 	const shouldShowPrimaryBadge = useIsPrimaryMultipleProjects(
 		project?.IsPrimary ?? false
 	);
-	const controlsPromise = usePeripheralControls(project.ProjectId);
 
 	const navigateToScreen = (id: NavigationItem) => {
 		dispatch(setActiveScreen(id));
@@ -84,8 +81,8 @@ function WorkspaceProjectsRow({project}: WorkspaceProjectsRowProps) {
 		);
 		dispatch(setPeripheralScreenOpenProjectCards(updatedProjects));
 
-		navigateToScreen('peripherals');
-	}, [dispatch]);
+		dispatch(setActiveScreen('peripherals'));
+	}, [dispatch, project.ProjectId]);
 
 	return (
 		<DataGridRow
@@ -127,12 +124,12 @@ function WorkspaceProjectsRow({project}: WorkspaceProjectsRowProps) {
 					>
 						<div className={`${styles.btn} ${styles.suspenseLoader}`}>
 							{assignedPeripherals.length}
-							<CfsSuspense>
-								<ErrorIcon
-									peripherals={allocations[project.ProjectId] ?? {}}
-									controlsPromise={controlsPromise}
+							{hasPeripheralError && (
+								<ConflictIcon
+									className={styles.icon}
+									data-test={`peripheral-error-${project.ProjectId}`}
 								/>
-							</CfsSuspense>
+							)}
 							<ChevronRight />
 						</div>
 					</Button>
@@ -165,7 +162,7 @@ function WorkspaceProjectsRow({project}: WorkspaceProjectsRowProps) {
 						appearance='icon'
 						dataTest='assigned-memory-button'
 						onClick={() => {
-							dispatch(setCoresFilter([project.Name]));
+							dispatch(setProjectFilter([project.ProjectId]));
 							navigateToScreen('memory');
 						}}
 					>

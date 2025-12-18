@@ -14,10 +14,17 @@
  */
 import { VSBrowser, WebView, Workbench } from "vscode-extension-tester";
 import { expect } from "chai";
-import { UIUtils } from "../config-tools-utility/config-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import { getConfigPathForFile } from "../config-tools-utility/cfsconfig-utils";
-import { allocatedFilterControl, peripheralTab } from "../page-objects/main-menu";
-import { mainPanelProjectCard, mainPanelProjectItem, signalPeripheralBlock } from "../page-objects/peripheral-allocation-section/peripheral-allocation-screen";
+import {
+  allocatedFilterControl,
+  peripheralTab,
+} from "../page-objects/main-menu";
+import {
+  mainPanelProjectCard,
+  mainPanelProjectItem,
+  signalPeripheralBlock,
+} from "../page-objects/peripheral-allocation-section/peripheral-allocation-screen";
 
 describe("Peripheral Allocation Persistance", () => {
   let browser: VSBrowser;
@@ -39,25 +46,23 @@ describe("Peripheral Allocation Persistance", () => {
   });
 
   it("Renders existing peripheral allocations from the config file", async () => {
-    await browser.openResources(getConfigPathForFile("max32690-wlp-allocated-peripherals.cfsconfig"));
+    await browser.openResources(
+      getConfigPathForFile("max32690-wlp-allocated-peripherals.cfsconfig"),
+    );
     await UIUtils.sleep(5000);
 
     view = new WebView();
     await view.wait(60000);
     await view.switchToFrame();
 
-    expect(
-      await view.findWebElement(peripheralTab),
-    ).to.exist;
+    expect(await UIUtils.findWebElement(view, peripheralTab), "Peripheral tab not found.").to.exist;
 
-    const navItem = await view.findWebElement(
-      peripheralTab,
-    );
+    const navItem = await UIUtils.findWebElement(view, peripheralTab);
 
     await navItem.click().then(async () => {
       await UIUtils.sleep(3000);
 
-      const filterControlAllocated = await view.findWebElement(
+      const filterControlAllocated = await UIUtils.findWebElement(view,
         allocatedFilterControl,
       );
 
@@ -67,48 +72,82 @@ describe("Peripheral Allocation Persistance", () => {
         await UIUtils.sleep(3000);
         // Check allocated peripherals in sidebar
         expect(
-          await view.findWebElement(await signalPeripheralBlock("ADC")),
+          await UIUtils.findWebElement(
+            view,
+            await signalPeripheralBlock("ADC"),
+          ), "Allocated peripheral ADC not found in sidebar."
         ).to.exist;
         expect(
-          await view.findWebElement(await signalPeripheralBlock("DMA")),
+          await UIUtils.findWebElement(
+            view,
+            await signalPeripheralBlock("DMA"),
+          ),
+          "Allocated peripheral DMA not found in sidebar",
         ).to.exist;
         expect(
-          await view.findWebElement(await signalPeripheralBlock("GPIO0")),
+          await UIUtils.findWebElement(
+            view,
+            await signalPeripheralBlock("GPIO0"),
+          ),
+          "Allocated peripheral GPIO0 not found in sidebar",
         ).to.exist;
         expect(
-          await view.findWebElement(await signalPeripheralBlock("GPIO4")),
+          await UIUtils.findWebElement(
+            view,
+            await signalPeripheralBlock("GPIO4"),
+          ),
+          "Allocated peripheral GPIO4 not found in sidebar",
         ).to.exist;
 
         // Check allocated peripherals in main panel
         expect(
-          await view.findWebElement(await mainPanelProjectCard("CM4"))
+          await UIUtils.findWebElement(view, await mainPanelProjectCard("CM4")),
+          "Allocated peripheral CM4 not found in main panel",
         ).to.exist;
-        const firstCard = await view.findWebElement(await mainPanelProjectCard("CM4"));
+        const firstCard = await UIUtils.findWebElement(
+          view,
+          await mainPanelProjectCard("CM4"),
+        );
         await firstCard.click().then(async () => {
           await UIUtils.sleep(3000);
 
           expect(
-            await view.findWebElement(await mainPanelProjectItem("CM4", "ADC"))
+            await UIUtils.findWebElement(
+              view,
+              await mainPanelProjectItem("CM4", "ADC"),
+            ),
+            "Project item CM4 ADC not found in main panel."
           ).to.exist;
 
           expect(
-            await view.findWebElement(await mainPanelProjectItem("CM4", "GPIO0"))
+            await UIUtils.findWebElement(
+              view,
+              await mainPanelProjectItem("CM4", "GPIO0"),
+            ),
+            "Project item CM4 GPIO0 not found in main panel.",
           ).to.exist;
         });
 
-        expect(await view.findWebElement(await mainPanelProjectCard("RV"))).to
-          .exist;
+        expect(
+          await UIUtils.findWebElement(view, await mainPanelProjectCard("RV")),
+          "Project card RV not found in main panel.",
+        ).to.exist;
 
-        await UIUtils.clickElement(
-          view,
-          await mainPanelProjectCard("RV"),
-        );
+        await UIUtils.clickElement(view, await mainPanelProjectCard("RV"));
 
         expect(
-          await view.findWebElement(await mainPanelProjectItem("RV", "DMA"))
+          await UIUtils.findWebElement(
+            view,
+            await mainPanelProjectItem("RV", "DMA"),
+          ),
+          "Project item RV DMA not found in main panel.",
         ).to.exist;
         expect(
-          await view.findWebElement(await mainPanelProjectItem("RV", "GPIO4"))
+          await UIUtils.findWebElement(
+            view,
+            await mainPanelProjectItem("RV", "GPIO4"),
+          ),
+          "Project item RV GPIO4 not found in main panel.",
         ).to.exist;
       });
     });

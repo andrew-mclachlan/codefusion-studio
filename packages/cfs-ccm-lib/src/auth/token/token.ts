@@ -153,13 +153,13 @@ export class TokenAuthorizer extends AuthorizerBase {
 
 // An access token authenticates the user to the API
 // access tokens are short-lived and need to be refreshed
-interface AccessToken {
+export interface AccessToken {
     accessToken: string; // the access token
     expiresAt: Date; // the expiration time of the access token
 }
 
 // Refresh tokens are used to obtain new access tokens
-interface TokenSessionInfo extends SessionInfo {
+export interface TokenSessionInfo extends SessionInfo {
     refreshToken: string;
 }
 
@@ -433,6 +433,13 @@ export type TokenCodeExchangeReporter = (
     | undefined
     | Promise<BrowserResponse | undefined>;
 
+// A function to call after the token exchange completes to allow verifying the access token/session
+// Should throw an error if the session is not valid
+export type TokenCodeExchangeValidator = (
+    session: TokenSessionInfo,
+    accessToken: AccessToken,
+) => void | Promise<void>;
+
 const defaultCreateFlowInitiator: TokenCodeExchangeInitiator = async (
     authUrl: URL,
 ) => {
@@ -483,7 +490,7 @@ const defaultCreateFlowReporter: TokenCodeExchangeReporter = (
 export class TokenCodeExchangeFlows
     implements AuthFlows<TokenSessionInfo, AccessToken>
 {
-    private readonly openIdConfig: Promise<openid.Configuration>;
+    #openIdConfig?: Promise<openid.Configuration>;
     private readonly callbacks: URL[];
     /**
      *
@@ -497,6 +504,7 @@ export class TokenCodeExchangeFlows
         callbacks: URL[],
         private readonly createFlowInitiator: TokenCodeExchangeInitiator = defaultCreateFlowInitiator,
         private readonly createFlowReporter: TokenCodeExchangeReporter = defaultCreateFlowReporter,
+        private readonly validateFlowSession?: TokenCodeExchangeValidator,
     ) {
         // Validate the callback URLs
         this.callbacks = callbacks.filter(
@@ -517,12 +525,6 @@ export class TokenCodeExchangeFlows
                 );
             }
         });
-
-        // Discover the OpenID Connect configuration
-        this.openIdConfig = openid.discovery(
-            new URL(this.config.authUrl),
-            this.config.clientId,
-        );
     }
 
     public static DEFAULT_ACCESS_TOKEN_EXPIRY_SECS: number = 60 * 60; // 1 hour
@@ -530,6 +532,17 @@ export class TokenCodeExchangeFlows
         5 * 60; // 5 minutes
     public static TOKEN_EXCHANGE_TIMEOUT_SECS: number = 5 * 60; // 5 minutes
     public static ID_TOKEN_USER_ID_CLAIM: string = 'sub'; // the claim to use for the user ID
+
+    // Lazy load the OpenID configuration
+    private get openIdConfig(): Promise<openid.Configuration> {
+        this.#openIdConfig ??= openid.discovery(
+            // Discover the OpenID Connect configuration
+            new URL(this.config.authUrl),
+            this.config.clientId,
+        );
+
+        return this.#openIdConfig;
+    }
 
     // This flow obtains a refresh, access, and ID token from the auth service
     /**
@@ -642,6 +655,11 @@ export class TokenCodeExchangeFlows
                     callbackUrl.pathname,
                     async (req, res) => {
                         // Exchange the auth code for access, refresh, and identity tokens
+                        let tokenError: Error | undefined;
+                        let tokenSession:
+                            | TokenSessionInfo
+                            | undefined;
+                        let accessToken: AccessToken | undefined;
                         try {
                             const tokenExchange =
                                 await openid.authorizationCodeGrant(
@@ -664,8 +682,9 @@ export class TokenCodeExchangeFlows
                             ) {
                                 throw new Error('Missing tokens');
                             }
+
                             const {
-                                accessToken,
+                                accessToken: access,
                                 userEmail,
                                 userId,
                                 scopes,
@@ -674,104 +693,86 @@ export class TokenCodeExchangeFlows
                                 session?.scopes,
                             );
 
-                            // Return the reporter response to the browser
-                            try {
-                                const successResponse =
-                                    await this.createFlowReporter({
-                                        userId,
-                                        userEmail,
-                                        scopes,
-                                    });
-                                if (successResponse) {
-                                    // If the response is a redirect, send a 301 response
-                                    if (
-                                        'location' in successResponse
-                                    ) {
-                                        res.redirect(
-                                            successResponse.statusCode,
-                                            successResponse.location,
-                                        );
-                                    }
-                                    // Otherwise, send the response body
-                                    else if (
-                                        'body' in successResponse
-                                    ) {
-                                        // Set the content type and status code
-                                        res.contentType(
-                                            successResponse.contentType,
-                                        )
-                                            .status(
-                                                successResponse.statusCode,
-                                            )
-                                            .send(
-                                                successResponse.body,
-                                            );
-                                    }
-                                }
-                            } catch {
-                                // Ignore errors from the reporter
-                            } finally {
-                                // close the connection
-                                try {
-                                    res.end();
-                                } catch {
-                                    // Ignore errors
-                                }
-                            }
+                            tokenSession = {
+                                userId,
+                                userEmail,
+                                scopes,
+                                refreshToken: refresh_token,
+                            };
+                            accessToken = access;
 
-                            // resolve the promise with the token and session info
-                            resolve([
-                                {
-                                    userId,
-                                    userEmail,
-                                    scopes,
-                                    refreshToken: refresh_token,
-                                },
-                                accessToken,
-                            ]);
+                            // Validate the session if a validator is provided
+                            if (this.validateFlowSession) {
+                                await this.validateFlowSession(
+                                    tokenSession,
+                                    accessToken,
+                                );
+                            }
                         } catch (err) {
-                            // Return the reporter response to the browser
-                            try {
-                                const errorResponse =
-                                    await this.createFlowReporter(
-                                        undefined,
-                                        err as Error,
+                            tokenError =
+                                err instanceof Error
+                                    ? err
+                                    : new Error(String(err));
+                        }
+
+                        // Run the reporter and return the response to the browser
+                        try {
+                            const sessionInfo = tokenSession
+                                ? {
+                                      userId: tokenSession.userId,
+                                      userEmail:
+                                          tokenSession.userEmail,
+                                      scopes: tokenSession.scopes,
+                                  }
+                                : undefined;
+
+                            const reporterResponse =
+                                await this.createFlowReporter(
+                                    sessionInfo,
+                                    tokenError,
+                                );
+                            if (reporterResponse) {
+                                // If the response is a redirect, send a 301 response
+                                if ('location' in reporterResponse) {
+                                    res.redirect(
+                                        reporterResponse.statusCode,
+                                        reporterResponse.location,
                                     );
-                                if (errorResponse) {
-                                    // If the response is a redirect, send a 301 response
-                                    if ('location' in errorResponse) {
-                                        res.redirect(
-                                            errorResponse.statusCode,
-                                            errorResponse.location,
-                                        );
-                                    }
-                                    // Otherwise, send the response body
-                                    else if (
-                                        'body' in errorResponse
-                                    ) {
-                                        // Set the content type and status code
-                                        res.contentType(
-                                            errorResponse.contentType,
-                                        )
-                                            .status(
-                                                errorResponse.statusCode,
-                                            )
-                                            .send(errorResponse.body);
-                                    }
                                 }
-                            } catch {
-                                // Ignore errors from the reporter
-                            } finally {
-                                // close the connection
-                                try {
-                                    res.end();
-                                } catch {
-                                    // Ignore errors
+                                // Otherwise, send the response body
+                                else if ('body' in reporterResponse) {
+                                    // Set the content type and status code
+                                    res.contentType(
+                                        reporterResponse.contentType,
+                                    )
+                                        .status(
+                                            reporterResponse.statusCode,
+                                        )
+                                        .send(reporterResponse.body);
                                 }
                             }
+                        } catch {
+                            // Ignore errors from the reporter
+                        } finally {
+                            // close the connection
+                            try {
+                                res.end();
+                            } catch {
+                                // Ignore errors
+                            }
+                        }
 
-                            // reject with the original error
-                            reject(err);
+                        // Handle the result of the token exchange
+                        if (tokenError) {
+                            reject(tokenError);
+                        } else if (tokenSession && accessToken) {
+                            resolve([tokenSession, accessToken]);
+                        } else {
+                            reject(
+                                new Error(
+                                    'Failed to create token session',
+                                ),
+                            );
                         }
                     },
                 );

@@ -20,6 +20,8 @@
 	flex: 0 0 auto;
 	width: 30px;
 	height: 18px;
+	--vscode-button-background: #{colors.$button-background};
+	--vscode-button-foreground: #{colors.$button-foreground};
 
 	&:focus .slider {
 		outline: 1px solid colors.$focus-border;
@@ -29,7 +31,7 @@
 		display: none;
 
 		&:checked + .slider {
-			background-color: colors.$button-primary-hover-background;
+			background-color: colors.$button-background;
 		}
 
 		&:checked + .slider:before {
@@ -57,7 +59,7 @@
 		right: 0;
 		bottom: 0;
 		background-color: colors.$button-secondary-background;
-		border: 1px solid colors.$input-border;
+		border: 1px solid colors.$button-secondary-foreground;
 		transition: 0.4s;
 
 		&:before {

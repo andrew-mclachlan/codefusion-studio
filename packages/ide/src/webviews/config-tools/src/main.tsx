@@ -16,7 +16,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import '../../../../../react-library/src/styles/index.scss';
-import ErrorView, {WebviewError} from './Error';
+import ErrorView, {type WebviewError} from './Error';
 
 const root = document.getElementById('root');
 const errorDiv = document.getElementById('error');

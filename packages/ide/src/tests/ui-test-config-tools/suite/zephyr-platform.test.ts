@@ -15,7 +15,7 @@
 import { VSBrowser, WebView, Workbench } from "vscode-extension-tester";
 import { expect } from "chai";
 import { getConfigPathForFile } from "../config-tools-utility/cfsconfig-utils";
-import { UIUtils } from "../config-tools-utility/config-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import { pinTab } from "../page-objects/main-menu";
 import {
   configButton,
@@ -51,30 +51,25 @@ describe("Zephyr Firmware Platform", () => {
     await view.switchToFrame();
 
     await UIUtils.clickElement(view, pinTab).then(async () => {
-      await UIUtils.sleep(3000);
-      const pin = await view.findWebElement(
+      const pin = await UIUtils.findWebElement(view,
         await mainPanelPinOnLineAndColumn(1, 2),
       );
 
       expect(await pin.getAttribute("class")).to.contain("unassigned");
 
-      await pin.click().then(async () => {
+      await UIUtils.clickElement(view, pin).then(async () => {
         // Assert pin details sidebar is rendered
         expect(await view.findWebElement(pinDetailsContainer)).to.exist;
-
-        await new Promise((res) => {
-          setTimeout(res, 500);
-        });
       });
 
-      const firstSignalToggle = await view.findWebElement(
+      const firstSignalToggle = await UIUtils.findWebElement(view,
         await signalToggleWithIndex(1),
       );
 
-      firstSignalToggle.click().then(async () => {
+      UIUtils.clickElement(view, firstSignalToggle).then(async () => {
         const navItem = await view.findWebElement(configButton);
 
-        await navItem.click().then(async () => {
+        await UIUtils.clickElement(view, navItem).then(async () => {
           await UIUtils.sleep(1000);
 
           expect(

@@ -23,7 +23,10 @@ import {
 	useSelector
 } from 'react-redux';
 import {workspaceConfigReducer} from './slices/workspace-config/workspace-config.reducer';
-import {getCurrentConfigOptions} from '../utils/workspace-config';
+import {
+	doesCoreHaveProperty,
+	getCurrentConfigOptions
+} from '../utils/workspace-config';
 import {
 	getPersistenceListenerMiddleware,
 	persistedActions
@@ -35,7 +38,8 @@ import type {
 	WorkspaceTemplateType
 } from '../common/types/state';
 import {workspaceConfigInitialState} from './constants/workspace-config';
-import type {WorkspaceCore} from '../common/types/config';
+import {type WorkspaceCore} from '../common/types/config';
+import {getCatalogCoreInfo} from '../utils/core-list';
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof rootReducer>;
@@ -95,12 +99,18 @@ const initialState = {
 			acc: Record<string, WorkspaceConfigState['cores'][string]>,
 			core
 		) => {
+			const hasSecureProp = doesCoreHaveProperty(core, 'Secure');
 			acc[core.Id] = {
 				id: core.Id,
 				coreId: core.CoreId,
 				name: core.Name,
 				isPrimary: core.IsPrimary,
 				isEnabled: core.IsEnabled,
+				isTrustZoneSupported:
+					hasSecureProp ||
+					(getCatalogCoreInfo(Soc, core.Id)?.isTrustZoneSupported ??
+						false),
+				Secure: core?.Secure,
 				pluginId: core.PluginId,
 				pluginVersion: core.PluginVersion,
 				firmwarePlatform: core.FirmwarePlatform,

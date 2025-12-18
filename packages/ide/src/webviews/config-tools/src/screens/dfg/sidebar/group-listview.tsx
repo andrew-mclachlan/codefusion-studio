@@ -74,9 +74,9 @@ export function StreamGroupListView({
 							className={styles.inOutBubble}
 							data-test={`accordion-group-length:${groupName}`}
 						>
-							{streams.length !== allStreams.length
-								? `${streams.length}/${allStreams.length}`
-								: streams.length}
+							{streams.length === allStreams.length
+								? streams.length
+								: `${streams.length}/${allStreams.length}`}
 						</div>
 					</div>
 					{/* Plus Icon */}
@@ -206,8 +206,8 @@ export function StreamGroup({streams}: StreamGroupProps) {
 		 * 2. Output gasket name (Destinations[0].Gasket)
 		 * 3. Stream alias (Description)
 		 */
-		const sortStreams = (streams: DFGStream[]) => {
-			return streams.sort((a, b) => {
+		const sortStreams = (streams: DFGStream[]) =>
+			streams.sort((a, b) => {
 				// First, sort by input gasket name
 				const inputComparison = a.Source.Gasket.localeCompare(
 					b.Source.Gasket
@@ -224,7 +224,6 @@ export function StreamGroup({streams}: StreamGroupProps) {
 				// Finally, sort by stream alias (Description)
 				return a.Description.localeCompare(b.Description);
 			});
-		};
 
 		Object.keys(groupedFilteredStreams).forEach(groupName => {
 			groupedFilteredStreams[groupName] = sortStreams(

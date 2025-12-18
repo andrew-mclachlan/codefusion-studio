@@ -1,6 +1,6 @@
 [project]
 name = "cfsai"
-version = "2.0.0"
+version = "2.0.1"
 description = "A tool to help you put your AI model on hardware"
 readme = "README.md"
 authors = [
@@ -14,9 +14,7 @@ dependencies = [
     "cfsai-model-parser",
     "cfsai-tflite",
     "cfsai-types",
-    "docker>=7.1.0",
     "dotenv>=0.9.9",
-    "fastapi[standard]>=0.115.12",
     "httpx>=0.28.1",
     "pydantic==2.11.3",
     "typer>=0.15.3",
@@ -42,12 +40,9 @@ cfsai = "cfsai.cli:cli"
 
 [dependency-groups]
 dev = [
-    "adi-mkdocs-harmonic>=0.7.0",
     "datamodel-code-generator>=0.31.2",
     "flit>=3.12.0",
-    "griffe-pydantic>=1.1.4",
     "hypothesis>=6.131.21",
-    "mkdocstrings[python]>=0.30.0",
     "mypy>=1.15.0",
     "pytest>=8.3.5",
     "ruff>=0.11.6",
@@ -111,7 +106,6 @@ ignore = [
     "ANN401", # Allowing typing.Any. This is just required in certain areas.
     "S606", # Allow starting a process without a shell
     "S603", # Same as S606 reasoning
-    "S104", # Bind to all interfaces inside the container
     "Q000", # Allow single quotes
     "W293", # Allow a blank line with whitespace
     "W291", # Allow trailing whitespace

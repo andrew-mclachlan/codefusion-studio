@@ -34,7 +34,20 @@ const config: CfsConfig = {
 	Pins: [],
 	ClockNodes: [],
 	Timestamp: '',
-	Projects: []
+	Projects: [
+		{
+			CoreId: 'CM4',
+			ExternallyManaged: false,
+			ProjectId: 'project1',
+			FirmwarePlatform: 'MAX32690',
+			Partitions: [],
+			Peripherals: [],
+			PluginId: 'test-plugin',
+			PluginVersion: '1.0.0',
+			PlatformConfig: {},
+			AIModels: []
+		}
+	]
 };
 
 const supportedBackends: Record<string, AiSupportingBackend> = {
@@ -45,7 +58,8 @@ const supportedBackends: Record<string, AiSupportingBackend> = {
 			}
 		],
 		Docker: {Size: 1},
-		MaxModels: 99
+		MaxModels: 99,
+		AdvancedTools: false
 	},
 	SingleModel: {
 		Targets: [
@@ -54,7 +68,8 @@ const supportedBackends: Record<string, AiSupportingBackend> = {
 			}
 		],
 		Docker: {Size: 1},
-		MaxModels: 1
+		MaxModels: 1,
+		AdvancedTools: false
 	}
 };
 

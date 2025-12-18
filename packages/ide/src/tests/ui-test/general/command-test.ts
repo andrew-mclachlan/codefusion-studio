@@ -57,14 +57,8 @@ describe("Command Tests", () => {
     expect(input).not.equal(undefined);
     const picks = await input.getQuickPicks();
     expect(picks).not.equal(undefined);
-    let sdkPath;
-    const texts = await Promise.all(picks.map((item) => item.getText()));
-    for (const text of texts) {
-      if (text.match(".*" + CFS_IDE_VERSION)) {
-        sdkPath = text;
-        break;
-      }
-    }
+    const labels = await Promise.all(picks.map((item) => item.getLabel()));
+    const sdkPath = labels.find((label) => label.match(".*" + CFS_IDE_VERSION));
 
     expect(sdkPath).not.equal(undefined);
     if (sdkPath !== undefined) {

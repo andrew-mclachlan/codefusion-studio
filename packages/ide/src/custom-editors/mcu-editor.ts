@@ -13,7 +13,6 @@
  *
  */
 
-/* eslint-disable complexity */
 import * as vscode from "vscode";
 import * as path from "path";
 import { ViewProviderPanel } from "../view-provider/view-provider-panel";
@@ -28,11 +27,9 @@ import {
   ConfiguredProject,
   ConfiguredPin,
   CfsSocDataModel,
-  DFG,
   DFGStream,
   GasketConfig,
   AIModel,
-  CfsProject,
 } from "cfs-plugins-api";
 import { resolveVariables } from "../utils/resolveVariables";
 import { tmpdir } from "os";
@@ -82,20 +79,6 @@ type ClockNodesPayload = Partial<{
     EnabledControls: Record<string, boolean>;
   }>;
 }>;
-
-type Document = {
-  Copyright: string;
-  DataModelSchemaVersion: string;
-  DataModelVersion: string;
-  Package: string;
-  Soc: string;
-  Timestamp: string;
-  Projects: ConfiguredProject[];
-  Pins: ConfiguredPin[];
-  ClockNodes: ConfiguredClockNode[];
-  ClockFrequencies?: Record<string, string | number>;
-  DFG?: DFG;
-};
 
 export class McuEditor implements vscode.CustomTextEditorProvider {
   public static register(

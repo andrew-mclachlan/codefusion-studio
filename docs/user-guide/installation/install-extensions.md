@@ -1,12 +1,43 @@
 ---
 description: Install the CodeFusion Studio VS Code extension
 author: Analog Devices
-date: 2025-10-30
+date: 2025-12-15
 ---
 
 # Install the CodeFusion Studio VS Code extension
 
-Install the [:octicons-link-external-24: CodeFusion Studio VS Code extension](https://marketplace.visualstudio.com/items?itemName=AnalogDevices.cfs-ide){:target="_blank"} from the Visual Studio Code Marketplace.
+You can install the CodeFusion Studio extension using one of the following methods:
+
+## **Option 1: Install from within VS Code (recommended)**
+
+1. Open **Visual Studio Code**.
+2. Go to **Extensions** (or press `Ctrl+Shift+X` / `Cmd+Shift+X`).
+3. Search for **"CodeFusion Studio"**.
+
+    ![Extension Installation](images/install-vs-code-extension-dark.png#only-dark)
+    ![Extension Installation](images/install-vs-code-extension-light.png#only-light)
+
+4. Select the extension and click **Install**.
+
+## **Option 2: Install from the Marketplace**
+
+You can also install the extension directly from the Visual Studio Code Marketplace:
+
+[:octicons-link-external-24: CodeFusion Studio VS Code Extension](https://marketplace.visualstudio.com/items?itemName=AnalogDevices.cfs-ide){:target="_blank"}
+
+Click **Install** to open Visual Studio Code and complete the installation.
+
+![Install extension](images/install-vs-code-extension.png)
+
+## Verify installation
+
+To confirm that the extension installed correctly:
+
+1. In VS Code, open **Extensions** (`Ctrl+Shift+X` / `Cmd+Shift+X`).
+2. Search for **"CodeFusion Studio"** again.
+3. The extension should appear in the **Installed** list.
+    ![Extension Installed](images/verify-vscode-extension-installed-dark.png#only-dark)
+    ![Extension Installed](images/verify-vscode-extension-installed-light.png#only-light)
 
 ## Manually install the VS Code extension
 
@@ -26,6 +57,24 @@ To manually install the extension, locate the CodeFusion Studio VS Code extensio
 
 ![Extension Installation](images/extension-installation-dark.png#only-dark)
 ![Extension Installation](images/extension-installation-light.png#only-light)
+
+## Optional: Disable automatic extension updates
+
+By default, Visual Studio Code will automatically update extensions as new versions become available. Each CFS extension version is specifically paired with a matching SDK version. If the extension updates automatically but the SDK does not, this can lead to unexpected behavior or compatibility issues. To avoid this, you may want to prevent VS Code from automatically updating the CFS extension.
+
+To disable auto-update for this extension only:
+
+1. Open the **Extensions** panel in VS Code.
+2. Search for **CodeFusion Studio** and select it to open the details page.
+3. Under the extension title, clear the **Auto Update** checkbox.
+
+![Disable automatic extension updates](images/extension-auto-update-dark.png#only-dark "Disable automatic extension updates")
+![Disable automatic extension updates](images/extension-auto-update-light.png#only-light "Disable automatic extension updates")
+
+This allows you to keep using the extension version bundled with a specific CFS SDK.
+
+!!! tip
+    If the CFS extension updated unexpectedly, disable automatic extension updates and revert to a previous version. To revert to a previous version, open the **Extensions** panel, click the gear icon next to the CodeFusion Studio extension, and choose **Install Specific Version…**. You can also install a specific version using **Install from VSIX…**, as documented above.
 
 ## Next steps
 

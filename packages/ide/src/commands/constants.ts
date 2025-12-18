@@ -73,10 +73,7 @@ export const OPEN_DISASSEMBLY_COMMAND_ID = "cfs.openDisassemblyView";
 export const OPEN_WITH_SSPLUS_COMMAND_ID = "cfs.explorer.openWithSSPlus";
 
 // ADI SDK commands
-export const BROWSE_SDK_PATH_COMMAND_ID = "cfs.SDK.browseSdkPath";
-export const OPEN_SDK_PATH_SETTINGS_COMMAND_ID = "cfs.SDK.openSdkPathSetting";
 export const SELECT_SDK_PATH_COMMAND_ID = "cfs.SDK.selectSdkPath";
-export const SET_SDK_PATH_COMMAND_ID = "cfs.SDK.setSdkPath";
 
 // ADI debug commands
 export const START_DEBUG_COMMAND_ID = "cfs.debug.start";

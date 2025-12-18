@@ -20,6 +20,8 @@
 	@include fonts.body-b1;
 	font-family: fonts.$default-font-family;
 	width: var(--multiselect-width, 222px);
+	--vscode-button-background: #{colors.$button-background};
+	--vscode-button-foreground: #{colors.$button-foreground};
 
 	&.disabled {
 		opacity: 0.4;
@@ -27,9 +29,9 @@
 	}
 
 	.dropdown {
-		border: 0.5px solid colors.$default-border;
-		background-color: colors.$input-background;
-		color: colors.$default-foreground;
+		border: 0.5px solid colors.$editor-widget-border;
+		background-color: colors.$button-secondary-background;
+		color: colors.$button-secondary-foreground;
 		font-family: fonts.$default-font-family;
 		height: var(--multiselect-height, 28px);
 		display: flex;
@@ -43,6 +45,7 @@
 
 	.selectedBackground {
 		background-color: colors.$button-background;
+		color: colors.$button-foreground;
 		border: none;
 	}
 
@@ -104,7 +107,6 @@
 		width: var(--multiselect-options-width, 222px);
 		border: 0.5px solid colors.$editor-widget-border;
 		background-color: colors.$editor-widget-background;
-		border-top: 0;
 		max-height: 128px;
 		flex-direction: column;
 		padding: 8px 0;
@@ -121,7 +123,8 @@
 	}
 
 	.chip {
-		background-color: colors.$default-background;
+		background-color: colors.$editor-widget-background;
+		color: colors.$editor-widget-foreground;
 		height: 16px;
 		width: 22px;
 		padding: 3px 7px 2px 7px;

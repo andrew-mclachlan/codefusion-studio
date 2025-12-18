@@ -15,9 +15,14 @@
 import { VSBrowser, WebView, Workbench } from "vscode-extension-tester";
 import { expect } from "chai";
 import { getConfigPathForFile } from "../config-tools-utility/cfsconfig-utils";
-import { UIUtils } from "../config-tools-utility/config-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import { pinTab } from "../page-objects/main-menu";
-import { focusedPinBackdrop, mainPanelPinOnLineAndColumn, pinDetailsContainer, pinTooltipTitle } from "../page-objects/pin-config-section/pin-config-screen";
+import {
+  focusedPinBackdrop,
+  mainPanelPinOnLineAndColumn,
+  pinDetailsContainer,
+  pinTooltipTitle,
+} from "../page-objects/pin-config-section/pin-config-screen";
 
 describe("Pin Selection", () => {
   let browser: VSBrowser;
@@ -49,25 +54,21 @@ describe("Pin Selection", () => {
     await UIUtils.clickElement(view, pinTab).then(async () => {
       await UIUtils.sleep(3000);
 
-      const pin = await view.findWebElement(
+      const pin = await UIUtils.findWebElement(view,
         await mainPanelPinOnLineAndColumn(1, 2),
       );
 
       expect(await pin.getText()).to.contain("P2.26");
 
       await pin.click().then(async () => {
-        expect(await view.findWebElement(pinDetailsContainer)).to
-          .exist;
+        expect(await UIUtils.findWebElement(view, pinDetailsContainer)).to.exist;
 
-        const title = await view.findWebElement(
-         pinTooltipTitle,
-        );
+        const title = await UIUtils.findWebElement(view, pinTooltipTitle);
 
         expect(await title.getText()).to.contain("P2.26");
 
         // Assert backdrop exists
-        expect(await view.findWebElement(focusedPinBackdrop)).to
-          .exist;
+        expect(await UIUtils.findWebElement(view, focusedPinBackdrop)).to.exist;
       });
     });
   }).timeout(60000);

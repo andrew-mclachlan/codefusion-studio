@@ -53,6 +53,10 @@ export function sysPlannerDataInit(
 	initializeSocMemoryTypes(dataModel.MemoryTypes);
 	initializeDfg(dataModel.Gaskets);
 
-	initializeAiToolsData(dataModel.Cores, dataModel.Peripherals);
+	initializeAiToolsData(
+		dataModel.Cores,
+		dataModel.Peripherals,
+		configOptions?.Projects
+	);
 	initializeProfilingPeripherals(dataModel.Peripherals);
 }

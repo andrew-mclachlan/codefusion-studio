@@ -14,10 +14,23 @@
  */
 
 import {getWorkspaceConfig} from './api';
-import type {WorkspaceConfig} from '../common/types/config';
+import type {
+	WorkspaceConfig,
+	WorkspaceCore
+} from '../common/types/config';
 import {isCypressEnvironment} from '@common/utils/env';
 import type {CfsPluginInfo} from 'cfs-lib';
-import {type StateProject} from '../common/types/state';
+import type {StateProject} from '../common/types/state';
+
+import {
+	SECURE_PROJ_ID_SUFFIX as S_ID_SUFFIX,
+	NON_SECURE_PROJ_ID_SUFFIX as NS_ID_SUFFIX
+} from '../common/constants/identifiers';
+
+import {
+	SECURE_ABBR as S,
+	NON_SECURE_ABBR as NS
+} from '@common/constants/core-properties';
 
 export let workspaceConfig: WorkspaceConfig;
 
@@ -57,41 +70,49 @@ export function findPluginInfo(
 		p => p.pluginId === pluginId && p.pluginVersion === pluginVersion
 	);
 }
-function hasSecureAndNonSecure(
-	baseId: string,
-	selectedCores: Record<string, StateProject>
-) {
-	return (
-		selectedCores[`${baseId}-secure`]?.isEnabled ||
-		selectedCores[`${baseId}-nonsecure`]?.isEnabled
-	);
-}
-
-export function getEnabledCores(
-	selectedCores: Record<string, StateProject>
-) {
-	const enabledCores = Object.values(selectedCores).filter(core => {
-		// If this is a base core and both secure/non-secure are enabled, filter it out
-		const isBase =
-			!core.id.endsWith('-secure') && !core.id.endsWith('-nonsecure');
-
-		if (isBase && hasSecureAndNonSecure(core.id, selectedCores)) {
-			return false;
-		}
-
-		return core.isEnabled;
-	});
-
-	return enabledCores;
-}
 
 export function getBaseCoreName(name?: string) {
 	return name?.replace(/\s*\(.*\)$/, '') ?? '';
 }
 
-export function getTrustZoneIds(coreId: string) {
+export function getTrustZoneProjectIds(coreId: string) {
 	return {
-		secureCoreId: `${coreId}-secure`,
-		nonSecureCoreId: `${coreId}-nonsecure`
+		secureProjectId: `${coreId}${S_ID_SUFFIX}`,
+		nonSecureProjectId: `${coreId}${NS_ID_SUFFIX}`
 	};
+}
+
+// Helper to get both secure and non-secure project IDs for a core
+// but, it can be expanded later if other multiple project types are added
+export function getMultipleProjectIds(coreId: string) {
+	return Object.values(getTrustZoneProjectIds(coreId));
+}
+
+export function doesCoreHaveProperty(
+	core: StateProject | WorkspaceCore,
+	key: string
+): boolean {
+	return Object.prototype.hasOwnProperty.call(core, key);
+}
+
+/**
+ * If the project's core has the secure property and TrustZone is enabled,
+ * append 'S' or 'NS' suffix to the project name based on the secure flag.
+ * @param projectName
+ * @param coreState
+ * @returns
+ */
+export function addSuffixToProjectName(
+	projectName: string,
+	coreState: StateProject
+) {
+	const hasCoreSecureProp = doesCoreHaveProperty(coreState, 'Secure');
+
+	const suffix = coreState?.Secure ? S : NS;
+
+	return coreState.isTrustZoneSupported
+		? hasCoreSecureProp
+			? `${projectName}${suffix}`
+			: projectName
+		: projectName;
 }

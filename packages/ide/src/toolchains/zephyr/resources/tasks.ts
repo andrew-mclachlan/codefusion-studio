@@ -68,7 +68,8 @@ export default function (platformConfig?: Record<string, any>) {
         label: "flash (OpenOCD)",
         id: "flash-openocd",
         type: "shell",
-        command: "west flash",
+        command:
+          'west flash --runner openocd --no-reset --config "${config:cfs.openocd.interface}"',
         group: {
           kind: "build",
           isDefault: false,
@@ -78,18 +79,20 @@ export default function (platformConfig?: Record<string, any>) {
       {
         label: "flash (JLink)",
         type: "shell",
-        windows: {
-          command:
-            '(echo loadfile ${config:cfs.programFile} && echo q) | "${command:cfs.jlink.setJlinkPath}/JLink.exe" -device ${config:cfs.jlink.device} -if SWD -speed 4000 -autoconnect 1 -NoGui 1 -ExitOnError 1',
+        command: "west flash --runner jlink --no-reset --speed 4000",
+        group: {
+          kind: "build",
+          isDefault: false,
         },
-        osx: {
-          command:
-            '(echo loadfile ${config:cfs.programFile} && echo q) | "${command:cfs.jlink.setJlinkPath}/JLinkExe" -device ${config:cfs.jlink.device} -if SWD -speed 4000 -autoconnect 1 -NoGui 1 -ExitOnError 1',
-        },
-        linux: {
-          command:
-            '(echo loadfile ${config:cfs.programFile} && echo q) | "${command:cfs.jlink.setJlinkPath}/JLinkExe" -device ${config:cfs.jlink.device} -if SWD -speed 4000 -autoconnect 1 -NoGui 1 -ExitOnError 1',
-        },
+        problemMatcher: [],
+        dependsOn: ["build"],
+      },
+      {
+        label: "flash & run (OpenOCD)",
+        type: "shell",
+        command:
+          'west flash --runner openocd --config "${config:cfs.openocd.interface}"',
+        args: [],
         group: {
           kind: "build",
           isDefault: false,
@@ -99,19 +102,9 @@ export default function (platformConfig?: Record<string, any>) {
       },
       {
         label: "flash & run (JLink)",
+        id: "flash-run-jlink",
         type: "shell",
-        windows: {
-          command:
-            '(echo rst 0 && echo loadfile ${config:cfs.programFile} && echo r && echo g && echo q) | "${command:cfs.jlink.setJlinkPath}/JLink.exe" -device ${config:cfs.jlink.device} -if SWD -speed 4000 -autoconnect 1 -NoGui 1 -ExitOnError 1',
-        },
-        osx: {
-          command:
-            '(echo rst 0 && echo loadfile ${config:cfs.programFile} && echo r && echo g && echo q) | "${command:cfs.jlink.setJlinkPath}/JLinkExe" -device ${config:cfs.jlink.device} -if SWD -speed 4000 -autoconnect 1 -NoGui 1 -ExitOnError 1',
-        },
-        linux: {
-          command:
-            '(echo rst 0 && echo loadfile ${config:cfs.programFile} && echo r && echo g && echo q) | "${command:cfs.jlink.setJlinkPath}/JLinkExe" -device ${config:cfs.jlink.device} -if SWD -speed 4000 -autoconnect 1 -NoGui 1 -ExitOnError 1',
-        },
+        command: "west flash --runner jlink",
         group: {
           kind: "build",
           isDefault: false,
@@ -124,7 +117,10 @@ export default function (platformConfig?: Record<string, any>) {
         type: "shell",
         command:
           'openocd -s ${config:cfs.openocd.path}/share/openocd/scripts -f ${config:cfs.openocd.interface} -f ${config:cfs.openocd.target} -c "init; reset halt; max32xxx mass_erase 0;" -c exit',
-        group: "build",
+        group: {
+          kind: "build",
+          isDefault: false,
+        },
         problemMatcher: [],
         dependsOn: [],
       },

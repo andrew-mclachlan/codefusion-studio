@@ -18,4 +18,8 @@
 	--cfs-tooltip-body-padding: 5px 8px;
 	--cfs-tooltip-layout-min-width: 89px;
 	max-width: 160px;
+
+	* {
+		color: var(--vscode-editor-foreground);
+	}
 }

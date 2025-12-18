@@ -38,7 +38,7 @@ You can uninstall CodeFusion Studio using the Maintenance Tool.
 
 ## Uninstall packages
 
-For CFS 2.0.0, SDKs, plugins, and data models are installed using the [Package Manager](../installation/package-manager/index.md). These packages are stored locally and are not removed when you uninstall CFS 2.0.0.
+From CFS 2.0.0 and later, SDKs, plugins, and data models are installed using the [Package Manager](../installation/package-manager/index.md). These packages are stored locally and are not removed when you uninstall CFS.
 
 To fully reset your environment and remove cached packages, delete the following directory:
 

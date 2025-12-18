@@ -91,6 +91,7 @@ def setup_logger(
         debug_level: Enable DEBUG mode.
     """
     logger = logging.getLogger()
+    logger.handlers.clear()
     stdout_handler: logging.Handler
     stderr_handler: logging.Handler
     if json_format:

@@ -72,14 +72,14 @@ import {
   getPartitionsByCoreId,
   parseJSONFile,
 } from "../../config-tools-utility/cfsconfig-utils";
-import { UIUtils } from "../../config-tools-utility/config-utils";
+import { UIUtils } from "../../../ui-test-utils/ui-utils";
 import { memoryAllocationTab } from "../../page-objects/main-menu";
 import {
   assignCores,
   assignedCoresDropdownOptions,
   baseBlockDropdown,
-  getBaseBlockOption,
   createConfiguredPartition,
+  getBaseBlockOption,
   memoryTypeDropdown,
   memoryTypeSelector,
   partitionNameTextBox,
@@ -87,7 +87,7 @@ import {
   projectCorePermission,
   secureStartAddress,
   sizeStepper,
-  startAddress
+  startAddress,
 } from "../../page-objects/memory-allocation-section/create-partition-sidebar";
 import {
   createPartitionButton,
@@ -139,10 +139,11 @@ describe("Partition creation and validation", () => {
     await UIUtils.clickElement(view, createPartitionButton);
 
     // And I select "Flash" from the memory type dropdown
-    await UIUtils.clickElement(view, memoryTypeDropdown);
-
-    // Select memory type (Can be "Flash" or "RAM")-based on current options
-    await UIUtils.clickElement(view, await memoryTypeSelector("Flash"));
+    await UIUtils.selectOptionFromDropdown(
+      view,
+      memoryTypeDropdown,
+      await memoryTypeSelector("Flash"),
+    );
 
     // And I set the partition name to "testpartition"
     await UIUtils.clickElement(view, partitionNameTextBox);
@@ -160,7 +161,10 @@ describe("Partition creation and validation", () => {
     await assignCores(view, cores);
 
     // And I open the CM4 permission dropdown
-    await UIUtils.clickElement(view, await assignedCoresDropdownOptions("CM4-proj"));
+    await UIUtils.clickElement(
+      view,
+      await assignedCoresDropdownOptions("CM4-proj"),
+    );
 
     // And I set the CM4 core permission to "R/W"
     await UIUtils.clickElement(view, await projectCorePermission("R/W"));
@@ -267,8 +271,11 @@ describe("Partition creation and validation", () => {
     await UIUtils.clickElement(view, createPartitionButton);
 
     // And I select "RAM" from the memory type dropdown
-    await UIUtils.clickElement(view, memoryTypeDropdown);
-    await UIUtils.clickElement(view, await memoryTypeSelector("RAM"));
+    await UIUtils.selectOptionFromDropdown(
+      view,
+      memoryTypeDropdown,
+      await memoryTypeSelector("RAM"),
+    );
 
     // And I set the partition name to "testpartition"
     await UIUtils.clickElement(view, partitionNameTextBox);
@@ -386,7 +393,8 @@ describe("Partition creation and validation", () => {
     // And I edit the partition address
     await UIUtils.clickElement(view, await partitionDetailsChevron(1));
     await UIUtils.clickElement(view, await getEditPartitionButton(1));
-
+    //Adding waitforelement to be visible to avoid flaky test
+    await UIUtils.waitForElementToBeVisible(view, secureStartAddress);
     await UIUtils.clickElement(view, secureStartAddress);
     await (await UIUtils.findWebElement(view, secureStartAddress)).clear();
     await UIUtils.sendKeysToElements(view, secureStartAddress, "30009000");

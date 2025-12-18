@@ -1160,8 +1160,7 @@ class CfsDatamodel(BaseModel):
     copyright: str = Field(
         ...,
         alias='Copyright',
-        description='The copyright for the file.',
-        pattern='Copyright.*Analog Devices.*All rights reserved',
+        description='The copyright for the file.'
     )
     version: str = Field(
         ...,

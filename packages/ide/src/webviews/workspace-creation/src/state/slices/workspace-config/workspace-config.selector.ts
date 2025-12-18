@@ -25,8 +25,23 @@ export const useSelectedBoardPackage = () =>
 export const useSelectedCores = () =>
 	useAppSelector(state => state.workspaceConfigReducer.cores);
 
+export const useEnabledCores = () => {
+	const cores = useAppSelector(
+		state => state.workspaceConfigReducer.cores
+	);
+
+	return Object.values(cores).filter(core => core.isEnabled);
+};
+
 export const useConfiguredCore = (coreId: string) =>
 	useAppSelector(state => state.workspaceConfigReducer.cores[coreId]);
+
+export const useConfiguredCores = (coreIds: string[]) =>
+	useAppSelector(state =>
+		coreIds
+			.map(coreId => state.workspaceConfigReducer.cores[coreId])
+			.filter(core => Boolean(core))
+	);
 
 export const useIsCoreEnabled = (coreId: string) =>
 	useAppSelector(
@@ -81,19 +96,3 @@ export const useCurrentCoreConfigStep = () =>
 	useAppSelector(
 		state => state.workspaceConfigReducer.currentCoreConfigStep
 	);
-
-export const useIsTrustZoneEnabled = (id: string) =>
-	useAppSelector(state =>
-		Boolean(state.workspaceConfigReducer.isTrustZoneEnabled[id])
-	);
-
-export const useCoresToPersist = () =>
-	useAppSelector(state => {
-		const cores = state.workspaceConfigReducer.cores;
-		return Object.keys(cores)
-			.filter(
-				coreId =>
-					!state.workspaceConfigReducer.isTrustZoneEnabled[coreId]
-			)
-			.map(coreId => cores[coreId]);
-	});

@@ -27,8 +27,11 @@ import {
   Workbench,
 } from "vscode-extension-tester";
 
-import { getConfigPathForFile, parseJSONFile } from "../config-tools-utility/cfsconfig-utils";
-import { UIUtils } from "../config-tools-utility/config-utils";
+import {
+  getConfigPathForFile,
+  parseJSONFile,
+} from "../config-tools-utility/cfsconfig-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import { clockTab } from "../page-objects/main-menu";
 import {
   accordion,

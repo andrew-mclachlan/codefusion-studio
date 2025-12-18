@@ -1,8 +1,9 @@
 {
-  "Copyright": "Copyright (c) 2024-2025 Analog Devices, Inc.  All rights reserved. This software is proprietary to Analog Devices, Inc. and its licensors.",
-  "Version": "1.2.148",
+  "Copyright": "Copyright (c) 2024-2025 Analog Devices, Inc.",
+  "License": "Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.",
+  "Version": "1.3.98",
   "Schema": "1.2.0",
-  "Timestamp": "2025-10-22 20:24:46.790799",
+  "Timestamp": "2025-11-26 14:21:45.290162",
   "Name": "MAX32670",
   "Description": "High-Reliability, Ultra-Low-Power Microcontroller Powered by Arm Cortex-M4 Processor with FPU for Industrial and IoT",
   "Endianness": "Little",
@@ -25352,8 +25353,8 @@
       "Fields": [
         {
           "Name": "SEL",
-          "Description": "Auto-calibration Enable",
-          "Documentation": "Auto-calibration Enable.",
+          "Description": "IPO Automatic Calibration Enable",
+          "Documentation": "Selects the trim value to use for the IPO. The reset default for this field uses the factory trim for the IPO. Setting this field to 1 uses the automatic calibration trim output stored in FCR_AUTOCAL0.ldtrm.",
           "Position": 0,
           "Length": 1,
           "Access": "R/W",
@@ -25361,22 +25362,22 @@
           "Enum": [
             {
               "Name": "DIS",
-              "Description": "Disabled",
+              "Description": "Use Default Trim from the Factory.",
               "Value": 0,
-              "Documentation": "Disabled."
+              "Documentation": "Use Default Trim from the Factory."
             },
             {
               "Name": "EN",
-              "Description": "Enabled",
+              "Description": "Use Automatic Calibration Trim Value.",
               "Value": 1,
-              "Documentation": "Enabled."
+              "Documentation": "Use Automatic Calibration Trim Value."
             }
           ]
         },
         {
           "Name": "EN",
-          "Description": "Auto-calibration Run",
-          "Documentation": "Auto-calibration Run.",
+          "Description": "IPO Automatic Calibration Run",
+          "Documentation": "IPO Automatic Calibration Run.",
           "Position": 1,
           "Length": 1,
           "Access": "R/W",
@@ -25398,8 +25399,8 @@
         },
         {
           "Name": "LOAD",
-          "Description": "Load Trim",
-          "Documentation": "Load Trim.",
+          "Description": "IPO Initial Trim Load",
+          "Documentation": "Set this bit to load the initial trim value for the IPO from FCR_AUTOCAL1.inittrm. This bit is cleared by hardware once the load is complete.",
           "Position": 2,
           "Length": 1,
           "Access": "R/W",
@@ -25407,8 +25408,8 @@
         },
         {
           "Name": "INVERT",
-          "Description": "Invert Gain",
-          "Documentation": "Invert Gain.",
+          "Description": "IPO Trim Step Invert",
+          "Documentation": "Set this field to invert the up/down trim steps during calibration operations.",
           "Position": 3,
           "Length": 1,
           "Access": "R/W",
@@ -25416,15 +25417,15 @@
           "Enum": [
             {
               "Name": "NOT",
-              "Description": "Not Running",
+              "Description": "Trim Steps are Not Inverted.",
               "Value": 0,
-              "Documentation": "Not Running."
+              "Documentation": "Trim Steps are Not Inverted."
             },
             {
               "Name": "RUN",
-              "Description": "Running",
+              "Description": "Enable Inverted Trim Steps for Calibration.",
               "Value": 1,
-              "Documentation": "Running."
+              "Documentation": "Enable Inverted Trim Steps for Calibration."
             }
           ]
         },
@@ -25462,8 +25463,8 @@
         },
         {
           "Name": "GAIN",
-          "Description": "MU Value",
-          "Documentation": "MU Value.",
+          "Description": "IPO Trim Pulse Count",
+          "Documentation": "Load this field with the desired number of trim adjustment pulses required before the trim is updated during automatic calibration operation.",
           "Position": 8,
           "Length": 12,
           "Access": "R/W",
@@ -25480,8 +25481,8 @@
         },
         {
           "Name": "TRIM",
-          "Description": "HIRC96M Trim Value Determinged by Auto Calibration",
-          "Documentation": "HIRC96M Trim Value Determinged by Auto Calibration.",
+          "Description": "IPO Automatic Trim Value Output",
+          "Documentation": "This field contains the calculated trim output from an automatic calibration run.",
           "Position": 23,
           "Length": 9,
           "Access": "R/W",
@@ -25524,7 +25525,7 @@
         {
           "Name": "RUNTIME",
           "Description": "IPO Trim Automatic Calibration Run Time",
-          "Documentation": "Set this field to the desired number of milliseconds for the atomic calibration runtime for the IPO.",
+          "Documentation": "Set this field to the desired number of milliseconds for the atomic calibration run time for the IPO.",
           "Position": 0,
           "Length": 8,
           "Access": "R/W",
@@ -25658,7 +25659,7 @@
             {
               "Name": "ERASEALL",
               "Description": "Enable Mass Erase",
-              "Value": "0xaa",
+              "Value": "0xAA",
               "Documentation": "The debug port must be enabled."
             }
           ]
@@ -25984,7 +25985,7 @@
           "Position": 0,
           "Length": 6,
           "Access": "R",
-          "Reset": 0
+          "Reset": 8
         },
         {
           "Name": "SYSCLK_DIV",
@@ -26126,8 +26127,8 @@
         },
         {
           "Name": "IPO_DIV",
-          "Description": "HIRC96M Source Clock Divider",
-          "Documentation": "HIRC96M Source Clock Divider.",
+          "Description": "IPO Prescaler",
+          "Documentation": "Divides the IPO clock before it is selected as SYS_OSC.",
           "Position": 14,
           "Length": 2,
           "Access": "R/W",
@@ -26239,12 +26240,12 @@
         },
         {
           "Name": "IBRO_EN",
-          "Description": "7.3725 MHz Clock Enable",
-          "Documentation": "7.3725 MHz Clock Enable.",
+          "Description": "7.3728 MHz Clock Enable",
+          "Documentation": "7.3728 MHz Clock Enable.",
           "Position": 20,
           "Length": 1,
           "Access": "R/W",
-          "Reset": 1,
+          "Reset": 0,
           "Enum": [
             {
               "Name": "DIS",
@@ -26262,7 +26263,7 @@
         },
         {
           "Name": "IBRO_VS",
-          "Description": "7.3725 MHz High Frequency Internal Reference Clock Voltage Select",
+          "Description": "7.3728 MHz High Frequency Internal Reference Clock Voltage Select",
           "Documentation": "This register bit is used to select the power supply to the IBRO.",
           "Position": 21,
           "Length": 1,
@@ -26270,16 +26271,16 @@
           "Reset": 0,
           "Enum": [
             {
-              "Name": "VCOR",
-              "Description": "VCore Supply",
+              "Name": "1V",
+              "Description": "Dedicated 1v Regulated Supply",
               "Value": 0,
-              "Documentation": "VCore Supply."
+              "Documentation": "Dedicated 1v Regulated Supply."
             },
             {
-              "Name": "1V",
-              "Description": "Dedicated 1V Regulated Supply",
+              "Name": "VCOR",
+              "Description": "VCore Supply",
               "Value": 1,
-              "Documentation": "Dedicated 1V Regulated Supply."
+              "Documentation": "VCore Supply."
             }
           ]
         },
@@ -26302,16 +26303,16 @@
           "Reset": 0,
           "Enum": [
             {
-              "Name": "NOT",
-              "Description": "Is Not Ready",
-              "Value": 0,
-              "Documentation": "Is Not Ready."
-            },
-            {
               "Name": "READY",
               "Description": "Is Ready",
               "Value": 1,
               "Documentation": "Is Ready."
+            },
+            {
+              "Name": "BUSY",
+              "Description": "Is Not Ready",
+              "Value": 0,
+              "Documentation": "Is Not Ready."
             }
           ]
         },
@@ -26321,20 +26322,20 @@
           "Documentation": "32 KHz Crystal Oscillator Ready.",
           "Position": 25,
           "Length": 1,
-          "Access": "R/W",
+          "Access": "R",
           "Reset": 0,
           "Enum": [
-            {
-              "Name": "NOT",
-              "Description": "Is Not Ready",
-              "Value": 0,
-              "Documentation": "Is Not Ready."
-            },
             {
               "Name": "READY",
               "Description": "Is Ready",
               "Value": 1,
               "Documentation": "Is Ready."
+            },
+            {
+              "Name": "BUSY",
+              "Description": "Is Not Ready",
+              "Value": 0,
+              "Documentation": "Is Not Ready."
             }
           ]
         },
@@ -26349,47 +26350,47 @@
         },
         {
           "Name": "IPO_RDY",
-          "Description": "100 MHz Clock Ready",
-          "Documentation": "100 MHz Clock Ready.",
+          "Description": "IPO Ready Status",
+          "Documentation": "IPO Ready Status.",
           "Position": 27,
           "Length": 1,
-          "Access": "R/W",
+          "Access": "R",
           "Reset": 0,
           "Enum": [
-            {
-              "Name": "NOT",
-              "Description": "Is Not Ready",
-              "Value": 0,
-              "Documentation": "Is Not Ready."
-            },
             {
               "Name": "READY",
               "Description": "Is Ready",
               "Value": 1,
               "Documentation": "Is Ready."
+            },
+            {
+              "Name": "BUSY",
+              "Description": "Is Not Ready",
+              "Value": 0,
+              "Documentation": "Is Not Ready."
             }
           ]
         },
         {
           "Name": "IBRO_RDY",
-          "Description": "7.3725 MHz HIRC Ready",
-          "Documentation": "7.3725 MHz HIRC Ready.",
+          "Description": "7.3728 MHz Oscillator Ready",
+          "Documentation": "7.3728 MHz Oscillator Ready.",
           "Position": 28,
           "Length": 1,
-          "Access": "R/W",
+          "Access": "R",
           "Reset": 0,
           "Enum": [
-            {
-              "Name": "NOT",
-              "Description": "Is Not Ready",
-              "Value": 0,
-              "Documentation": "Is Not Ready."
-            },
             {
               "Name": "READY",
               "Description": "Is Ready",
               "Value": 1,
               "Documentation": "Is Ready."
+            },
+            {
+              "Name": "BUSY",
+              "Description": "Is Not Ready",
+              "Value": 0,
+              "Documentation": "Is Not Ready."
             }
           ]
         },
@@ -26399,20 +26400,20 @@
           "Documentation": "8 KHz Low Frequency Reference Clock Ready.",
           "Position": 29,
           "Length": 1,
-          "Access": "R/W",
+          "Access": "R",
           "Reset": 0,
           "Enum": [
-            {
-              "Name": "NOT",
-              "Description": "Is Not Ready",
-              "Value": 0,
-              "Documentation": "Is Not Ready."
-            },
             {
               "Name": "READY",
               "Description": "Is Ready",
               "Value": 1,
               "Documentation": "Is Ready."
+            },
+            {
+              "Name": "BUSY",
+              "Description": "Is Not Ready",
+              "Value": 0,
+              "Documentation": "Is Not Ready."
             }
           ]
         },
@@ -26423,28 +26424,28 @@
           "Position": 30,
           "Length": 1,
           "Access": "R",
-          "Reset": 0
+          "Reset": 1
         },
         {
           "Name": "EXTCLK_RDY",
-          "Description": "External Clock GPIO0_28 AF2 Ready",
-          "Documentation": "Clock is ready when AF2 is enabled for GPIO0_28.",
+          "Description": "External Clock Ready",
+          "Documentation": "External Clock Ready.",
           "Position": 31,
           "Length": 1,
-          "Access": "R/W",
-          "Reset": 0,
+          "Access": "R",
+          "Reset": 1,
           "Enum": [
-            {
-              "Name": "NOT",
-              "Description": "Is Not Ready",
-              "Value": 0,
-              "Documentation": "Is Not Ready."
-            },
             {
               "Name": "READY",
               "Description": "Is Ready",
               "Value": 1,
               "Documentation": "Is Ready."
+            },
+            {
+              "Name": "BUSY",
+              "Description": "Is Not Ready",
+              "Value": 0,
+              "Documentation": "Is Not Ready."
             }
           ]
         }
@@ -27161,7 +27162,32 @@
           "Length": 2,
           "Access": "R/W",
           "Reset": 0,
-          "Enum": []
+          "Enum": [
+            {
+              "Name": "OFF",
+              "Description": "Clock off",
+              "Value": 0,
+              "Documentation": "Clock off."
+            },
+            {
+              "Name": "DIV2",
+              "Description": "IBRO Clock Div 2",
+              "Value": 1,
+              "Documentation": "IBRO Clock Div 2."
+            },
+            {
+              "Name": "DIV4",
+              "Description": "ERFO Clock Div 4",
+              "Value": 2,
+              "Documentation": "ERFO Clock Div 4."
+            },
+            {
+              "Name": "DIV8",
+              "Description": "ERFO Clock Div 8",
+              "Value": 3,
+              "Documentation": "ERFO Clock Div 8."
+            }
+          ]
         },
         {
           "Name": "DIV_CLK_OUT_EN",
@@ -27171,7 +27197,20 @@
           "Length": 1,
           "Access": "R/W",
           "Reset": 0,
-          "Enum": []
+          "Enum": [
+            {
+              "Name": "DIS",
+              "Description": "HART Clock Disable",
+              "Value": 0,
+              "Documentation": "HART Clock Disable."
+            },
+            {
+              "Name": "EN",
+              "Description": "HART Clock Enable",
+              "Value": 1,
+              "Documentation": "HART Clock Enable."
+            }
+          ]
         },
         {
           "Name": "RESERVED",
@@ -27276,7 +27315,7 @@
         },
         {
           "Name": "LPTMR0_WE",
-          "Description": "TIMER4 Wake up Enable",
+          "Description": "LPTMR0 Wake up Enable",
           "Documentation": "This bit enables TIMER4 as wakeup source.",
           "Position": 6,
           "Length": 1,
@@ -27299,7 +27338,7 @@
         },
         {
           "Name": "LPTMR1_WE",
-          "Description": "TIMER5 Wake up Enable",
+          "Description": "LPTMR1 Wake up Enable",
           "Documentation": "This bit enables TIMER5 as wakeup source.",
           "Position": 7,
           "Length": 1,
@@ -27322,7 +27361,7 @@
         },
         {
           "Name": "LPUART0_WE",
-          "Description": "LPUART3 Wake up Enable",
+          "Description": "LPUART0 Wake up Enable",
           "Documentation": "This bit enables LPUART3 as wakeup source.",
           "Position": 8,
           "Length": 1,
@@ -27354,12 +27393,12 @@
         },
         {
           "Name": "ERFO_PD",
-          "Description": "32MHz Power Down",
-          "Documentation": "This bit selects 32MHz Crystal power state in DEEPSLEEP mode.",
+          "Description": "ERFO Power Down in DEEPSLEEP",
+          "Documentation": "This bit selects 32MHz Crystal power oscillator (ERFO) state in DEEPSLEEP mode. This field must be set to 1 before entering DEEPSLEEP.",
           "Position": 12,
           "Length": 1,
           "Access": "R/W",
-          "Reset": 0,
+          "Reset": 1,
           "Enum": [
             {
               "Name": "ACTIVE",
@@ -27396,13 +27435,26 @@
         },
         {
           "Name": "IBRO_PD",
-          "Description": "IBRO Power Down",
-          "Documentation": "This bit selects 7.3725 MHz clock power state in DEEPSLEEP mode.",
+          "Description": "7.3728MHz Internal Oscillator Power Down",
+          "Documentation": "This bit selects 7.3728 MHz clock power state in DEEPSLEEP mode.",
           "Position": 17,
           "Length": 1,
           "Access": "R/W",
           "Reset": 1,
-          "Enum": []
+          "Enum": [
+            {
+              "Name": "ACTIVE",
+              "Description": "Mode is Active",
+              "Value": 0,
+              "Documentation": "Mode is Active."
+            },
+            {
+              "Name": "DEEPSLEEP",
+              "Description": "Powered Down in DEEPSLEEP",
+              "Value": 1,
+              "Documentation": "Powered Down in DEEPSLEEP."
+            }
+          ]
         },
         {
           "Name": "RESERVED",
@@ -39729,7 +39781,7 @@
             {
               "Name": "MODE_A_IGATED",
               "Description": "Internally Gated Mode",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "Internally Gated Mode."
             }
           ]
@@ -39806,20 +39858,20 @@
             {
               "Name": "DIV_BY_1024",
               "Description": "Prescaler Divide-By-1024",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "Prescaler Divide-By-1024."
             },
             {
               "Name": "DIV_BY_2048",
               "Description": "Prescaler Divide-By-2048",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "Prescaler Divide-By-2048."
             },
             {
               "Name": "DIV_BY_4096",
-              "Description": "Prescaler Divide-By-2048",
-              "Value": "0xc",
-              "Documentation": "Prescaler Divide-By-2048."
+              "Description": "Prescaler Divide-By-4096",
+              "Value": "0xC",
+              "Documentation": "Prescaler Divide-By-4096."
             }
           ]
         },
@@ -39961,7 +40013,7 @@
             {
               "Name": "MODE_B_IGATED",
               "Description": "Internally Gated Mode",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "Internally Gated Mode."
             }
           ]
@@ -40038,20 +40090,20 @@
             {
               "Name": "DIV_BY_1024",
               "Description": "Prescaler Divide-By-1024",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "Prescaler Divide-By-1024."
             },
             {
               "Name": "DIV_BY_2048",
               "Description": "Prescaler Divide-By-2048",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "Prescaler Divide-By-2048."
             },
             {
               "Name": "DIV_BY_4096",
-              "Description": "TBD",
-              "Value": "0xc",
-              "Documentation": "TBD."
+              "Description": "Prescaler Divide-By-4096",
+              "Value": "0xC",
+              "Documentation": "Prescaler Divide-By-4096."
             }
           ]
         },
@@ -40521,7 +40573,7 @@
             {
               "Name": "MODE_A_IGATED",
               "Description": "Internally Gated Mode",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "Internally Gated Mode."
             }
           ]
@@ -40598,20 +40650,20 @@
             {
               "Name": "DIV_BY_1024",
               "Description": "Prescaler Divide-By-1024",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "Prescaler Divide-By-1024."
             },
             {
               "Name": "DIV_BY_2048",
               "Description": "Prescaler Divide-By-2048",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "Prescaler Divide-By-2048."
             },
             {
               "Name": "DIV_BY_4096",
-              "Description": "Prescaler Divide-By-2048",
-              "Value": "0xc",
-              "Documentation": "Prescaler Divide-By-2048."
+              "Description": "Prescaler Divide-By-4096",
+              "Value": "0xC",
+              "Documentation": "Prescaler Divide-By-4096."
             }
           ]
         },
@@ -40753,7 +40805,7 @@
             {
               "Name": "MODE_B_IGATED",
               "Description": "Internally Gated Mode",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "Internally Gated Mode."
             }
           ]
@@ -40830,20 +40882,20 @@
             {
               "Name": "DIV_BY_1024",
               "Description": "Prescaler Divide-By-1024",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "Prescaler Divide-By-1024."
             },
             {
               "Name": "DIV_BY_2048",
               "Description": "Prescaler Divide-By-2048",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "Prescaler Divide-By-2048."
             },
             {
               "Name": "DIV_BY_4096",
-              "Description": "TBD",
-              "Value": "0xc",
-              "Documentation": "TBD."
+              "Description": "Prescaler Divide-By-4096",
+              "Value": "0xC",
+              "Documentation": "Prescaler Divide-By-4096."
             }
           ]
         },
@@ -41339,8 +41391,8 @@
         },
         {
           "Name": "BCLKSRC",
-          "Description": "To Select the UART Clock Source for the UART Engine",
-          "Documentation": "To Select the UART Clock Source for the UART Engine Except APB Registers. Secondary clock (used for baud rate generator) can be asynchronous from APB clock.",
+          "Description": "UART Clock Source Selection for the UART Engine",
+          "Documentation": "UART clock source selection for the UART engine (used for baud rate generator). The clock can be asynchronous from the APB clock. Please refer to the user guide for specific clock options.",
           "Position": 16,
           "Length": 2,
           "Access": "R/W",
@@ -41348,27 +41400,27 @@
           "Enum": [
             {
               "Name": "PERIPHERAL_CLOCK",
-              "Description": "Apb Clock",
+              "Description": "Clock Option 0",
               "Value": 0,
-              "Documentation": "Apb Clock."
+              "Documentation": "Clock Option 0."
             },
             {
               "Name": "EXTERNAL_CLOCK",
-              "Description": "Clock 1",
+              "Description": "Clock Option 1",
               "Value": 1,
-              "Documentation": "Clock 1."
+              "Documentation": "Clock Option 1."
             },
             {
               "Name": "CLK2",
-              "Description": "Clock 2",
+              "Description": "Clock Option 2",
               "Value": 2,
-              "Documentation": "Clock 2."
+              "Documentation": "Clock Option 2."
             },
             {
               "Name": "CLK3",
-              "Description": "Clock 3",
+              "Description": "Clock Option 3",
               "Value": 3,
-              "Documentation": "Clock 3."
+              "Documentation": "Clock Option 3."
             }
           ]
         },
@@ -41640,8 +41692,8 @@
       "Fields": [
         {
           "Name": "LPTMR0",
-          "Description": "Clearing This Bit Will Enable the Low-power Timer 0 (Timer 4) Peripheral Clock",
-          "Documentation": "Clearing This Bit Will Enable the Low-power Timer 0 (Timer 4) Peripheral Clock.",
+          "Description": "Low Power Timer 0 Clock Disable",
+          "Documentation": "Low Power Timer 0 Clock Disable.",
           "Position": 0,
           "Length": 1,
           "Access": "R/W",
@@ -41649,22 +41701,22 @@
           "Enum": [
             {
               "Name": "EN",
-              "Description": "Enable LPTMR0 Clock",
+              "Description": "Enable It",
               "Value": 0,
-              "Documentation": "Enable LPTMR0 Clock."
+              "Documentation": "Enable It."
             },
             {
               "Name": "DIS",
-              "Description": "Disable LPTMR0 Clock",
+              "Description": "Disable It",
               "Value": 1,
-              "Documentation": "Disable LPTMR0 Clock."
+              "Documentation": "Disable It."
             }
           ]
         },
         {
           "Name": "LPTMR1",
-          "Description": "Clearing This Bit Will Enable the Low-power Timer 1 (Timer 5) Peripheral Clock",
-          "Documentation": "Clearing This Bit Will Enable the Low-power Timer 1 (Timer 5) Peripheral Clock.",
+          "Description": "Low Power Timer 1 Clock Disable",
+          "Documentation": "Low Power Timer 1 Clock Disable.",
           "Position": 1,
           "Length": 1,
           "Access": "R/W",
@@ -41672,22 +41724,22 @@
           "Enum": [
             {
               "Name": "EN",
-              "Description": "Enable LPTMR1 Clock",
+              "Description": "Enable It",
               "Value": 0,
-              "Documentation": "Enable LPTMR1 Clock."
+              "Documentation": "Enable It."
             },
             {
               "Name": "DIS",
-              "Description": "Disable LPTMR1 Clock",
+              "Description": "Disable It",
               "Value": 1,
-              "Documentation": "Disable LPTMR1 Clock."
+              "Documentation": "Disable It."
             }
           ]
         },
         {
           "Name": "LPUART0",
-          "Description": "Clearing This Bit Will Enable the Low-power UART 0 (UART3) Peripheral Clock",
-          "Documentation": "Clearing This Bit Will Enable the Low-power UART 0 (UART3) Peripheral Clock.",
+          "Description": "Low Power UART 0 Clock Disable",
+          "Documentation": "Low Power UART 0 Clock Disable.",
           "Position": 2,
           "Length": 1,
           "Access": "R/W",
@@ -41695,15 +41747,15 @@
           "Enum": [
             {
               "Name": "EN",
-              "Description": "Enable LPUART0 Clock",
+              "Description": "Enable It",
               "Value": 0,
-              "Documentation": "Enable LPUART0 Clock."
+              "Documentation": "Enable It."
             },
             {
               "Name": "DIS",
-              "Description": "Disable LPUART0 Clock",
+              "Description": "Disable It",
               "Value": 1,
-              "Documentation": "Disable LPUART0 Clock."
+              "Documentation": "Disable It."
             }
           ]
         },
@@ -42671,37 +42723,37 @@
             {
               "Name": "BITS10",
               "Description": "10 Bits per Character",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "10 Bits per Character."
             },
             {
               "Name": "BITS11",
               "Description": "11 Bits per Character",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "11 Bits per Character."
             },
             {
               "Name": "BITS12",
               "Description": "12 Bits per Character",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "12 Bits per Character."
             },
             {
               "Name": "BITS13",
               "Description": "13 Bits per Character",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "13 Bits per Character."
             },
             {
               "Name": "BITS14",
               "Description": "14 Bits per Character",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "14 Bits per Character."
             },
             {
               "Name": "BITS15",
               "Description": "15 Bits per Character",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "15 Bits per Character."
             }
           ]
@@ -43861,37 +43913,37 @@
             {
               "Name": "BITS10",
               "Description": "10 Bits per Character",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "10 Bits per Character."
             },
             {
               "Name": "BITS11",
               "Description": "11 Bits per Character",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "11 Bits per Character."
             },
             {
               "Name": "BITS12",
               "Description": "12 Bits per Character",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "12 Bits per Character."
             },
             {
               "Name": "BITS13",
               "Description": "13 Bits per Character",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "13 Bits per Character."
             },
             {
               "Name": "BITS14",
               "Description": "14 Bits per Character",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "14 Bits per Character."
             },
             {
               "Name": "BITS15",
               "Description": "15 Bits per Character",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "15 Bits per Character."
             }
           ]
@@ -44782,7 +44834,7 @@
             {
               "Name": "MODE_A_IGATED",
               "Description": "Internally Gated Mode",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "Internally Gated Mode."
             }
           ]
@@ -44859,20 +44911,20 @@
             {
               "Name": "DIV_BY_1024",
               "Description": "Prescaler Divide-By-1024",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "Prescaler Divide-By-1024."
             },
             {
               "Name": "DIV_BY_2048",
               "Description": "Prescaler Divide-By-2048",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "Prescaler Divide-By-2048."
             },
             {
               "Name": "DIV_BY_4096",
-              "Description": "Prescaler Divide-By-2048",
-              "Value": "0xc",
-              "Documentation": "Prescaler Divide-By-2048."
+              "Description": "Prescaler Divide-By-4096",
+              "Value": "0xC",
+              "Documentation": "Prescaler Divide-By-4096."
             }
           ]
         },
@@ -45014,7 +45066,7 @@
             {
               "Name": "MODE_B_IGATED",
               "Description": "Internally Gated Mode",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "Internally Gated Mode."
             }
           ]
@@ -45091,20 +45143,20 @@
             {
               "Name": "DIV_BY_1024",
               "Description": "Prescaler Divide-By-1024",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "Prescaler Divide-By-1024."
             },
             {
               "Name": "DIV_BY_2048",
               "Description": "Prescaler Divide-By-2048",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "Prescaler Divide-By-2048."
             },
             {
               "Name": "DIV_BY_4096",
-              "Description": "TBD",
-              "Value": "0xc",
-              "Documentation": "TBD."
+              "Description": "Prescaler Divide-By-4096",
+              "Value": "0xC",
+              "Documentation": "Prescaler Divide-By-4096."
             }
           ]
         },
@@ -45672,7 +45724,7 @@
             {
               "Name": "MODE_A_IGATED",
               "Description": "Internally Gated Mode",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "Internally Gated Mode."
             }
           ]
@@ -45749,20 +45801,20 @@
             {
               "Name": "DIV_BY_1024",
               "Description": "Prescaler Divide-By-1024",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "Prescaler Divide-By-1024."
             },
             {
               "Name": "DIV_BY_2048",
               "Description": "Prescaler Divide-By-2048",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "Prescaler Divide-By-2048."
             },
             {
               "Name": "DIV_BY_4096",
-              "Description": "Prescaler Divide-By-2048",
-              "Value": "0xc",
-              "Documentation": "Prescaler Divide-By-2048."
+              "Description": "Prescaler Divide-By-4096",
+              "Value": "0xC",
+              "Documentation": "Prescaler Divide-By-4096."
             }
           ]
         },
@@ -45904,7 +45956,7 @@
             {
               "Name": "MODE_B_IGATED",
               "Description": "Internally Gated Mode",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "Internally Gated Mode."
             }
           ]
@@ -45981,20 +46033,20 @@
             {
               "Name": "DIV_BY_1024",
               "Description": "Prescaler Divide-By-1024",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "Prescaler Divide-By-1024."
             },
             {
               "Name": "DIV_BY_2048",
               "Description": "Prescaler Divide-By-2048",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "Prescaler Divide-By-2048."
             },
             {
               "Name": "DIV_BY_4096",
-              "Description": "TBD",
-              "Value": "0xc",
-              "Documentation": "TBD."
+              "Description": "Prescaler Divide-By-4096",
+              "Value": "0xC",
+              "Documentation": "Prescaler Divide-By-4096."
             }
           ]
         },
@@ -46562,7 +46614,7 @@
             {
               "Name": "MODE_A_IGATED",
               "Description": "Internally Gated Mode",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "Internally Gated Mode."
             }
           ]
@@ -46639,20 +46691,20 @@
             {
               "Name": "DIV_BY_1024",
               "Description": "Prescaler Divide-By-1024",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "Prescaler Divide-By-1024."
             },
             {
               "Name": "DIV_BY_2048",
               "Description": "Prescaler Divide-By-2048",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "Prescaler Divide-By-2048."
             },
             {
               "Name": "DIV_BY_4096",
-              "Description": "Prescaler Divide-By-2048",
-              "Value": "0xc",
-              "Documentation": "Prescaler Divide-By-2048."
+              "Description": "Prescaler Divide-By-4096",
+              "Value": "0xC",
+              "Documentation": "Prescaler Divide-By-4096."
             }
           ]
         },
@@ -46794,7 +46846,7 @@
             {
               "Name": "MODE_B_IGATED",
               "Description": "Internally Gated Mode",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "Internally Gated Mode."
             }
           ]
@@ -46871,20 +46923,20 @@
             {
               "Name": "DIV_BY_1024",
               "Description": "Prescaler Divide-By-1024",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "Prescaler Divide-By-1024."
             },
             {
               "Name": "DIV_BY_2048",
               "Description": "Prescaler Divide-By-2048",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "Prescaler Divide-By-2048."
             },
             {
               "Name": "DIV_BY_4096",
-              "Description": "TBD",
-              "Value": "0xc",
-              "Documentation": "TBD."
+              "Description": "Prescaler Divide-By-4096",
+              "Value": "0xC",
+              "Documentation": "Prescaler Divide-By-4096."
             }
           ]
         },
@@ -47452,7 +47504,7 @@
             {
               "Name": "MODE_A_IGATED",
               "Description": "Internally Gated Mode",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "Internally Gated Mode."
             }
           ]
@@ -47529,20 +47581,20 @@
             {
               "Name": "DIV_BY_1024",
               "Description": "Prescaler Divide-By-1024",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "Prescaler Divide-By-1024."
             },
             {
               "Name": "DIV_BY_2048",
               "Description": "Prescaler Divide-By-2048",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "Prescaler Divide-By-2048."
             },
             {
               "Name": "DIV_BY_4096",
-              "Description": "Prescaler Divide-By-2048",
-              "Value": "0xc",
-              "Documentation": "Prescaler Divide-By-2048."
+              "Description": "Prescaler Divide-By-4096",
+              "Value": "0xC",
+              "Documentation": "Prescaler Divide-By-4096."
             }
           ]
         },
@@ -47684,7 +47736,7 @@
             {
               "Name": "MODE_B_IGATED",
               "Description": "Internally Gated Mode",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "Internally Gated Mode."
             }
           ]
@@ -47761,20 +47813,20 @@
             {
               "Name": "DIV_BY_1024",
               "Description": "Prescaler Divide-By-1024",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "Prescaler Divide-By-1024."
             },
             {
               "Name": "DIV_BY_2048",
               "Description": "Prescaler Divide-By-2048",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "Prescaler Divide-By-2048."
             },
             {
               "Name": "DIV_BY_4096",
-              "Description": "TBD",
-              "Value": "0xc",
-              "Documentation": "TBD."
+              "Description": "Prescaler Divide-By-4096",
+              "Value": "0xC",
+              "Documentation": "Prescaler Divide-By-4096."
             }
           ]
         },
@@ -48462,8 +48514,8 @@
         },
         {
           "Name": "BCLKSRC",
-          "Description": "To Select the UART Clock Source for the UART Engine",
-          "Documentation": "To Select the UART Clock Source for the UART Engine Except APB Registers. Secondary clock (used for baud rate generator) can be asynchronous from APB clock.",
+          "Description": "UART Clock Source Selection for the UART Engine",
+          "Documentation": "UART clock source selection for the UART engine (used for baud rate generator). The clock can be asynchronous from the APB clock. Please refer to the user guide for specific clock options.",
           "Position": 16,
           "Length": 2,
           "Access": "R/W",
@@ -48471,27 +48523,27 @@
           "Enum": [
             {
               "Name": "PERIPHERAL_CLOCK",
-              "Description": "Apb Clock",
+              "Description": "Clock Option 0",
               "Value": 0,
-              "Documentation": "Apb Clock."
+              "Documentation": "Clock Option 0."
             },
             {
               "Name": "EXTERNAL_CLOCK",
-              "Description": "Clock 1",
+              "Description": "Clock Option 1",
               "Value": 1,
-              "Documentation": "Clock 1."
+              "Documentation": "Clock Option 1."
             },
             {
               "Name": "CLK2",
-              "Description": "Clock 2",
+              "Description": "Clock Option 2",
               "Value": 2,
-              "Documentation": "Clock 2."
+              "Documentation": "Clock Option 2."
             },
             {
               "Name": "CLK3",
-              "Description": "Clock 3",
+              "Description": "Clock Option 3",
               "Value": 3,
-              "Documentation": "Clock 3."
+              "Documentation": "Clock Option 3."
             }
           ]
         },
@@ -48905,8 +48957,8 @@
         },
         {
           "Name": "BCLKSRC",
-          "Description": "To Select the UART Clock Source for the UART Engine",
-          "Documentation": "To Select the UART Clock Source for the UART Engine Except APB Registers. Secondary clock (used for baud rate generator) can be asynchronous from APB clock.",
+          "Description": "UART Clock Source Selection for the UART Engine",
+          "Documentation": "UART clock source selection for the UART engine (used for baud rate generator). The clock can be asynchronous from the APB clock. Please refer to the user guide for specific clock options.",
           "Position": 16,
           "Length": 2,
           "Access": "R/W",
@@ -48914,27 +48966,27 @@
           "Enum": [
             {
               "Name": "PERIPHERAL_CLOCK",
-              "Description": "Apb Clock",
+              "Description": "Clock Option 0",
               "Value": 0,
-              "Documentation": "Apb Clock."
+              "Documentation": "Clock Option 0."
             },
             {
               "Name": "EXTERNAL_CLOCK",
-              "Description": "Clock 1",
+              "Description": "Clock Option 1",
               "Value": 1,
-              "Documentation": "Clock 1."
+              "Documentation": "Clock Option 1."
             },
             {
               "Name": "CLK2",
-              "Description": "Clock 2",
+              "Description": "Clock Option 2",
               "Value": 2,
-              "Documentation": "Clock 2."
+              "Documentation": "Clock Option 2."
             },
             {
               "Name": "CLK3",
-              "Description": "Clock 3",
+              "Description": "Clock Option 3",
               "Value": 3,
-              "Documentation": "Clock 3."
+              "Documentation": "Clock Option 3."
             }
           ]
         },
@@ -49348,8 +49400,8 @@
         },
         {
           "Name": "BCLKSRC",
-          "Description": "To Select the UART Clock Source for the UART Engine",
-          "Documentation": "To Select the UART Clock Source for the UART Engine Except APB Registers. Secondary clock (used for baud rate generator) can be asynchronous from APB clock.",
+          "Description": "UART Clock Source Selection for the UART Engine",
+          "Documentation": "UART clock source selection for the UART engine (used for baud rate generator). The clock can be asynchronous from the APB clock. Please refer to the user guide for specific clock options.",
           "Position": 16,
           "Length": 2,
           "Access": "R/W",
@@ -49357,27 +49409,27 @@
           "Enum": [
             {
               "Name": "PERIPHERAL_CLOCK",
-              "Description": "Apb Clock",
+              "Description": "Clock Option 0",
               "Value": 0,
-              "Documentation": "Apb Clock."
+              "Documentation": "Clock Option 0."
             },
             {
               "Name": "EXTERNAL_CLOCK",
-              "Description": "Clock 1",
+              "Description": "Clock Option 1",
               "Value": 1,
-              "Documentation": "Clock 1."
+              "Documentation": "Clock Option 1."
             },
             {
               "Name": "CLK2",
-              "Description": "Clock 2",
+              "Description": "Clock Option 2",
               "Value": 2,
-              "Documentation": "Clock 2."
+              "Documentation": "Clock Option 2."
             },
             {
               "Name": "CLK3",
-              "Description": "Clock 3",
+              "Description": "Clock Option 3",
               "Value": 3,
-              "Documentation": "Clock 3."
+              "Documentation": "Clock Option 3."
             }
           ]
         },
@@ -49690,9 +49742,9 @@
             },
             {
               "Name": "2POW27",
-              "Description": "2^27 Clock Cycles",
+              "Description": "2**27 Clock Cycles",
               "Value": 4,
-              "Documentation": "2^27 Clock Cycles."
+              "Documentation": "2**27 Clock Cycles."
             },
             {
               "Name": "2POW26",
@@ -49727,37 +49779,37 @@
             {
               "Name": "2POW21",
               "Description": "2**21 Clock Cycles",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "2**21 Clock Cycles."
             },
             {
               "Name": "2POW20",
               "Description": "2**20 Clock Cycles",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "2**20 Clock Cycles."
             },
             {
               "Name": "2POW19",
               "Description": "2**19 Clock Cycles",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "2**19 Clock Cycles."
             },
             {
               "Name": "2POW18",
               "Description": "2**18 Clock Cycles",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "2**18 Clock Cycles."
             },
             {
               "Name": "2POW17",
               "Description": "2**17 Clock Cycles",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "2**17 Clock Cycles."
             },
             {
               "Name": "2POW16",
               "Description": "2**16 Clock Cycles",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "2**16 Clock Cycles."
             }
           ]
@@ -49797,9 +49849,9 @@
             },
             {
               "Name": "2POW27",
-              "Description": "2^27 Clock Cycles",
+              "Description": "2**27 Clock Cycles",
               "Value": 4,
-              "Documentation": "2^27 Clock Cycles."
+              "Documentation": "2**27 Clock Cycles."
             },
             {
               "Name": "2POW26",
@@ -49834,37 +49886,37 @@
             {
               "Name": "2POW21",
               "Description": "2**21 Clock Cycles",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "2**21 Clock Cycles."
             },
             {
               "Name": "2POW20",
               "Description": "2**20 Clock Cycles",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "2**20 Clock Cycles."
             },
             {
               "Name": "2POW19",
               "Description": "2**19 Clock Cycles",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "2**19 Clock Cycles."
             },
             {
               "Name": "2POW18",
               "Description": "2**18 Clock Cycles",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "2**18 Clock Cycles."
             },
             {
               "Name": "2POW17",
               "Description": "2**17 Clock Cycles",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "2**17 Clock Cycles."
             },
             {
               "Name": "2POW16",
               "Description": "2**16 Clock Cycles",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "2**16 Clock Cycles."
             }
           ]
@@ -50028,9 +50080,9 @@
             },
             {
               "Name": "2POW27",
-              "Description": "2^27 Clock Cycles",
+              "Description": "2**27 Clock Cycles",
               "Value": 4,
-              "Documentation": "2^27 Clock Cycles."
+              "Documentation": "2**27 Clock Cycles."
             },
             {
               "Name": "2POW26",
@@ -50065,37 +50117,37 @@
             {
               "Name": "2POW21",
               "Description": "2**21 Clock Cycles",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "2**21 Clock Cycles."
             },
             {
               "Name": "2POW20",
               "Description": "2**20 Clock Cycles",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "2**20 Clock Cycles."
             },
             {
               "Name": "2POW19",
               "Description": "2**19 Clock Cycles",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "2**19 Clock Cycles."
             },
             {
               "Name": "2POW18",
               "Description": "2**18 Clock Cycles",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "2**18 Clock Cycles."
             },
             {
               "Name": "2POW17",
               "Description": "2**17 Clock Cycles",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "2**17 Clock Cycles."
             },
             {
               "Name": "2POW16",
               "Description": "2**16 Clock Cycles",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "2**16 Clock Cycles."
             }
           ]
@@ -50135,9 +50187,9 @@
             },
             {
               "Name": "2POW27",
-              "Description": "2^27 Clock Cycles",
+              "Description": "2**27 Clock Cycles",
               "Value": 4,
-              "Documentation": "2^27 Clock Cycles."
+              "Documentation": "2**27 Clock Cycles."
             },
             {
               "Name": "2POW26",
@@ -50172,37 +50224,37 @@
             {
               "Name": "2POW21",
               "Description": "2**21 Clock Cycles",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "2**21 Clock Cycles."
             },
             {
               "Name": "2POW20",
               "Description": "2**20 Clock Cycles",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "2**20 Clock Cycles."
             },
             {
               "Name": "2POW19",
               "Description": "2**19 Clock Cycles",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "2**19 Clock Cycles."
             },
             {
               "Name": "2POW18",
               "Description": "2**18 Clock Cycles",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "2**18 Clock Cycles."
             },
             {
               "Name": "2POW17",
               "Description": "2**17 Clock Cycles",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "2**17 Clock Cycles."
             },
             {
               "Name": "2POW16",
               "Description": "2**16 Clock Cycles",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "2**16 Clock Cycles."
             }
           ]
@@ -50372,9 +50424,9 @@
             },
             {
               "Name": "2POW27",
-              "Description": "2^27 Clock Cycles",
+              "Description": "2**27 Clock Cycles",
               "Value": 4,
-              "Documentation": "2^27 Clock Cycles."
+              "Documentation": "2**27 Clock Cycles."
             },
             {
               "Name": "2POW26",
@@ -50409,37 +50461,37 @@
             {
               "Name": "2POW21",
               "Description": "2**21 Clock Cycles",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "2**21 Clock Cycles."
             },
             {
               "Name": "2POW20",
               "Description": "2**20 Clock Cycles",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "2**20 Clock Cycles."
             },
             {
               "Name": "2POW19",
               "Description": "2**19 Clock Cycles",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "2**19 Clock Cycles."
             },
             {
               "Name": "2POW18",
               "Description": "2**18 Clock Cycles",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "2**18 Clock Cycles."
             },
             {
               "Name": "2POW17",
               "Description": "2**17 Clock Cycles",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "2**17 Clock Cycles."
             },
             {
               "Name": "2POW16",
               "Description": "2**16 Clock Cycles",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "2**16 Clock Cycles."
             }
           ]
@@ -50479,9 +50531,9 @@
             },
             {
               "Name": "2POW27",
-              "Description": "2^27 Clock Cycles",
+              "Description": "2**27 Clock Cycles",
               "Value": 4,
-              "Documentation": "2^27 Clock Cycles."
+              "Documentation": "2**27 Clock Cycles."
             },
             {
               "Name": "2POW26",
@@ -50516,37 +50568,37 @@
             {
               "Name": "2POW21",
               "Description": "2**21 Clock Cycles",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "2**21 Clock Cycles."
             },
             {
               "Name": "2POW20",
               "Description": "2**20 Clock Cycles",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "2**20 Clock Cycles."
             },
             {
               "Name": "2POW19",
               "Description": "2**19 Clock Cycles",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "2**19 Clock Cycles."
             },
             {
               "Name": "2POW18",
               "Description": "2**18 Clock Cycles",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "2**18 Clock Cycles."
             },
             {
               "Name": "2POW17",
               "Description": "2**17 Clock Cycles",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "2**17 Clock Cycles."
             },
             {
               "Name": "2POW16",
               "Description": "2**16 Clock Cycles",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "2**16 Clock Cycles."
             }
           ]
@@ -50710,9 +50762,9 @@
             },
             {
               "Name": "2POW27",
-              "Description": "2^27 Clock Cycles",
+              "Description": "2**27 Clock Cycles",
               "Value": 4,
-              "Documentation": "2^27 Clock Cycles."
+              "Documentation": "2**27 Clock Cycles."
             },
             {
               "Name": "2POW26",
@@ -50747,37 +50799,37 @@
             {
               "Name": "2POW21",
               "Description": "2**21 Clock Cycles",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "2**21 Clock Cycles."
             },
             {
               "Name": "2POW20",
               "Description": "2**20 Clock Cycles",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "2**20 Clock Cycles."
             },
             {
               "Name": "2POW19",
               "Description": "2**19 Clock Cycles",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "2**19 Clock Cycles."
             },
             {
               "Name": "2POW18",
               "Description": "2**18 Clock Cycles",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "2**18 Clock Cycles."
             },
             {
               "Name": "2POW17",
               "Description": "2**17 Clock Cycles",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "2**17 Clock Cycles."
             },
             {
               "Name": "2POW16",
               "Description": "2**16 Clock Cycles",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "2**16 Clock Cycles."
             }
           ]
@@ -50817,9 +50869,9 @@
             },
             {
               "Name": "2POW27",
-              "Description": "2^27 Clock Cycles",
+              "Description": "2**27 Clock Cycles",
               "Value": 4,
-              "Documentation": "2^27 Clock Cycles."
+              "Documentation": "2**27 Clock Cycles."
             },
             {
               "Name": "2POW26",
@@ -50854,37 +50906,37 @@
             {
               "Name": "2POW21",
               "Description": "2**21 Clock Cycles",
-              "Value": 10,
+              "Value": "0xA",
               "Documentation": "2**21 Clock Cycles."
             },
             {
               "Name": "2POW20",
               "Description": "2**20 Clock Cycles",
-              "Value": "0xb",
+              "Value": "0xB",
               "Documentation": "2**20 Clock Cycles."
             },
             {
               "Name": "2POW19",
               "Description": "2**19 Clock Cycles",
-              "Value": "0xc",
+              "Value": "0xC",
               "Documentation": "2**19 Clock Cycles."
             },
             {
               "Name": "2POW18",
               "Description": "2**18 Clock Cycles",
-              "Value": "0xd",
+              "Value": "0xD",
               "Documentation": "2**18 Clock Cycles."
             },
             {
               "Name": "2POW17",
               "Description": "2**17 Clock Cycles",
-              "Value": "0xe",
+              "Value": "0xE",
               "Documentation": "2**17 Clock Cycles."
             },
             {
               "Name": "2POW16",
               "Description": "2**16 Clock Cycles",
-              "Value": "0xf",
+              "Value": "0xF",
               "Documentation": "2**16 Clock Cycles."
             }
           ]

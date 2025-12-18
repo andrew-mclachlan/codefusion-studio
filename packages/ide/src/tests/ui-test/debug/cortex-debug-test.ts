@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 /**
  *
  * Copyright (c) 2023-2024 Analog Devices, Inc.

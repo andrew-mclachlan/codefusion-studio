@@ -15,7 +15,6 @@
 
 import { default as zephyrTasks } from "./resources/tasks";
 import * as vscode from "vscode";
-import fs from "fs";
 
 import { Utils } from "../../utils/utils";
 import { platform } from "node:process";
@@ -38,16 +37,13 @@ export class ZephyrTaskProvider implements vscode.TaskProvider {
   }
 
   provideTasks(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _token: vscode.CancellationToken,
   ): vscode.ProviderResult<vscode.Task[]> {
     return this.resolvedTasks || [];
   }
 
   resolveTask(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _task: vscode.Task,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _token: vscode.CancellationToken,
   ): vscode.ProviderResult<vscode.Task> {
     // Since we're providing fully resolved tasks, we don't need to implement this.

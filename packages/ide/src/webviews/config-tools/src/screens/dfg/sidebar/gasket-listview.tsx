@@ -171,17 +171,17 @@ export function GasketListView({gasket}: SubsystemListViewProps) {
 						<span>
 							<SmallArrowRightIcon />
 						</span>
-						{inboundStreams.length !== allInboundStreams.length
-							? `${inboundStreams.length}/${allInboundStreams.length}`
-							: inboundStreams.length}
+						{inboundStreams.length === allInboundStreams.length
+							? inboundStreams.length
+							: `${inboundStreams.length}/${allInboundStreams.length}`}
 					</div>
 					<div
 						className={styles.inOutBubble}
 						data-test={`outbound-streams-${gasket.Name}`}
 					>
-						{outboundStreams.length !== allOutboundStreams.length
-							? `${outboundStreams.length}/${allOutboundStreams.length}`
-							: outboundStreams.length}
+						{outboundStreams.length === allOutboundStreams.length
+							? outboundStreams.length
+							: `${outboundStreams.length}/${allOutboundStreams.length}`}
 						<span>
 							<SmallArrowRightIcon />
 						</span>

@@ -15,7 +15,7 @@
 import { VSBrowser, WebView } from "vscode-extension-tester";
 import { expect } from "chai";
 import { getConfigPathForFile } from "../config-tools-utility/cfsconfig-utils";
-import { UIUtils } from "../config-tools-utility/config-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import {
   assignedFilterControl,
   availableFilterControl,
@@ -43,9 +43,9 @@ describe("Pin Assignment", () => {
       await view.wait();
       await view.switchToFrame();
 
-      await (await view.findWebElement(pinTab)).click().then(async () => {
+      await (await UIUtils.findWebElement(view, pinTab)).click().then(async () => {
         await UIUtils.sleep(3000);
-        const pin = await view.findWebElement(
+        const pin = await UIUtils.findWebElement(view,
           await mainPanelPinOnLineAndColumn(1, 2),
         );
 
@@ -69,17 +69,17 @@ describe("Pin Assignment", () => {
 
         await pin.click().then(async () => {
           // Assert pin details sidebar is rendered
-          expect(await view.findWebElement(pinDetailsContainer)).to.exist;
+          expect(await UIUtils.findWebElement(view, pinDetailsContainer)).to.exist;
 
           await new Promise((res) => {
             setTimeout(res, 500);
           });
         });
 
-        const firstSignalToggle = await view.findWebElement(
+        const firstSignalToggle = await UIUtils.findWebElement(view,
           await signalToggleWithIndex(1),
         );
-        const secondSignalToggle = await view.findWebElement(
+        const secondSignalToggle = await UIUtils.findWebElement(view,
           await signalToggleWithIndex(2),
         );
 
@@ -106,9 +106,9 @@ describe("Pin Assignment", () => {
           // Assert double pin assignemnt renders a conflict
           expect(await pin.getAttribute("class")).to.contain("conflict");
           // Assert conflict icons are rendered
-          expect(await view.findWebElement(await signalConflictIcon("WS"))).to
+          expect(await UIUtils.findWebElement(view, await signalConflictIcon("WS"))).to
             .exist;
-          expect(await view.findWebElement(await signalConflictIcon("SS1"))).to
+          expect(await UIUtils.findWebElement(view, await signalConflictIcon("SS1"))).to
             .exist;
           // Assert counters are updated
           expect(await availableFilter.getAttribute("disabled")).to.eq("true");

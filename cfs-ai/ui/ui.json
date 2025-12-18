@@ -41,12 +41,6 @@
   "properties": {
     "izer": [
       {
-        "Id": "Section",
-        "Type": "string",
-        "Description": "Memory section for data",
-        "Tooltip": "The memory section used to map the data."
-      },
-      {
         "Id": "Softmax",
         "Type": "boolean",
         "Description": "Enable softmax layer generation",

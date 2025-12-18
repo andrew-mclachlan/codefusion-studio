@@ -26,7 +26,7 @@ import {
 	getEndAddress
 } from '../../../utils/memory';
 import MemoryCard from '../memory-card/memory-card';
-import {Badge, InfoIcon} from 'cfs-react-library';
+import {Badge, Button, InfoIcon} from 'cfs-react-library';
 import DeleteIcon from '../../../../../common/icons/Delete';
 import styles from './partition-details-view-card.module.scss';
 import {useFilteredCores} from '../../../state/slices/app-context/appContext.selector';
@@ -34,6 +34,7 @@ import ConfigIcon16px from '../../../../../common/icons/Config16px';
 import {isCoreSecure} from '../../../utils/soc-cores';
 import {useCallback, useMemo, useRef, useState} from 'react';
 import {MemoryAliasTooltip} from './memory-alias-tooltip/memory-alias-tooltip';
+import Tooltip from '../../../../../common/components/tooltip/Tooltip';
 
 type PartitionDetailsTypeViewCardProp = Readonly<{
 	partition: Partition;
@@ -117,7 +118,7 @@ export default function PartitionDetailsTypeViewCard({
 
 	return (
 		<div className={styles.partitionsCards} data-test={dataTest}>
-			<MemoryCard isExpandable={false}>
+			<MemoryCard isExpandable={false} isParent={false}>
 				<div slot='title'>
 					<div className={styles.memoryCardTitleSection}>
 						<div className={styles.memoryCardTitleInfo}>
@@ -131,7 +132,10 @@ export default function PartitionDetailsTypeViewCard({
 							</div>
 						</div>
 
-						<p className={styles.memoryCardDetails}>
+						<p
+							className={styles.memoryCardDetails}
+							data-test='partition-address'
+						>
 							{`${convertDecimalToHex(partitionStartAddress)} - ${convertDecimalToHex(endAddress)}`}
 							{showInfoIcon && (
 								<div
@@ -171,21 +175,30 @@ export default function PartitionDetailsTypeViewCard({
 							</div>
 						))}
 						<div className={styles.actionButton}>
-							<ConfigIcon16px
-								data-Test='edit-partition-btn'
-								className={styles.configActionButton}
-								onClick={() => {
-									editPartition(partition);
-								}}
-							/>
-
-							<DeleteIcon
-								data-test='delete-partition-btn'
-								className={styles.deleteActionButton}
-								onClick={() => {
-									deletePartition(partition.startAddress);
-								}}
-							/>
+							<Tooltip title='Configure' type='long'>
+								<Button
+									dataTest='edit-partition-btn'
+									appearance='icon'
+									onClick={() => {
+										editPartition(partition);
+									}}
+								>
+									<ConfigIcon16px
+										className={styles.configActionButton}
+									/>
+								</Button>
+							</Tooltip>
+							<Tooltip title='Remove' type='long'>
+								<Button
+									dataTest='delete-partition-btn'
+									appearance='icon'
+									onClick={() => {
+										deletePartition(partition.startAddress);
+									}}
+								>
+									<DeleteIcon className={styles.deleteActionButton} />
+								</Button>
+							</Tooltip>
 						</div>
 					</div>
 				</div>

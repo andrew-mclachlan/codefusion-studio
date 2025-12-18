@@ -13,10 +13,7 @@
  *
  */
 import ConfigPanel from '../../../components/config-panel/ConfigPanel';
-import {
-	usePeripheralSignalAllocations,
-	useGetAllocatedProjectId
-} from '../../../state/slices/peripherals/peripherals.selector';
+import {useSignalProjectId} from '../../../state/slices/peripherals/peripherals.selector';
 import PinconfigDisplay from './pinconfig-display/PinconfigDisplay';
 import ConfigUnavailable from '../../../components/config-unavailable/config-unavailable';
 import {useMemo} from 'react';
@@ -34,44 +31,33 @@ type PinConfigTaskProps = {
 };
 
 function PinConfigTask({peripheral, signal}: PinConfigTaskProps) {
-	const projectsForSignal = usePeripheralSignalAllocations(
-		peripheral,
-		signal
-	);
+	const signalProjectId = useSignalProjectId(peripheral, signal);
 
-	const allocatedProjectId = useGetAllocatedProjectId(
-		peripheral,
-		signal
-	);
-
-	const isExternallyManagedProject = getIsExternallyManagedProyect(
-		allocatedProjectId
-	);
+	const isExternallyManagedProject =
+		getIsExternallyManagedProyect(signalProjectId);
 
 	const controlsPromise = useMemo(
 		async () =>
-			allocatedProjectId && !isExternallyManagedProject
+			signalProjectId && !isExternallyManagedProject
 				? getControlsForProjectIds(
-						[allocatedProjectId],
+						[signalProjectId],
 						CONTROL_SCOPES.PIN_CONFIG
 					)
 				: Promise.resolve({}),
-		[allocatedProjectId, isExternallyManagedProject]
+		[signalProjectId, isExternallyManagedProject]
 	);
 
 	return (
 		<div data-test='config-sidebar:signal-config'>
 			<ConfigPanel
 				details={undefined}
-				variant={
-					projectsForSignal.length > 0 ? 'default' : 'noChevron'
-				}
+				variant={signalProjectId ? 'default' : 'noChevron'}
 				configuration={
-					projectsForSignal.length && !isExternallyManagedProject ? (
+					signalProjectId && !isExternallyManagedProject ? (
 						<CfsSuspense>
 							<PinconfigDisplay
 								controlsPromise={controlsPromise}
-								projectId={allocatedProjectId}
+								projectId={signalProjectId}
 							/>
 						</CfsSuspense>
 					) : (
@@ -86,8 +72,7 @@ function PinConfigTask({peripheral, signal}: PinConfigTaskProps) {
 				}
 				managePinAssignments={undefined}
 				pluginConfiguration={
-					projectsForSignal.length > 0 &&
-					!isExternallyManagedProject ? (
+					signalProjectId && !isExternallyManagedProject ? (
 						<div
 							data-test='config-sidebar:plugin-options'
 							id={PIN_CONFIG_PLUGIN_OPTIONS_FORM_ID}

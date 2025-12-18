@@ -13,7 +13,7 @@
  *
  */
 
-/* eslint-disable max-nested-callbacks */
+ 
 import SideListContainer from './side-list-container';
 import type {Soc} from '@common/types/soc';
 import {configurePreloadedStore} from '../../../state/store';

@@ -81,5 +81,14 @@
 			margin: 0 auto;
 			max-width: 438px;
 		}
+
+		.searchString {
+			display: inline-block;
+			max-width: 50%;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			vertical-align: bottom;
+		}
 	}
 }

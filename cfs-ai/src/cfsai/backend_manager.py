@@ -13,16 +13,7 @@
 from collections.abc import Iterator
 from typing import Optional
 
-from cfsai.container.client import ContainerClient
-from cfsai.container.executor import ContainerExecutor
-from cfsai_types.backend_api import (
-    Backend,
-    BackendApi,
-    BackendProtocol,
-    ContainerBackend,
-    LocalBackend,
-)
-from cfsai_types.exceptions import SupportError
+from cfsai_types.backend_api import Backend, BackendApi
 
 
 class BackendManager:
@@ -98,25 +89,11 @@ class BackendManager:
         Returns:
             Backend API if it could be found, otherwise `None`.
 
-        Raises:
-            SupportError: If the backend has an invalid communication protocol.
-            SupportError: If the backend kind is not supported.
         """
         backend = self.get(name)
         if backend is None:
             return None
-        info = backend.info()
-        if isinstance(info.kind, LocalBackend):
-            return backend.api()
-        elif isinstance(info.kind, ContainerBackend):
-            if info.kind.protocol == BackendProtocol.HTTP:
-                return ContainerClient(info.kind.image)
-            elif info.kind.protocol == BackendProtocol.DIRECT:
-                return ContainerExecutor(info.kind.image)
-            else:
-                raise SupportError(f'Invalid backend protocol "{info.kind.protocol}"')
-        else:
-            raise SupportError(f'Invalid backend kind "{info.kind.kind}"')
+        return backend.api()
 
 __all__ = [
     "BackendManager",

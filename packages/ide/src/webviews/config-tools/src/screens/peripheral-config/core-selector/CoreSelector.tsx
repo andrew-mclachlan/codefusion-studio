@@ -14,10 +14,10 @@
  */
 import {memo} from 'react';
 import styles from './CoreSelector.module.scss';
-import Core from '../core/Core';
 import {type ProjectInfo} from '../../../utils/config';
-import {Button, Card, ChevronLeftIcon} from 'cfs-react-library';
-import {PeripheralSecurity} from '../../../types/peripherals';
+import {Button, ChevronLeftIcon} from 'cfs-react-library';
+import CoreSelectorCard from './core-selector-card';
+import {type PeripheralSecurity} from '../../../types/peripherals';
 
 export type CoreSelectorProps = Readonly<{
 	title?: string;
@@ -38,6 +38,8 @@ function CoreSelector({
 	onSelect,
 	onCancel
 }: CoreSelectorProps) {
+	const allocatableName = `${title} ${signalName ?? ''}`;
+
 	const shouldDisableSelection = (project: ProjectInfo) => {
 		// This will show the project as disabled if it is not in the projectConfig i.e if the peripheral cannot allocated to the project
 		if (
@@ -46,7 +48,7 @@ function CoreSelector({
 			return true;
 		}
 
-		/*Legend for project/peripheral security allocation:
+		/* Legend for project/peripheral security allocation:
 
 			project.Secure ↓    | peripheralSecurity →
 			-------------------------------------------------------------
@@ -92,37 +94,19 @@ function CoreSelector({
 			<div
 				className={styles.allocateText}
 				data-test={`allocate-${title}-title`}
-			>{`Allocate ${title} ${signalName ?? ''} to: `}</div>
-			<div className={styles.coreSection}>
+			>{`Allocate ${allocatableName} to: `}</div>
+			<div id='core-selector' className={styles.coreSection}>
 				{projectConfig?.map(project => {
 					const isDisabled = shouldDisableSelection(project);
 
 					return (
-						<Card
-							key={project.ProjectId}
-							disableHoverEffects={isDisabled}
-						>
-							<Button
-								appearance='icon'
-								className={styles.coreCard}
-								onClick={() => {
-									if (!isDisabled) {
-										onSelect(project.ProjectId);
-									}
-								}}
-							>
-								<div
-									data-test={`core-${project.ProjectId}-container${isDisabled ? '-disabled' : ''}`}
-									className={`${styles.core} ${
-										isDisabled
-											? styles.disabled
-											: styles.cursorPointer
-									}`}
-								>
-									<Core projectId={project.ProjectId} />
-								</div>
-							</Button>
-						</Card>
+						<CoreSelectorCard
+							key={`core-selector-card-${project.ProjectId}`}
+							project={project}
+							allocatableName={allocatableName}
+							isDisabled={isDisabled}
+							onSelect={onSelect}
+						/>
 					);
 				})}
 			</div>

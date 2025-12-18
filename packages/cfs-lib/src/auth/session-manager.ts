@@ -14,12 +14,17 @@
  */
 import {
 	BrowserResponse,
+	CfsApiClient,
 	SessionInfo,
+	TokenAuthorizer,
 	TokenAuthSession,
+	TokenSessionInfo,
+	AccessToken,
 	TokenCodeExchangeFlows,
 	TokenCodeExchangeInitiator,
 	TokenCodeExchangeReporter,
-	TokenSessionFileStorage
+	TokenSessionFileStorage,
+	TokenCodeExchangeValidator
 } from "cfs-ccm-lib";
 
 import fs from "node:fs/promises";
@@ -49,7 +54,8 @@ export class SessionManager {
 			},
 			authCfg.authCallbacks,
 			authCfg.sessionUrlHandler,
-			this.loginUXHandler
+			this.loginUXHandler,
+			this.sessionValidator
 		);
 	}
 
@@ -131,24 +137,9 @@ export class SessionManager {
 		session?: SessionInfo,
 		error?: Error
 	): BrowserResponse | undefined => {
-		if (session) {
-			const details = Buffer.from(
-				JSON.stringify({
-					userId: session.userId,
-					userEmail: session.userEmail,
-					userScopes: session.scopes
-				})
-			).toString("base64");
-
-			const redirect = new URL(successHTML, this.authCfg.ccmUrl);
-			redirect.search = details;
-
-			return {
-				statusCode: 302,
-				location: redirect.href
-			};
+		if (!session && !error) {
+			error = new Error("No session information available");
 		}
-
 		if (error) {
 			const details = Buffer.from(
 				JSON.stringify({
@@ -171,6 +162,37 @@ export class SessionManager {
 				location: redirect.href
 			};
 		}
+
+		if (session) {
+			const details = Buffer.from(
+				JSON.stringify({
+					userId: session.userId,
+					userEmail: session.userEmail,
+					userScopes: session.scopes
+				})
+			).toString("base64");
+
+			const redirect = new URL(successHTML, this.authCfg.ccmUrl);
+			redirect.search = details;
+
+			return {
+				statusCode: 302,
+				location: redirect.href
+			};
+		}
+	};
+
+	private sessionValidator: TokenCodeExchangeValidator = (
+		session: TokenSessionInfo,
+		accessToken: AccessToken
+	): Promise<void> => {
+		const client = new CfsApiClient({
+			baseUrl: this.authCfg.ccmUrl,
+			authorizer: new TokenAuthorizer({
+				accessToken: accessToken.accessToken
+			})
+		});
+		return client.testConnection();
 	};
 
 	private _validateAuthConfig(

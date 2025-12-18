@@ -16,7 +16,7 @@
 import * as vscode from "vscode";
 
 import { EXTENSION_ID } from "../constants";
-import { ADI_SELECTED_TOOLCHAIN_SETTING } from "../utils/constants";
+import { ADI_SELECTED_TOOLCHAIN_SETTING } from "../constants";
 
 enum ToolchainNames {
   ARM_NONE_EABI = "arm-none-eabi",

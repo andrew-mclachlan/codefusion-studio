@@ -57,7 +57,6 @@ import { resolveVariables } from "../utils/resolveVariables";
 
 import { CreateDebugConfiguration } from "./createDebugConfiguration";
 import { CfsToolManager } from "cfs-lib";
-import { readFile } from "fs/promises";
 import { existsSync } from "fs";
 import path from "node:path";
 

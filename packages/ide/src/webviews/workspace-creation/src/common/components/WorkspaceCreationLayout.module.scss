@@ -23,6 +23,9 @@
 }
 
 .workspaceLayoutMainPanel {
+	min-width: calc(
+		vars.$panel-min-width - vars.$main-layout-padding * 2
+	);
 	padding: 40px vars.$main-layout-padding;
 
 	.layoutHeader {

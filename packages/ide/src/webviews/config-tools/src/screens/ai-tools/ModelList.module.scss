@@ -112,6 +112,12 @@
 	gap: layout.$spacing-4;
 }
 
+.actionsCell {
+	display: flex;
+	justify-content: end;
+	text-align: right;
+}
+
 .compileButton {
 	margin: 10px 20px;
 }
@@ -143,33 +149,4 @@
 .compatibilityState {
 	display: flex;
 	gap: layout.$spacing-3;
-}
-
-.zephyrProfilingContainer {
-	display: flex;
-	flex-direction: column;
-	margin-bottom: layout.$spacing-7;
-	width: fit-content;
-
-	vscode-checkbox {
-		margin-bottom: layout.$spacing-4;
-	}
-
-	.labelWithTooltip {
-		display: flex;
-		gap: layout.$spacing-3;
-	}
-
-	.label {
-		@include fonts.label-l1;
-		padding-bottom: layout.$spacing-2;
-	}
-
-	vscode-dropdown {
-		max-width: unset;
-
-		&::part(selected-value) {
-			@include fonts.label-l3;
-		}
-	}
 }

@@ -182,14 +182,16 @@ describe('Memory Allocation', () => {
 			);
 		});
 
-		it('should correctly filter the core and the corresponding memory blocks', () => {
-			cy.get('[data-test="core-filter"]').click();
+		it('should correctly filter the project and the corresponding memory blocks', () => {
+			cy.get('[data-test="project-filter"]').click();
 
 			cy.get(
 				`[data-test="project-view-memory-card-container"]`
 			).should('exist');
 
-			cy.get(`[data-test="multiselect-option-${core.Name}"]`).click();
+			cy.get(
+				`[data-test="multiselect-option-${mockedConfigDict.Projects[0].ProjectId}"]`
+			).click();
 
 			core.Memory.forEach(block =>
 				cy

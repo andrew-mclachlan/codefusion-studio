@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2024 Analog Devices, Inc.
+ * Copyright (c) 2025 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ import {useActiveScreen} from '../state/slices/app-context/appContext.selector';
 import {useAppDispatch} from '../state/store';
 import {navigationItems} from '../common/constants/navigation';
 import {
-	useCoresToPersist,
 	useCurrentCoreConfigStep,
+	useEnabledCores,
 	useSelectedBoardPackage,
 	useSelectedCores,
 	useSelectedCoreToConfigId,
@@ -34,8 +34,7 @@ import {
 	setWorkspaceTemplate,
 	setCoreConfig,
 	setCoreToConfigId,
-	setCurrentCoreConfigStep,
-	toggleCoreEnabled
+	setCurrentCoreConfigStep
 } from '../state/slices/workspace-config/workspace-config.reducer';
 import {
 	configErrors,
@@ -46,11 +45,8 @@ import {
 	LOCAL_STORAGE_CORE_CONFIG_ERRORS
 } from '../common/constants/identifiers';
 import type {StatePlatformConfig} from '../common/types/state';
-import useCoreValidation from './useCoreValidation';
 import {createWorkspace} from '../utils/api';
 import {
-	getEnabledCores,
-	getTrustZoneIds,
 	isPathInvalid,
 	isWorkspaceNameInvalid
 } from '../utils/workspace-config';
@@ -64,42 +60,19 @@ export default function useScreenNavigation() {
 	const selectedSoc = useSelectedSoc();
 	const selectedTemplate = useWorkspaceTemplate();
 	const {packageId, boardId} = useSelectedBoardPackage();
-	const selectedCores = useSelectedCores();
+	const coresDict = useSelectedCores();
 	const currentlyConfiguredCoreId = useSelectedCoreToConfigId();
-	const {getPrimaryCoreError} = useCoreValidation();
+	const enabledCores = useEnabledCores();
+	const selectedCoresIds = Object.keys(coresDict);
 
-	const enabledCores = getEnabledCores(selectedCores);
-	const coresToPersist = useCoresToPersist();
-
-	const totalEnabledCores = enabledCores.length;
-
+	const workspaceConfig = useWorkspaceConfig();
 	const currentStep = useCurrentCoreConfigStep();
 
 	const goToNextCoreConfigStep = () => {
-		if (currentStep + 1 < totalEnabledCores) {
-			// if trustzone cores are enabled they take precedence, so disable the base core
-			Object.values(selectedCores)
-				.filter(
-					core =>
-						!core.id.endsWith('-secure') &&
-						!core.id.endsWith('-nonsecure')
-				)
-				.forEach(core => {
-					const baseId = core.id;
-					const {secureCoreId, nonSecureCoreId} =
-						getTrustZoneIds(baseId);
-					// Check if TrustZone cores are enabled
-					if (
-						(selectedCores[secureCoreId]?.isEnabled ||
-							selectedCores[nonSecureCoreId]?.isEnabled) &&
-						core.isEnabled
-					) {
-						dispatch(toggleCoreEnabled(baseId));
-					}
-				});
+		if (currentStep + 1 < enabledCores.length) {
 			const nextCore = enabledCores[currentStep + 1];
-			dispatch(setCoreToConfigId(nextCore.id));
 
+			dispatch(setCoreToConfigId(nextCore.id));
 			dispatch(setCurrentCoreConfigStep(currentStep + 1));
 		} else {
 			dispatch(setActiveScreen(navigationItems.pathSelection));
@@ -108,39 +81,14 @@ export default function useScreenNavigation() {
 
 	const goToPrevCoreConfigStep = () => {
 		if (currentStep > 0) {
-			dispatch(setCurrentCoreConfigStep(currentStep - 1));
 			const prevCore = enabledCores[currentStep - 1];
 
 			dispatch(setCoreToConfigId(prevCore.id));
+			dispatch(setCurrentCoreConfigStep(currentStep - 1));
 		} else {
-			// Reset base core isEnabled to true on core config step if TrustZone core exist and base core is disabled
-			Object.values(selectedCores)
-				.filter(
-					core =>
-						!core.id.endsWith('-secure') &&
-						!core.id.endsWith('-nonsecure')
-				)
-				.forEach(core => {
-					const baseId = core.id;
-					const {secureCoreId, nonSecureCoreId} =
-						getTrustZoneIds(baseId);
-					if (
-						(selectedCores[secureCoreId]?.isEnabled ||
-							selectedCores[nonSecureCoreId]?.isEnabled) &&
-						!core.isEnabled
-					) {
-						dispatch(toggleCoreEnabled(baseId));
-					}
-				});
 			dispatch(setActiveScreen(navigationItems.coresSelection));
 		}
 	};
-
-	const selectedCoresIds = Object.values(selectedCores).map(
-		core => core.id
-	);
-
-	const workspaceConfig = useWorkspaceConfig();
 
 	const navigationButtonsSpecs: Record<
 		string,
@@ -233,24 +181,29 @@ export default function useScreenNavigation() {
 		[navigationItems.coresSelection]: {
 			forwardLabel: CONTINUE_LABEL,
 			forwardAction() {
-				const errorTypes = getPrimaryCoreError(selectedCores);
+				if (enabledCores.length) {
+					dispatch(
+						setConfigErrors({
+							id: configErrors.cores,
+							notifications: []
+						})
+					);
 
-				dispatch(
-					setConfigErrors({
-						id: configErrors.cores,
-						notifications: errorTypes
-					})
-				);
-
-				if (!errorTypes.length) {
+					dispatch(setCoreToConfigId(enabledCores[currentStep].id));
 					dispatch(setActiveScreen(navigationItems.coreConfig));
-
-					const currentCore = enabledCores[currentStep];
-					dispatch(setCoreToConfigId(currentCore.id));
+				} else {
+					dispatch(
+						setConfigErrors({
+							id: configErrors.cores,
+							notifications: [ERROR_TYPES.noSelection]
+						})
+					);
 				}
 			},
 			backAction() {
 				dispatch(setActiveScreen(navigationItems.workspaceOptions));
+				dispatch(setCoreToConfigId(''));
+				dispatch(setCurrentCoreConfigStep(0));
 			}
 		},
 		[navigationItems.coreConfig]: {
@@ -308,6 +261,12 @@ export default function useScreenNavigation() {
 			},
 			backAction() {
 				goToPrevCoreConfigStep();
+				dispatch(
+					setConfigErrors({
+						id: configErrors.coreConfig,
+						notifications: []
+					})
+				);
 			}
 		},
 		[navigationItems.pathSelection]: {
@@ -330,7 +289,7 @@ export default function useScreenNavigation() {
 						workspaceName,
 						location: path,
 						board: boardId,
-						projects: coresToPersist
+						projects: Object.values(coresDict)
 					}).catch(error => {
 						dispatch(
 							setConfigErrors({

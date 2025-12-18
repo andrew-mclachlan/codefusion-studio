@@ -41,84 +41,88 @@ const permissions = {
 	readWriteExecute: 'R/W/X'
 };
 
-export const CorePermissions = memo(function CorePermissions({
-	core,
-	memoryType,
-	onRemoveCore,
-	onUpdateAccess,
-	onUpdateOwner
-}: CorePermissionsProps) {
-	const i10n: TLocaleContext | undefined = useLocaleContext()?.memory;
-	const projects = getProjectInfoList();
+export const CorePermissions = memo(
+	({
+		core,
+		memoryType,
+		onRemoveCore,
+		onUpdateAccess,
+		onUpdateOwner
+	}: CorePermissionsProps) => {
+		const i10n: TLocaleContext | undefined =
+			useLocaleContext()?.memory;
+		const projects = getProjectInfoList();
 
-	const dataModelCore = getSocCoreList().find(
-		socCore => socCore.Id === core.coreId
-	);
-	const permissionOptions = dataModelCore
-		? Object.values(permissions).filter(permission =>
-				dataModelCore.Memory.filter(
-					block => 'Type' in block && block.Type === memoryType
-				).some(block =>
-					permission
-						.split('/')
-						.every(level => block.Access.includes(level))
-				)
-			)
-		: [];
-
-	const secure = useMemo(() => {
-		const project = projects?.find(
-			p => p.ProjectId === core.projectId
+		const dataModelCore = getSocCoreList().find(
+			socCore => socCore.Id === core.coreId
 		);
+		const permissionOptions = dataModelCore
+			? Object.values(permissions).filter(permission =>
+					dataModelCore.Memory.filter(
+						block => 'Type' in block && block.Type === memoryType
+					).some(block =>
+						permission
+							.split('/')
+							.every(level => block.Access.includes(level))
+					)
+				)
+			: [];
 
-		return project?.Secure;
-	}, [projects, core.projectId]);
+		const secure = useMemo(() => {
+			const project = projects?.find(
+				p => p.ProjectId === core.projectId
+			);
 
-	return (
-		<div className={styles.container}>
-			<div className={styles.row}>
-				<div data-test={`permission-label-${core.projectId}`}>
-					{core.label}{' '}
-					{secure !== undefined && (
-						<Badge appearance='secondary' className={styles.badge}>
-							{secure
-								? (i10n?.partition.badge.secure ?? 'Secure')
-								: (i10n?.partition.badge.non_secure ?? 'Non-Secure')}
-						</Badge>
-					)}
+			return project?.Secure;
+		}, [projects, core.projectId]);
+
+		return (
+			<div className={styles.container}>
+				<div className={styles.row}>
+					<div data-test={`permission-label-${core.projectId}`}>
+						{core.label}{' '}
+						{secure !== undefined && (
+							<Badge appearance='secondary' className={styles.badge}>
+								{secure
+									? (i10n?.partition.badge.secure ?? 'Secure')
+									: (i10n?.partition.badge.non_secure ??
+										'Non-Secure')}
+							</Badge>
+						)}
+					</div>
+					<Button
+						appearance='icon'
+						dataTest={`remove-core-${core.projectId}`}
+						onClick={() => {
+							onRemoveCore(core.projectId);
+						}}
+					>
+						<DeleteIcon />
+					</Button>
 				</div>
-				<Button
-					appearance='icon'
-					dataTest={`remove-core-${core.projectId}`}
-					onClick={() => {
-						onRemoveCore(core.projectId);
-					}}
-				>
-					<DeleteIcon />
-				</Button>
-			</div>
-			<div className={styles.row}>
-				<DropDown
-					controlId={'core-permission' + core.projectId}
-					currentControlValue={core.access}
-					options={permissionOptions.map(permission => ({
-						label: i10n?.access[permission].title,
-						value: permission
-					}))}
-					onHandleDropdown={value => {
-						onUpdateAccess(core.projectId, value);
-					}}
-				/>
-				<div className={styles.toggleContainer}>
-					<span>{i10n?.core?.owner}</span>
-					<Toggle
-						isToggledOn={core.owner}
-						handleToggle={() => {
-							onUpdateOwner(core.projectId, !core.owner);
+				<div className={styles.row}>
+					<DropDown
+						controlId={'core-permission' + core.projectId}
+						currentControlValue={core.access}
+						options={permissionOptions.map(permission => ({
+							label: i10n?.access[permission].title,
+							value: permission
+						}))}
+						onHandleDropdown={value => {
+							onUpdateAccess(core.projectId, value);
 						}}
 					/>
+					<div className={styles.toggleContainer}>
+						<span>{i10n?.core?.owner}</span>
+						<Toggle
+							isToggledOn={core.owner}
+							handleToggle={() => {
+								onUpdateOwner(core.projectId, !core.owner);
+							}}
+						/>
+					</div>
 				</div>
 			</div>
-		</div>
-	);
-});
+		);
+	}
+);

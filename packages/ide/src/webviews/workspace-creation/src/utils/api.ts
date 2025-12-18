@@ -66,12 +66,19 @@ export async function getPluginsInfoList(
 
 export async function getHostPlatform() {
 	if (isCypressEnvironment()) {
+		// Return synchronously resolved value when using Cypress
 		return new Promise<string>(resolve => {
-			resolve(
-				JSON.parse(localStorage.getItem('host-platform') ?? '')
-			);
+			const value = localStorage.getItem('host-platform') ?? '';
+
+			try {
+				const parsed = JSON.parse(value);
+				resolve(typeof parsed === 'string' ? parsed : '');
+			} catch {
+				resolve('');
+			}
 		});
 	}
+
 	return request('get-host-platform') as Promise<string>;
 }
 

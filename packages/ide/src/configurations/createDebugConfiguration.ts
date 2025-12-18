@@ -54,7 +54,6 @@ import { Utils } from "../utils/utils";
 
 import { SELECT_TOOLCHAIN } from "./constants";
 import path from "path";
-import { CfsPackageManagerProvider } from "cfs-package-manager";
 import type { CfsToolManager } from "cfs-lib";
 
 const BROWSE_STRING = "Browse...";
@@ -134,9 +133,7 @@ export class CreateDebugConfiguration {
   /**
    * Searches for svd file and adds it to the config:cfs.cmsis.svdFile
    */
-  static async selectSvdFileForCortexDebug(
-    toolManager: CfsToolManager
-  ) {
+  static async selectSvdFileForCortexDebug(toolManager: CfsToolManager) {
     const searchDirectories: Set<string> = new Set<string>();
 
     // Start with an empty scope (null), which uses the current workspace

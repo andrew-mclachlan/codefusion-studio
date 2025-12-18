@@ -20,9 +20,9 @@ Most of the setup steps, including toolchain installation and ICE emulator confi
     Ensure the ICE-1000, ICE-1500, or ICE-2000 drivers are installed so CodeFusion Studio can communicate with your SHARC-FX target.  
     - If you selected **ADI ICE Drivers (Requires Administrator)** during CodeFusion Studio installation, you’re all set.  
     - If you skipped that option, see [Install ICE drivers manually](install-ice-drivers.md).
-2. Sign in to the Package Manager and install the required SHARC-FX toolchain.
+2. Log in using your myAnalog account and install the required SHARC-FX toolchain.
 
-### Step 2 – Log in to access the SHARC-FX toolchain
+### Log in to access the SHARC-FX toolchain
 
 Authentication is required to download the SHARC-FX toolchain.
 
@@ -74,7 +74,7 @@ Follow the recommended setup for your ICE emulator:
 
 ## Build the projects
 
-Run the [CFS: build](../workspaces/tasks.md) to create the build directory and generate the ELF files needed for debugging.
+Run the [CFS: build](../build-and-flash/tasks.md) to create the build directory and generate the ELF files needed for debugging.
 
 - Click the **CFS icon** ![cfs-icon](../about/images/cfs-icon-light.png#only-light) ![cfs-icon](../about/images/cfs-icon-dark.png#only-dark) in the **Activity Bar**.
 - In the **Actions** view, select the appropriate build task for your project:
@@ -103,5 +103,5 @@ To start debugging:
 | **Error Message**                                                                                                        | **Solution**                                                                     |
 |--------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
 | `Failed to launch GDB: could not connect (error 138): The system tried to join a drive to a directory on a joined drive` | Start debugging with the SHARC-FX core first.                                    |
-| `Cannot find: "C:/analog/cfs/2.0.0/Tools/xtensa/RJ-2024.4/XtensaTools"`                                                  | Ensure you install the Xtensa toolchain package.                                 |
+| `Cannot find: "C:/analog/cfs/<version>/Tools/xtensa/RJ-2024.4/XtensaTools"`                                                  | Ensure you install the Xtensa toolchain package.                                 |
 | `OpenOCD: GDB Server Quit Unexpectedly.`                                                                                 | Update the `.vscode/settings.json` for each project with the correct ICE emulator model |

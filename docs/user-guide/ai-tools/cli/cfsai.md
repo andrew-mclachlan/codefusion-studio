@@ -1,7 +1,7 @@
 ---
 description: Documenting the CFSAI command-line utility for compiling and deploying AI models to embedded targets.
 author: Analog Devices
-date: 2025-09-29
+date: 2025-11-06
 ---
 
 # Accessing CFSAI with the command line
@@ -23,6 +23,9 @@ To access `cfsai`, open a new terminal (**View > Terminal** or `Ctrl+``). Then c
     To run `cfsai` from a system terminal outside VS Code:  
     - **Windows:** `<CFS-Install>/Tools/cfsai/bin/cfsai.exe`  
     - **Linux/macOS:** `<CFS-Install>/Tools/cfsai/bin/cfsai`
+
+!!! note "Windows dependency"
+    On Windows, `cfsai` requires the [:octicons-link-external-24: Visual C++ Redistributable for Visual Studio 2015](https://aka.ms/vs/16/release/vc_redist.x64.exe){:target="_blank"} to be installed. Install this redistributable manually before running `cfsai` commands.
 
 ## Help
 

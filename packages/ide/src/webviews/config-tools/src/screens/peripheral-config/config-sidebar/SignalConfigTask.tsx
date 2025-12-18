@@ -24,7 +24,7 @@ import SignalDetails from './SignalDetailsSection';
 import ManageSignalPinAssignments from './ManageSignalPinAssignments';
 import {
 	useActiveSignal,
-	usePeripheralSignalAllocations
+	useSignalProjectId
 } from '../../../state/slices/peripherals/peripherals.selector';
 import useIsPinAssignmentMissing from '../../../hooks/useIsPinAssignmentMissing';
 import SignalConfig from './SignalConfig';
@@ -42,12 +42,9 @@ function SignalConfigTask() {
 		signal,
 		peripheral
 	);
-	const projectsForSignal = usePeripheralSignalAllocations(
-		peripheral,
-		signal
-	);
-	const projectConfig = getProjectInfoList()?.find(p =>
-		projectsForSignal.includes(p.ProjectId)
+	const signalProjectId = useSignalProjectId(peripheral, signal);
+	const projectConfig = getProjectInfoList()?.find(
+		p => signalProjectId === p.ProjectId
 	);
 
 	return (

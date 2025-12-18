@@ -66,7 +66,7 @@ import {
 	handleSignalAssignment,
 	handleSignalGroupSelected
 } from './side-list-container.handlers';
-import {PeripheralSecurity} from '../../../types/peripherals';
+import {type PeripheralSecurity} from '../../../types/peripherals';
 
 const defaultFilterOptions: Record<string, FilterOption> =
 	Object.freeze({

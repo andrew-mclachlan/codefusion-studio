@@ -66,13 +66,13 @@ const sizeOptions: DropDownOptions = [
 	{value: 'bytes', label: 'bytes'}
 ];
 
-export const MemoryBlocks = memo(function MemoryBlocks({
+export const MemoryBlocks = memo(({
 	blocksForType,
 	errors,
 	partition,
 	isFormTouched,
 	onChange
-}: MemoryBlockProps) {
+}: MemoryBlockProps) => {
 	const i10n: TLocaleContext | undefined =
 		useLocaleContext()?.memory.blocks;
 	const {

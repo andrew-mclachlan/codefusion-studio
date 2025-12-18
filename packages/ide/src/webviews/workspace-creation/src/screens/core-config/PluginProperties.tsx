@@ -6,9 +6,11 @@ import BrowseFile from './core-config-components/browse-file/BrowseFile';
 import {useConfiguredCore} from '../../state/slices/workspace-config/workspace-config.selector';
 import {
 	LOCAL_STORAGE_CORE_CONFIG,
-	LOCAL_STORAGE_CORE_CONFIG_ERRORS
+	LOCAL_STORAGE_CORE_CONFIG_ERRORS,
+	PROJECT_NAME_PROPERTY_ID as PROJECT_NAME_ID
 } from '../../common/constants/identifiers';
 import type {CfsPluginInfo, CfsPluginProperty} from 'cfs-lib';
+import {addSuffixToProjectName} from '../../utils/workspace-config';
 
 type PlatformOptionsProps = Readonly<{
 	pluginInfo: CfsPluginInfo | undefined;
@@ -31,13 +33,18 @@ function PluginProperties({
 	const defaultConfig = useMemo(
 		() =>
 			Object.keys(coreState?.platformConfig ?? {}).length
-				? (coreState!.platformConfig as Record<
-						string,
-						string | number | boolean
-					>)
+				? coreState.platformConfig
 				: controls.reduce<Record<string, string | number | boolean>>(
 						(acc, prop) => {
-							acc[prop.id] = prop.default ?? '';
+							if (prop.id === PROJECT_NAME_ID && coreState.name) {
+								acc[prop.id] = addSuffixToProjectName(
+									prop.default ?? '',
+									coreState
+								);
+							} else {
+								acc[prop.id] = prop.default ?? '';
+							}
+
 							return acc;
 						},
 						{}

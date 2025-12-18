@@ -56,7 +56,7 @@ Choose this option to set up your system configuration step by step.
 
 ### Select a workspace template
 
-Choose a pre-defined SoC template with ADI-recommended configuration options. You can choose from single or multi-core options.
+Choose a pre-defined SoC template with ADI-recommended configuration options. You can choose from single or multi-core options. For details on supported workspace templates, see [Supported workspace templates](supported-templates.md).
 
 ### Complete workspace setup
 
@@ -68,7 +68,7 @@ Choose a pre-defined SoC template with ADI-recommended configuration options. Yo
 
 1. Click **Create Workspace**.
 1. If you receive the notification **Do you trust the authors of the files in this workspace?**, click **Yes, I trust the authors** to continue.
-1. Once created, the workspace files will appear in the File Explorer, and the System Planner Configuration Tools dashboard will open. For information on using the dashboard, see [System Planner Configuration Tools](../tools/config-tool/index.md).
+1. Once created, the workspace files will appear in the File Explorer, and the System Planner Configuration Tools dashboard will open. For information on using the dashboard, see [System Planner Configuration Tools](../tools/index.md).
 1. If generation fails, error messages will guide you to resolve issues before trying again.
 
 ### Copy workspace settings

@@ -31,8 +31,7 @@ describe('Navigation', () => {
 			);
 			cy.mount(<Navigation />, reduxStore);
 
-			const CSSGasket = cy.get('[data-test="nav-item:dfg"]');
-			CSSGasket.should('not.exist');
+			cy.get('[data-test="nav-item:dfg"]').should('not.exist');
 		});
 
 		it('should render Clock Config tab when the ClockNodes is present in the config', () => {
@@ -42,10 +41,7 @@ describe('Navigation', () => {
 			);
 			cy.mount(<Navigation />, reduxStore);
 
-			const CSSClockConfig = cy.get(
-				'[data-test="nav-item:clockconfig"]'
-			);
-			CSSClockConfig.should('exist');
+			cy.get('[data-test="nav-item:clockconfig"]').should('exist');
 		});
 
 		it('should render Memory tab when the Memory is present in the config', () => {
@@ -55,8 +51,7 @@ describe('Navigation', () => {
 			);
 			cy.mount(<Navigation />, reduxStore);
 
-			const CSSMemory = cy.get('[data-test="nav-item:memory"]');
-			CSSMemory.should('exist');
+			cy.get('[data-test="nav-item:memory"]').should('exist');
 		});
 
 		it('should render Pinmux tab when the Pins are present in the config', () => {
@@ -66,8 +61,7 @@ describe('Navigation', () => {
 			);
 			cy.mount(<Navigation />, reduxStore);
 
-			const CSSMemory = cy.get('[data-test="nav-item:pinmux"]');
-			CSSMemory.should('exist');
+			cy.get('[data-test="nav-item:pinmux"]').should('exist');
 		});
 	});
 });

@@ -72,40 +72,48 @@ export const getAssignedPin = (
 	);
 
 /**
- * Calculates the number of unassigned but required pins across all peripherals.
- *
- * This function iterates through all peripheral configurations and their signals,
- * checking if required signals have been assigned to pins.
+ * Calculates the number of errors in total for this peripheral configuration.
+ * Combining missing required pin assignments and form control errors.
  *
  * @param assignedPins - Array of pins that have been assigned to peripheral signals
  * @param allocations - Record mapping peripheral names to their configuration
+ * @param controls - The control configurations for this project and peripheral
+ * @param projectId - (Optional) For filtering signal errors where signals are assigned across multiple projects
  * @returns The count of required peripheral signals that have not been assigned to pins
  */
-export function getPeripheralError(
+export function getPeripheralErrorCount(
 	assignedPins: AssignedPin[],
 	allocations: Record<string, PeripheralConfig>,
-	controls: Record<string, ControlCfg[]>
+	controls: Record<string, ControlCfg[]>,
+	projectId?: string
 ): number {
 	let count = 0;
 
 	Object.values(allocations).forEach(peripheral => {
-		Object.values(peripheral?.signals ?? {}).forEach(signal => {
-			const assignedPin = getAssignedPin(
-				assignedPins,
-				peripheral.name,
-				signal.name
-			);
+		Object.values(peripheral?.signals ?? {})
+			.filter(
+				signal =>
+					!projectId ||
+					!signal.projectId ||
+					signal.projectId === projectId
+			)
+			.forEach(signal => {
+				const assignedPin = getAssignedPin(
+					assignedPins,
+					peripheral.name,
+					signal.name
+				);
 
-			const isRequired = getIsPeripheralSignalRequired(
-				peripheral.name,
-				signal.name,
-				peripheral.config as Record<string, string>
-			);
+				const isRequired = getIsPeripheralSignalRequired(
+					peripheral.name,
+					signal.name,
+					peripheral.config as Record<string, string>
+				);
 
-			if (isRequired && !assignedPin) {
-				count++;
-			}
-		});
+				if (isRequired && !assignedPin) {
+					count++;
+				}
+			});
 
 		const controlsErrors =
 			// eslint-disable-next-line @typescript-eslint/prefer-optional-chain
@@ -116,14 +124,10 @@ export function getPeripheralError(
 					)
 				: {};
 
-		if (
-			Object.keys(controlsErrors).length &&
-			// At least one 1 error found is part of the peripheral configuration
-			Object.keys(controlsErrors).some(controlId =>
-				Object.keys(peripheral?.config ?? []).includes(controlId)
-			)
-		)
-			count++;
+		const formErrorCount = Object.keys(controlsErrors).filter(
+			controlId => Boolean(peripheral?.config?.[controlId])
+		).length;
+		count += formErrorCount;
 	});
 
 	return count;
@@ -151,6 +155,7 @@ export function hasPeripheralPinConflicts(
 				appliedSignal => appliedSignal.Peripheral === peripheral.name
 			)
 		);
+
 		// Check for conflicts only among those pins
 		return pinsForPeripheral.some(
 			targetPin =>

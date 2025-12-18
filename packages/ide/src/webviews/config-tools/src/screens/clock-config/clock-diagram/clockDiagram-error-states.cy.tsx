@@ -1,8 +1,6 @@
-/* eslint-disable max-nested-callbacks */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /**
  *
- * Copyright (c) 2024 Analog Devices, Inc.
+ * Copyright (c) 2024 - 2025 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +13,7 @@
  *
  */
 /* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable max-nested-callbacks */
 import type {Soc} from '@common/types/soc';
 import ClockDiagram from './ClockDiagram';
 import {configurePreloadedStore} from '../../../state/store';

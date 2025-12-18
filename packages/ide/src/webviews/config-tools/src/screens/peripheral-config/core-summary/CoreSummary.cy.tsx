@@ -247,7 +247,7 @@ describe(
 
 				reduxStore.dispatch(
 					setAppliedSignal({
-						Pin: 'J2', // or any valid pin name
+						Pin: 'J2', // Or any valid pin name
 						Peripheral: 'GPIO0',
 						Name: 'P0.1'
 					})
@@ -435,7 +435,7 @@ describe(
 
 				reduxStore.dispatch(
 					setAppliedSignal({
-						Pin: 'J2', // or any valid pin name
+						Pin: 'J2', // Or any valid pin name
 						Peripheral: 'GPIO0',
 						Name: 'P0.1'
 					})
@@ -487,6 +487,115 @@ describe(
 										cy.dataTest('signal-assignment:P0.2').should(
 											'exist'
 										);
+									});
+							});
+					});
+			});
+
+			it('should display 1 error when a GPIO pin is unassigned in one project', () => {
+				const reduxStore = configurePreloadedStore(
+					max32690wlp,
+					mockedConfigDict
+				);
+
+				reduxStore.dispatch(
+					setSignalAssignment({
+						peripheral: 'GPIO0',
+						signalName: 'P0.7',
+						projectId: 'CM4-proj'
+					})
+				);
+
+				reduxStore.dispatch(
+					setAppliedSignal({
+						Pin: 'G2',
+						Peripheral: 'GPIO0',
+						Name: 'P0.7'
+					})
+				);
+
+				reduxStore.dispatch(
+					setSignalAssignment({
+						peripheral: 'GPIO0',
+						signalName: 'P0.4',
+						projectId: 'RV-proj'
+					})
+				);
+
+				cy.mount(<CoreSummary />, reduxStore).then(() => {
+					cy.dataTest('CM4-proj-error-icon').should('not.exist');
+					cy.dataTest('RV-proj-error-icon').should('exist');
+				});
+			});
+			it('should display 2 errors when GPIO pins are unassigned in both projects', () => {
+				const reduxStore = configurePreloadedStore(
+					max32690wlp,
+					mockedConfigDict
+				);
+
+				reduxStore.dispatch(
+					setSignalAssignment({
+						peripheral: 'GPIO0',
+						signalName: 'P0.7',
+						projectId: 'CM4-proj'
+					})
+				);
+
+				reduxStore.dispatch(
+					setSignalAssignment({
+						peripheral: 'GPIO0',
+						signalName: 'P0.4',
+						projectId: 'RV-proj'
+					})
+				);
+
+				cy.mount(<CoreSummary />, reduxStore).then(() => {
+					cy.dataTest('CM4-proj-error-icon').should('exist');
+					cy.dataTest('RV-proj-error-icon').should('exist');
+				});
+			});
+
+			it('should highlight peripheral on signal config', () => {
+				const reduxStore = configurePreloadedStore(
+					max32690wlp as unknown as Soc,
+					mockedConfigDict
+				);
+
+				reduxStore.dispatch(
+					setSignalAssignment({
+						peripheral: 'GPIO0',
+						signalName: 'P0.1',
+						projectId: 'RV-proj'
+					})
+				);
+
+				reduxStore.dispatch(
+					setAppliedSignal({
+						Pin: 'J2', // Or any valid pin name
+						Peripheral: 'GPIO0',
+						Name: 'P0.1'
+					})
+				);
+
+				cy.mount(<CoreSummary />, reduxStore);
+
+				cy.dataTest('core:RV-proj:label')
+					.should('exist')
+					.click()
+					.then(() => {
+						cy.dataTest('core:RV-proj:allocation:GPIO0')
+							.should('exist')
+							.click()
+							.then(() => {
+								cy.dataTest('signal-assignment:P0.1').should('exist');
+
+								cy.dataTest('signal-assignment:config-btn')
+									.click()
+									.then(() => {
+										cy.dataTest('accordion:GPIO0')
+											.closest('[class*="accordionWrapper"]')
+											.should('have.attr', 'class')
+											.and('match', /(highlight|hovered)/);
 									});
 							});
 					});

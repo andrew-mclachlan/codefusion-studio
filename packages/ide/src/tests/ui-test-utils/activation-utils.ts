@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 /**
  *
  * Copyright (c) 2023-2025 Analog Devices, Inc.
@@ -27,8 +26,10 @@ import { getNotificationByMessage } from "./view-utils";
  */
 export async function configureWorkspace(action?: string | undefined) {
   const notification = await getNotificationByMessage(INFO.configureWorkspace);
-  expect(notification, "Did not find CFS configure workspace notification").to
-    .not.be.null;
+  expect(
+    notification,
+    "Did not find CFS configure workspace notification",
+  ).to.not.equal(null);
   if (notification === null) {
     return;
   }

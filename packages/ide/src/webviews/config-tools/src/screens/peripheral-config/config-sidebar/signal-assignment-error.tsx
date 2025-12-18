@@ -15,6 +15,8 @@
 
 import useIsPinAssignmentRequired from '../../../hooks/useIsPinAssignmentRequired';
 import styles from './signal-assignment-error.module.scss';
+import {useAssignedPin} from '../../../state/slices/pins/pins.selector';
+import {getSocPinDetails} from '../../../utils/soc-pins';
 
 type SignalAssignmentErrorProps = Readonly<{
 	signal: string;
@@ -30,6 +32,9 @@ function SignalAssignmentError({
 	isPinAssignmentMissing
 }: SignalAssignmentErrorProps) {
 	const isRequired = useIsPinAssignmentRequired(signal, peripheral);
+	const assignedPin = useAssignedPin({signal, peripheral});
+	const {Label} = getSocPinDetails(assignedPin?.pinId ?? signal);
+
 	return (
 		<div>
 			<p
@@ -39,7 +44,7 @@ function SignalAssignmentError({
 				{isRequired && isPinAssignmentMissing
 					? `${peripheral} ${signal} needs to be enabled`
 					: null}
-				{isPinConflict ? `Pin conflict for ${signal}` : null}
+				{isPinConflict ? `Pin conflict for ${Label}` : null}
 			</p>
 		</div>
 	);

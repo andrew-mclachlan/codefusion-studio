@@ -73,26 +73,23 @@ export const helpDoclinks: Record<
 			}
 		]
 	},
-	MAX32658: {
+	MAX32657: {
 		documentation: [
 			{
-				name: 'MAX32658 product information',
-				url: 'https://www.analog.com/en/products/max32658.html',
+				name: 'MAX32657 product information',
+				url: 'https://www.analog.com/en/products/max32657.html',
 				categories: ['home', 'dashboard']
 			},
 			{
-				name: 'MAX32658 data sheet',
-				url: 'https://www.analog.com/media/en/technical-documentation/data-sheets/max32655.pdf',
-				categories: ['home', 'dashboard']
-			},
-			{
-				name: 'MAX32658 user guide',
-				url: 'https://www.analog.com/media/en/technical-documentation/user-guides/max32658-user-guide.pdf',
+				name: 'MAX32657 data sheet',
+				url: 'https://www.analog.com/media/en/technical-documentation/data-sheets/max32657.pdf',
 				categories: ['home', 'dashboard']
 			}
 		]
 	},
-
+	MAX32658: {
+		documentation: []
+	},
 	MAX32660: {
 		documentation: [
 			{
@@ -236,7 +233,7 @@ export const helpDoclinks: Record<
 			},
 			{
 				name: 'MAX78002 user guide',
-				url: 'https://www.analog.com/media/en/technical-documentation/data-sheets/MAX78002EVKIT.pdf',
+				url: 'https://www.analog.com/media/en/technical-documentation/user-guides/max78002-user-guide.pdf',
 				categories: ['home', 'dashboard']
 			}
 		]

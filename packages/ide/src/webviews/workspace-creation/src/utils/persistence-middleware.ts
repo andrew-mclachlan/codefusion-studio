@@ -27,7 +27,10 @@ import {
 	removeSelectedCores,
 	setWorkspaceTemplate,
 	setWorkspaceName,
-	setWorkspacePath
+	setWorkspacePath,
+	addProjects,
+	toggleProjects,
+	removeProjects
 } from '../state/slices/workspace-config/workspace-config.reducer';
 import {updatePersistedConfig} from './api';
 import type {WorkspaceCoreConfig} from '../common/types/config';
@@ -39,6 +42,9 @@ export const persistedActions: Array<ActionCreatorWithPayload<any>> =
 		setCoreConfig,
 		toggleCoreEnabled,
 		removeSelectedCores,
+		addProjects,
+		toggleProjects,
+		removeProjects,
 		setWorkspaceTemplate,
 		setWorkspaceName,
 		setWorkspacePath
@@ -67,8 +73,8 @@ export function getPersistenceListenerMiddleware(
 						CoreId: core.coreId,
 						Name: core.name ?? '',
 						IsPrimary: core.isPrimary ?? false,
-						Secure: core.Secure,
 						IsEnabled: core.isEnabled,
+						Secure: core.Secure,
 						PluginId: core.pluginId ?? '',
 						PluginVersion: core.pluginVersion ?? '',
 						FirmwarePlatform: core.firmwarePlatform ?? '',

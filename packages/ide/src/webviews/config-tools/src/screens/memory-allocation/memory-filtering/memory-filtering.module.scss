@@ -15,14 +15,11 @@
 
 .container {
 	display: flex;
-	position: absolute;
-	top: 22px;
 	gap: 4px;
-	z-index: 1000;
 
 	.memoryType,
 	.cores {
 		--multiselect-width: 100%;
-		--multiselect-options-width: 180px;
+		--multiselect-options-width: fit-content;
 	}
 }

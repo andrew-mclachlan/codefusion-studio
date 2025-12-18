@@ -81,67 +81,73 @@ function RegisterTable({
 	}, []);
 
 	return (
-		<DataGrid
-			className={styles.table}
-			gridTemplateColumns={
-				innerWidth > 1130 ? '20% 20% 50% 10%' : '20% 20% 40% 20%'
-			}
-			ariaLabel='Registers table'
-			dataTest='register-table-grid'
-		>
-			<DataGridRow rowType='header'>
-				<DataGridCell gridColumn='1' cellType='columnheader'>
-					<div
-						className={`${styles['sortable-title']} ${styles[sortedBy?.name ?? ''] ?? ''} `}
-						onClick={() => {
-							sortTable('name');
-						}}
-					>
-						Name
-						{sortedBy?.name ? <DownFilledArrow /> : <DownArrow />}
-					</div>
-				</DataGridCell>
-				<DataGridCell gridColumn='2' cellType='columnheader'>
-					<div
-						className={`${styles['sortable-title']} ${styles[sortedBy?.address ?? ''] ?? ''} `}
-						onClick={() => {
-							sortTable('address');
-						}}
-					>
-						Address
-						{sortedBy?.address ? <DownFilledArrow /> : <DownArrow />}
-					</div>
-				</DataGridCell>
-				<DataGridCell gridColumn='3' cellType='columnheader'>
-					Description
-				</DataGridCell>
-				<DataGridCell gridColumn='4' cellType='columnheader'>
-					Value
-				</DataGridCell>
-			</DataGridRow>
-			{sortedRegisters.map(register => (
-				<RegisterTableRow
-					key={register.name}
-					id={register.name}
-					label={
-						<div className={styles.name}>
-							{register.isResetValue ? (
-								register.name
+		<div className={styles.tableWrapper}>
+			<DataGrid
+				className={styles.table}
+				gridTemplateColumns={
+					innerWidth > 1130 ? '20% 20% 50% 10%' : '20% 20% 40% 20%'
+				}
+				ariaLabel='Registers table'
+				dataTest='register-table-grid'
+			>
+				<DataGridRow rowType='header'>
+					<DataGridCell gridColumn='1' cellType='columnheader'>
+						<div
+							className={`${styles['sortable-title']} ${styles[sortedBy?.name ?? ''] ?? ''} `}
+							onClick={() => {
+								sortTable('name');
+							}}
+						>
+							Name
+							{sortedBy?.name ? <DownFilledArrow /> : <DownArrow />}
+						</div>
+					</DataGridCell>
+					<DataGridCell gridColumn='2' cellType='columnheader'>
+						<div
+							className={`${styles['sortable-title']} ${styles[sortedBy?.address ?? ''] ?? ''} `}
+							onClick={() => {
+								sortTable('address');
+							}}
+						>
+							Address
+							{sortedBy?.address ? (
+								<DownFilledArrow />
 							) : (
-								<>
-									<div>&lowast;</div>
-									<div>{register.name}</div>
-								</>
+								<DownArrow />
 							)}
 						</div>
-					}
-					description={register.description}
-					value={register.value}
-					address={register.address}
-					handleRegisterSelection={setActiveRegister}
-				/>
-			))}
-		</DataGrid>
+					</DataGridCell>
+					<DataGridCell gridColumn='3' cellType='columnheader'>
+						Description
+					</DataGridCell>
+					<DataGridCell gridColumn='4' cellType='columnheader'>
+						Value
+					</DataGridCell>
+				</DataGridRow>
+				{sortedRegisters.map(register => (
+					<RegisterTableRow
+						key={register.name}
+						id={register.name}
+						label={
+							<div className={styles.name}>
+								{register.isResetValue ? (
+									register.name
+								) : (
+									<>
+										<div>&lowast;</div>
+										<div>{register.name}</div>
+									</>
+								)}
+							</div>
+						}
+						description={register.description}
+						value={register.value}
+						address={register.address}
+						handleRegisterSelection={setActiveRegister}
+					/>
+				))}
+			</DataGrid>
+		</div>
 	);
 }
 

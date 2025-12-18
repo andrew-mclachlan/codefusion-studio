@@ -29,6 +29,7 @@ import {
 import useIsPrimaryMultipleProjects from '../../../hooks/use-is-primary-multiple-projects';
 import {
 	EXTERNALLY_MANAGED,
+	NON_SECURE,
 	PRIMARY,
 	SECURE
 } from '@common/constants/core-properties';
@@ -79,6 +80,9 @@ export default function PartitionProjectViewCard({
 						) : null}
 						{project.Secure && (
 							<Badge appearance='secondary'>{SECURE}</Badge>
+						)}
+						{project.Secure === false && (
+							<Badge appearance='secondary'>{NON_SECURE}</Badge>
 						)}
 						{project.ExternallyManaged && (
 							<Badge appearance='secondary'>

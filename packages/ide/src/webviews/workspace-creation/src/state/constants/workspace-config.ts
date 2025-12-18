@@ -43,6 +43,5 @@ export const workspaceConfigInitialState: WorkspaceConfigState = {
 			}
 		}
 	},
-	currentCoreConfigStep: 0,
-	isTrustZoneEnabled: {}
+	currentCoreConfigStep: 0
 };

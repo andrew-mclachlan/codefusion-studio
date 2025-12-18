@@ -18,10 +18,10 @@ import styles from './register-details-table.module.scss';
 import DownFilledArrow from '../../../../../common/icons/DownFilledArrow';
 import DownArrow from '../../../../../common/icons/DownArrow';
 import {useMemo, useState} from 'react';
-import {
+import type {
 	RegisterConfigField,
-	type ConfigField,
-	type FieldDictionary
+	ConfigField,
+	FieldDictionary
 } from '../../../../../common/types/soc';
 import {RegisterDetailsRow} from '../register-details-row/register-details-row';
 import {computeFieldValue} from '../../../utils/compute-register-value';

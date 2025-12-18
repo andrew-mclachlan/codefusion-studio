@@ -34,9 +34,9 @@ By default, CFS projects are already configured to store the core dump in flash 
 
 (Optional) If you want the entire core dump to be sent over UART instead of stored in flash, enable:
 
-    ```ini
-    CONFIG_DEBUG_COREDUMP_BACKEND_LOGGING=y
-    ```
+```ini
+CONFIG_DEBUG_COREDUMP_BACKEND_LOGGING=y
+```
 
 In this case, the tool expects the `#CD:...` formatted output from Zephyr. See the [:octicons-link-external-24: Zephyr Core Dump documentation](https://docs.zephyrproject.org/latest/services/debugging/coredump.html) for details.
 
@@ -75,17 +75,17 @@ Before running the Core Dump Analysis tool, make sure the core dump settings in 
 
 ### Verify that System Planner and VS Code settings match
 
-Core dumps are stored in a dedicated flash partition defined in [System Planner → Memory Allocation](../../../tools/config-tool/memory-allocation.md). This partition is identified by the **Plugin Option** `coredump-partition`, which determines where Zephyr saves crash data in flash memory. The address and size must match the Core Dump settings in VS Code so the Core Dump Analysis Tool can retrieve the data correctly.
+Core dumps are stored in a dedicated flash partition defined in [System Planner → Memory Allocation](../../../tools/memory-allocation.md). This partition is identified by the **Plugin Option** `coredump-partition`, which determines where Zephyr saves crash data in flash memory. The address and size must match the Core Dump settings in VS Code so the Core Dump Analysis Tool can retrieve the data correctly.
 
 Use the following workflow to update the core dump flash partition in System Planner and align your VS Code project settings accordingly.
 
 1. In **System Planner**, go to the **Memory Allocation** tab.  
-2. Click **Configure** ![Configure](../../../tools/config-tool/images/icon-config-dark.png#only-dark) ![Configure](../../../tools/config-tool/images/icon-config-light.png#only-light) next to the core dump partition.  
+2. Click **Configure** ![Configure](../../../tools/images/icon-config-dark.png#only-dark) ![Configure](../../../tools/images/icon-config-light.png#only-light) next to the core dump partition.  
    ![Configure Partition](../core-dump-analysis/images/configure_core_dump_partition_dark.png#only-dark) ![Configure Partition](../core-dump-analysis/images/configure_core_dump_partition_light.png#only-light)
 3. In the **Edit Partition** form, note the **Starting Address** and **Size** values.  
    ![Core Dump Partition](../core-dump-analysis/images/core_dump_partition_memory_allocation_dark.png#only-dark) ![Core Dump Partition](../core-dump-analysis/images/core_dump_partition_memory_allocation_light.png#only-light)
 
-    If you update the System Planner configuration, click [Generate Code](../../../tools/config-tool/generate-code.md).
+    If you update the System Planner configuration, click [Generate Code](../../../tools/generate-code.md).
 
 4. Open **Settings** in VS Code and review the following values under **Core Dump**:
 

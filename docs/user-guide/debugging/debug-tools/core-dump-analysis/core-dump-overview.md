@@ -1,7 +1,7 @@
 ---
 description: Introduction to the Core Dump Analysis Tool in CodeFusion Studio
 author: Analog Devices
-date: 2025-10-23
+date: 2025-12-1
 ---
 
 # Core Dump Analysis Tool overview
@@ -13,6 +13,7 @@ The Core Dump Analysis Tool enables developers to inspect the state of Zephyr-ba
 Core dump analysis supports Zephyr RTOS applications on the following SoCs:
 
 - MAX32657
+- MAX32658
 - MAX32690
 
 Support extends to all processor cores included in these SoCs.

@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-/* eslint-disable react/boolean-prop-naming */
+ 
 import {useLocaleContext} from '../../contexts/LocaleContext';
 import type {TLocaleContext} from '../../types/l10n';
 import type {ReactElement} from 'react';

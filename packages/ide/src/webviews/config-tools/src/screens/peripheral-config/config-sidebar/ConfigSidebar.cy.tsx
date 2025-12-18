@@ -452,7 +452,7 @@ describe('Peripheral Allocation - Config Sidebar', () => {
 			})
 		);
 
-		reduxStore.dispatch(setActivePeripheral(GPIO0));
+		reduxStore.dispatch(setActivePeripheral(`${GPIO0}:${RV}-proj`));
 
 		cy.mount(<ConfigSidebar isMinimised={false} />, reduxStore);
 
@@ -713,5 +713,54 @@ describe('Peripheral Allocation - Config Sidebar', () => {
 		cy.dataTest(`config-section:manage-pin-assignments`).should(
 			'not.exist'
 		);
+	});
+
+	it('Should count errors correctly when signals in a group are assigned across projects', () => {
+		const reduxStore = configurePreloadedStore(
+			max32690wlp,
+			mockedConfigDict
+		);
+
+		reduxStore.dispatch(
+			setSignalAssignment({
+				peripheral: GPIO0,
+				signalName: 'P0.1',
+				projectId: 'CM4-proj'
+			})
+		);
+
+		reduxStore.dispatch(
+			setSignalAssignment({
+				peripheral: GPIO0,
+				signalName: 'P0.2',
+				projectId: 'RV-proj'
+			})
+		);
+
+		reduxStore.dispatch(
+			setSignalAssignment({
+				peripheral: GPIO0,
+				signalName: 'P0.3',
+				projectId: 'RV-proj'
+			})
+		);
+		reduxStore.dispatch(setActivePeripheral(`${GPIO0}:CM4-proj`));
+
+		cy.mount(<ConfigSidebar isMinimised={false} />, reduxStore);
+
+		cy.dataTest('peripheral:error')
+			.should('exist')
+			.within(() => {
+				cy.get('p').first().invoke('text').should('match', /^1/);
+			})
+			.then(() => {
+				// The RV project should have 2 unassigned pins
+				reduxStore.dispatch(setActivePeripheral(`${GPIO0}:RV-proj`));
+				cy.dataTest('peripheral:error')
+					.should('exist')
+					.within(() => {
+						cy.get('p').first().invoke('text').should('match', /^2/);
+					});
+			});
 	});
 });

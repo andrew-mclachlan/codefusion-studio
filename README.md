@@ -21,7 +21,8 @@ CodeFusion Studio currently supports the following processors in the following c
 |---------------------------------------------------------------------------|----------------|--------|--------------|----------|------|
 | [MAX32650](https://www.analog.com/en/products/max32650.html)              | Yes            | Yes    | Yes          | No       | Yes  |
 | [MAX32655](https://www.analog.com/en/products/MAX32655.html)              | Yes            | Yes    | Yes          | No       | Yes* |
-| MAX32657                                                                  | No             | Yes    | Yes          | Yes      | Yes  |
+| [MAX32657](https://www.analog.com/en/products/MAX32657.html)              | No             | Yes    | Yes          | Yes      | Yes  |
+| [MAX32658](https://www.analog.com/en/products/MAX32658.html)              | No             | Yes    | Yes          | No       | Yes‡ |
 | [MAX32660](https://www.analog.com/en/products/max32660.html)              | Yes            | Yes    | No           | No       | No   |
 | [MAX32662](https://www.analog.com/en/products/max32662.html)              | Yes            | Yes    | No           | No       | Yes* |
 | [MAX32666](https://www.analog.com/en/products/max32666.html)              | No             | Yes    | No           | No       | No   |
@@ -39,7 +40,8 @@ CodeFusion Studio currently supports the following processors in the following c
 | [ADSP-SC835 / SC835W](https://www.analog.com/en/products/adsp-sc835.html) | Yes            | No     | Yes*         | Yes      | No   |
 
 † **Trusted Edge Security Architecture (TESA)** – Analog Devices’ security framework for secure boot, cryptography, and firmware signing across supported devices.  
-\* Limited support available.
+\* Limited support available.  
+‡ MAX32658 leverages MAX32657 TESA support in CodeFusion Studio.
 
 ## Install CFS
 
@@ -67,9 +69,9 @@ Tools VS Code extensions depend on:
 
 Download CodeFusion Studio from the [CodeFusion Studio Developer Resources](https://developer.analog.com/solutions/codefusionstudio) page or use the links below:
 
-- [Windows](https://download.analog.com/codefusion-studio/2.0.0/CodeFusionStudio_2.0.0.exe)
-- [Linux](https://download.analog.com/codefusion-studio/2.0.0/CodeFusionStudio_2.0.0.run)
-- [macOS](https://download.analog.com/codefusion-studio/2.0.0/CodeFusionStudio_2.0.0.dmg)
+- [Windows](https://download.analog.com/codefusion-studio/2.0.1/CodeFusionStudio_2.0.1.exe)
+- [Linux](https://download.analog.com/codefusion-studio/2.0.1/CodeFusionStudio_2.0.1.run)
+- [macOS](https://download.analog.com/codefusion-studio/2.0.1/CodeFusionStudio_2.0.1.dmg)
 
 #### Install
 
@@ -93,7 +95,7 @@ Set or update your SDK path when prompted, or configure it manually in user sett
 
 1. Open **Settings**: select **File > Preferences > Settings** (on macOS: **Code > Settings > Settings**), or open the Command Palette (`Ctrl+Shift+P` / `⇧⌘P`) and search for **Preferences: Open Settings (UI)**, or use the keyboard shortcut (`Ctrl+,`, on Windows/Linux, `⌘,` on macOS).
 2. Search for `cfs.sdk.path`.
-3. Set the path to your CodeFusion Studio SDK installation directory, making sure it points to the correct version. For example, `C:\analog\cfs\2.0.0` on Windows.
+3. Set the path to your CodeFusion Studio SDK installation directory, making sure it points to the correct version. For example, `C:\analog\cfs\2.0.1` on Windows.
 
 > **Note:**
 > You may need to restart VS Code after setting the path.

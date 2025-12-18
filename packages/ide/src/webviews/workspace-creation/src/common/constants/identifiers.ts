@@ -16,3 +16,10 @@
 export const LOCAL_STORAGE_CORE_CONFIG = 'tempCoreConfig';
 export const LOCAL_STORAGE_CORE_CONFIG_ERRORS =
 	'tempCoreConfigErrors';
+
+export const SECURE_PROJ_ID_SUFFIX = '-secure';
+export const NON_SECURE_PROJ_ID_SUFFIX = '-nonsecure';
+export const TRUSTZONE_SECURE_LABEL = '(Secure)';
+export const TRUSTZONE_NON_SECURE_LABEL = '(Non-Secure)';
+
+export const PROJECT_NAME_PROPERTY_ID = 'ProjectName';

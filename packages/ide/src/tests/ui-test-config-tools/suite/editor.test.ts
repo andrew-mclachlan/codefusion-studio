@@ -15,7 +15,7 @@
 import { By, EditorView, VSBrowser, WebDriver } from "vscode-extension-tester";
 import { expect } from "chai";
 import { getConfigPathForFile } from "../config-tools-utility/cfsconfig-utils";
-import { UIUtils } from "../config-tools-utility/config-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 
 describe("Editor Customization", () => {
   let browser: VSBrowser;

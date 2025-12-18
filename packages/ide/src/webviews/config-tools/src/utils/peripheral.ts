@@ -13,8 +13,8 @@
  *
  */
 
-import {
-	type AppliedSignal,
+import type {
+	AppliedSignal,
 	FormattedPeripheral,
 	FormattedPeripheralSignal
 } from '../../../common/types/soc';
@@ -122,6 +122,7 @@ export const updateProjectCardOpenState = (
 			(id, idx, arr) => arr.indexOf(id) === idx
 		);
 	}
+
 	// Remove projectId from array
 	return openProjectCards.filter(id => id !== projectId);
 };

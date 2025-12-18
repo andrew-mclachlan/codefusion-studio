@@ -65,7 +65,6 @@ export class MsdkTaskProvider implements vscode.TaskProvider {
   }
 
   provideTasks(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _token: vscode.CancellationToken,
   ): vscode.ProviderResult<vscode.Task[]> {
     // Return cached tasks only
@@ -73,9 +72,7 @@ export class MsdkTaskProvider implements vscode.TaskProvider {
   }
 
   resolveTask(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _task: vscode.Task,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _token: vscode.CancellationToken,
   ): vscode.ProviderResult<vscode.Task> {
     // Since we're providing fully resolved tasks, we don't need to implement this.
@@ -96,9 +93,6 @@ export class MsdkTaskProvider implements vscode.TaskProvider {
 
   async getMsdkTasks(): Promise<vscode.Task[]> {
     const result: vscode.Task[] = [];
-    type Settings = {
-      [key: string]: any;
-    };
 
     const workspaceFolders = vscode.workspace.workspaceFolders;
     if (!workspaceFolders || workspaceFolders.length === 0) {
@@ -483,19 +477,6 @@ function rename(oldPath: string, newPath: string) {
   }
 }
 
-async function refresh() {
-  const workspaceFolders = vscode.workspace.workspaceFolders;
-  const isMsdkProject = await isMsdkProjectInWorkspace();
-  if (!isMsdkProject) {
-    return;
-  }
-  if (workspaceFolders) {
-    for (let i = 0; i < workspaceFolders.length; i++) {
-      await migrateProject(workspaceFolders[i].uri.fsPath, true);
-    }
-  }
-}
-
 function openUserGuide(): void {
   vscode.commands.executeCommand(
     "simpleBrowser.show",
@@ -547,26 +528,6 @@ export async function registerTaskProvider(
   context.subscriptions.push(msdkTaskProvider);
 
   return provider;
-}
-
-/**
- * Determines if any opened workspace folder contains an MSDK project by checking for 'Makefile' and 'project.mk'.
- * @returns Promise<boolean> True if an MSDK project is found, otherwise false.
- */
-async function isMsdkProjectInWorkspace(): Promise<boolean> {
-  const workspaceFolders = vscode.workspace.workspaceFolders;
-  if (!workspaceFolders || workspaceFolders.length === 0) {
-    return false;
-  }
-
-  // MSDK projects have a Makefile and project.mk file in their
-  // top level directory
-  const makefiles = await Utils.findFilesInWorkspace("Makefile", "");
-  const projectmks = await Utils.findFilesInWorkspace("project.mk", "");
-  if (makefiles.length < 1 || projectmks.length < 1) {
-    return false;
-  }
-  return true;
 }
 
 export function deactivate(): void {

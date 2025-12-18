@@ -144,6 +144,7 @@ export default function RegisterBody() {
 										pinSignal?.PinConfig?.[controlKey]?.[
 											controlValue
 										];
+
 									// eslint-disable-next-line max-nested-callbacks
 									return cfg?.map(s => ({
 										...s,
@@ -203,12 +204,12 @@ export default function RegisterBody() {
 				c.Outputs.find(o => o.Name === key)
 			);
 
-			if (node?.Initialization) {
+			if (node && node.Initialization) {
 				const configNamespace = node.Name + ' ClockConfig';
 				configs[configNamespace] = configs[configNamespace] ?? {};
 				configs[configNamespace].Initialization = [
 					...(configs[configNamespace].Initialization ?? []),
-					...node.Initialization?.map(s => ({...s, ControlValue: 0}))
+					...node.Initialization.map(s => ({...s, ControlValue: 0}))
 				];
 			}
 		});
@@ -624,22 +625,20 @@ export default function RegisterBody() {
 				</div>
 			</section>
 
-			{!activeRegister && (
-				<div>
-					{searchResults.length ? (
-						<RegisterTable
-							computedRegisters={searchResults}
-							setActiveRegister={registerName => {
-								clearSearch();
-								clearFilters();
-								setActiveRegister(registerName);
-							}}
-						/>
-					) : (
-						<div style={{textAlign: 'center'}}>No results found</div>
-					)}
-				</div>
-			)}
+			{!activeRegister &&
+				(searchResults.length ? (
+					<RegisterTable
+						computedRegisters={searchResults}
+						setActiveRegister={registerName => {
+							clearSearch();
+							clearFilters();
+							setActiveRegister(registerName);
+						}}
+					/>
+				) : (
+					<div style={{textAlign: 'center'}}>No results found</div>
+				))}
+
 			{activeRegisterDetails &&
 				(modifiedRegCnt + unmodifiedRegCnt > 0 ? (
 					<RegisterDetailsTable

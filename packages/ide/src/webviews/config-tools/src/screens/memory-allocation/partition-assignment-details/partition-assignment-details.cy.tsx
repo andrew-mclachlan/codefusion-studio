@@ -85,6 +85,12 @@ const createMockPartition = (
 
 describe('Partition-assignment-details-card', () => {
 	const reduxStore = configurePreloadedStore(mock, mockedConfigDict);
+	const partitionStartAddress = [
+		'0x10200000',
+		'0x10400000',
+		'0x10100000',
+		'0x20000000'
+	];
 
 	describe('Partition Details Page', () => {
 		before(() => {
@@ -92,7 +98,46 @@ describe('Partition-assignment-details-card', () => {
 				createPartition({
 					...createMockPartition({
 						type: 'Flash',
-						startAddress: '0x10400000',
+						startAddress: partitionStartAddress[0],
+						blockNames: ['flash0', 'flash1'],
+						size: 1,
+						projects: [
+							{
+								label: mock.Cores[1].Name,
+								access: 'R',
+								coreId: 'RV',
+								projectId: 'RV-proj',
+								owner: true
+							}
+						]
+					})
+				})
+			);
+
+			reduxStore.dispatch(
+				createPartition({
+					...createMockPartition({
+						type: 'Flash',
+						startAddress: partitionStartAddress[1],
+						blockNames: ['flash0', 'flash1'],
+						size: 1,
+						projects: [
+							{
+								label: mock.Cores[1].Name,
+								access: 'R',
+								coreId: 'RV',
+								projectId: 'RV-proj',
+								owner: true
+							}
+						]
+					})
+				})
+			);
+			reduxStore.dispatch(
+				createPartition({
+					...createMockPartition({
+						type: 'Flash',
+						startAddress: partitionStartAddress[2],
 						blockNames: ['flash0', 'flash1'],
 						size: 1,
 						projects: [
@@ -145,7 +190,7 @@ describe('Partition-assignment-details-card', () => {
 			cy.dataTest('partition-details-project-view-cards')
 				.should('exist')
 				.children()
-				.should('have.length', 1);
+				.should('not.have.length', 0);
 
 			cy.dataTest('partition 0').should('exist');
 			cy.dataTest('partition 0')
@@ -171,12 +216,30 @@ describe('Partition-assignment-details-card', () => {
 			cy.dataTest('partition-details-type-view-cards')
 				.should('exist')
 				.children()
-				.should('have.length', 1);
+				.should('not.have.length', 0);
 
 			cy.dataTest('partition 0').should('exist');
 			cy.dataTest('partition 0')
 				.find('vscode-badge')
 				.should('be.visible');
+
+			// Partitions should be ordered by start address (ascending order)
+			cy.get('[data-test="partition-address"]')
+				.should('have.length', 3)
+				.then($els => {
+					// eslint-disable-next-line max-nested-callbacks
+					const startAddresses = Array.from($els, el => {
+						const text = el.textContent?.trim() ?? '';
+						const start = text.split(' - ')[0];
+
+						return parseInt(start, 16);
+					});
+
+					expect(startAddresses).to.deep.equal(
+						// eslint-disable-next-line max-nested-callbacks
+						[...startAddresses].sort((a, b) => a - b)
+					);
+				});
 		});
 	});
 
@@ -186,7 +249,7 @@ describe('Partition-assignment-details-card', () => {
 				createPartition({
 					...createMockPartition({
 						type: 'RAM',
-						startAddress: '0x20000000',
+						startAddress: partitionStartAddress[3],
 						blockNames: ['sysram0'],
 						size: 1,
 						projects: [
@@ -219,17 +282,17 @@ describe('Partition-assignment-details-card', () => {
 			cy.dataTest('partition-details-project-view-cards')
 				.should('exist')
 				.children()
-				.should('have.length', 2);
+				.should('have.length', 4);
 			cy.dataTest('delete-partition-btn')
 				.eq(0)
 				.should('exist')
 				.click();
 
-			cy.dataTest('partition 1').should('not.exist');
+			cy.dataTest('partition 3').should('not.exist');
 			cy.dataTest('partition-details-project-view-cards')
 				.should('exist')
 				.children()
-				.should('have.length', 1);
+				.should('have.length', 3);
 		});
 
 		it('should edit the partition', () => {
@@ -263,7 +326,7 @@ describe('Partition-assignment-details-card', () => {
 				})
 			);
 
-			cy.dataTest('partition 0')
+			cy.dataTest('partition 3')
 				.find('h3')
 				.should('have.text', 'TestPartition2');
 		});

@@ -71,7 +71,11 @@ function PackageDisplayContainer() {
 	return (
 		<div
 			id='pinmux-main-panel'
-			style={{height: '100%'}}
+			style={{
+				height: '100%',
+				containerType: 'size',
+				containerName: 'pinmuxMain'
+			}}
 			onClick={onContainerClick}
 		>
 			<ZoomableAreaControl>

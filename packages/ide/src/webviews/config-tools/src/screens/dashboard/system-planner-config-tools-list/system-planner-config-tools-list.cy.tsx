@@ -85,7 +85,7 @@ describe('System config tools', () => {
 		cy.get('[data-test="generate-card"]').should('be.visible');
 	});
 
-	it('should not render the conflict icon when there is no pin errors', () => {
+	it('should not render the conflict icon when there is no pin error', () => {
 		const reduxStore = configurePreloadedStore(
 			wlp as unknown as Soc,
 			mockedConfigDict
@@ -104,7 +104,7 @@ describe('System config tools', () => {
 		cy.get('[data-test="pinmux-error"]').should('not.exist');
 	});
 
-	it('should not render the conflict icon when there is no clock errors', () => {
+	it('should not render the conflict icon when there is no clock error', () => {
 		const reduxStore = configurePreloadedStore(wlp);
 
 		reduxStore.dispatch(

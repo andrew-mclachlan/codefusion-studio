@@ -52,15 +52,16 @@ export function ModelEditPanel() {
 	const originalModel = useEditingAIModel();
 	const editPanelOpen = useEditPanelOpen();
 	const dispatch = useAppDispatch();
-	const models = useAIModels();
 	const aiSupportingCores = getAICores();
 	const aiBackends = getAiBackends();
+	const models = useAIModels();
 
-	const i10n = useLocaleContext()?.aitools.modelConfig;
+	const l10n = useLocaleContext()?.aitools.modelConfig;
 
 	const [currentModel, setCurrentModel] = useState<AIModelWithId>(
 		defaultEmptyAIModel
 	);
+	const [errors, setErrors] = useState<Record<string, string>>({});
 
 	useEffect(() => {
 		if (originalModel) {
@@ -81,21 +82,31 @@ export function ModelEditPanel() {
 				}
 			});
 		}
-	}, [originalModel, editPanelOpen, aiSupportingCores, aiBackends]);
 
-	const [errors, setErrors] = useState<Record<string, string>>({});
+		setErrors({});
+	}, [originalModel, editPanelOpen, aiSupportingCores, aiBackends]);
 
 	const validateModelConfig = useCallback(() => {
 		const errors: Record<string, string> = {};
 
-		// Model name
+		// Fail if model name is empty
 		if (!currentModel.Name) {
-			errors.Name = i10n?.errors.modelNameRequired;
+			errors.Name = l10n?.errors.modelNameRequired;
+		}
+
+		// Fail if model name already exists (and is not the original name when editing)
+		if (
+			models.some(
+				model =>
+					model.Name === currentModel.Name && model !== originalModel
+			)
+		) {
+			errors.Name = l10n?.errors.modelNameExists;
 		}
 
 		// Target core
 		if (!currentModel.Target.Core) {
-			errors.Target = i10n?.errors.targetRequired;
+			errors.Target = l10n?.errors.targetRequired;
 		}
 
 		// Symbol name
@@ -105,23 +116,23 @@ export function ModelEditPanel() {
 				String(currentModel.Backend.Extensions.Symbol)
 			)
 		) {
-			errors.Symbol = i10n?.errors.invalidCIdentifier;
+			errors.Symbol = l10n?.errors.invalidCIdentifier;
 		}
 
 		if (!currentModel.Files.Model) {
-			errors.ModelFile = i10n?.errors.modelFileRequired;
+			errors.ModelFile = l10n?.errors.modelFileRequired;
 		}
 
 		setErrors(errors);
 
 		return Object.keys(errors).length === 0;
-	}, [models, originalModel, currentModel, setErrors, i10n?.errors]);
+	}, [currentModel, l10n, models, originalModel]);
 
 	return (
 		<SlidingPanel
 			isCloseable
 			isMinimised={!editPanelOpen}
-			title={originalModel ? i10n?.configureModel : i10n?.addModel}
+			title={originalModel ? l10n?.configureModel : l10n?.addModel}
 			closeSlider={() => dispatch(cancelEditingModel())}
 			footer={
 				<Button
@@ -139,7 +150,7 @@ export function ModelEditPanel() {
 						);
 					}}
 				>
-					{originalModel ? i10n?.update : i10n?.add}
+					{originalModel ? l10n?.update : l10n?.add}
 				</Button>
 			}
 		>

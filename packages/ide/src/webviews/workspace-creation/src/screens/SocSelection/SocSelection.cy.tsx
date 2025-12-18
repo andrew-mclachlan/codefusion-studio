@@ -105,9 +105,8 @@ describe('SocSelection', () => {
 		cy.dataTest('socSelection:card:MAX32655').should('not.exist');
 
 		cy.dataTest('no-search-results').should('exist');
-		cy.dataTest('no-search-results').should(
-			'contain.text',
-			`We couldn't find any results for "${searchQuery}"`
-		);
+		cy.dataTest('no-results-description')
+			.should('contain.text', `We couldn't find any results for`)
+			.and('contain.text', `"${searchQuery}"`);
 	});
 });

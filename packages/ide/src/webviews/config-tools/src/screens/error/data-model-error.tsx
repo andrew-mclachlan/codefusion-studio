@@ -17,7 +17,7 @@ import styles from './error.module.scss';
 import {VSCodeLink} from '@vscode/webview-ui-toolkit/react';
 import {useLocaleContext} from '../../../../common/contexts/LocaleContext';
 import ConflictIcon from '../../../../common/icons/Conflict';
-import {TLocaleContext} from '../../../../common/types/l10n';
+import type {TLocaleContext} from '../../../../common/types/l10n';
 import ViewDocumentationIcon from '../../../../common/icons/view-documentation';
 
 export type DataModel = {soc: string; pkg: string; version: string};

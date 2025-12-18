@@ -322,6 +322,7 @@ export function getIsPeripheralSignalRequired(
 	// Non configurable peripherals are also not required.
 	if (!condition) {
 		return (
+			peripherals[peripheral] &&
 			!peripherals[peripheral]?.assignable &&
 			isPeripheralConfigurable(peripherals[peripheral])
 		);

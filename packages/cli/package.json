@@ -41,7 +41,7 @@
     "/dist",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/analogdevicesinc/codefusion-studio/tree/V2.0.0/packages/cli",
+  "homepage": "https://github.com/analogdevicesinc/codefusion-studio/tree/V2.0.1/packages/cli",
   "license": "MIT",
   "main": "",
   "name": "cfsutil",
@@ -78,7 +78,7 @@
       }
     }
   },
-  "repository": "https://github.com/analogdevicesinc/codefusion-studio/tree/V2.0.0/packages/cli",
+  "repository": "https://github.com/analogdevicesinc/codefusion-studio/tree/V2.0.1/packages/cli",
   "scripts": {
     "build": "shx rm -rf dist && tsc -b && copyfiles -u 1 'src/config/*.json' dist",
     "build-local-deps": "yarn workspaces foreach -Rpt --topological-dev --exclude cfs-plugins-api run build",
@@ -94,7 +94,7 @@
     "test-gen": "CFS_INSTALL_DIR=\"test/fixtures\" mocha --forbid-only \"test/commands/generate.test.ts\"",
     "version": "oclif readme && git add README.md"
   },
-  "version": "2.0.0",
+  "version": "2.0.1",
   "bugs": "https://github.com/analogdevicesinc/codefusion-studio/issues",
   "keywords": [
     "oclif"

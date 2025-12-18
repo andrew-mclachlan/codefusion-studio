@@ -406,20 +406,17 @@ export const mockedCatalog: SoC[] = [
 			{
 				description:
 					'The MAX32657 evaluation kit (EV kit) provides a platform for evaluating the MAX32657 microcontroller. It includes an Arm® Cortex®-M33 with FPU and DSP extensions, 1MB dual-bank flash with ECC, 256kb SRAM, and Bluetooth® 5 Low Energy (Bluetooth LE) radio.',
-
 				id: 'EvKit_V1',
-
 				name: 'EvKit_V1',
 				packageIDs: ['TQFN'],
 				socID: 'max32657',
-
 				productUrl: '/'
 			}
 		],
 		cores: [
 			{
-				dataModelCoreID: 'CM4',
-				id: 'Arm Cortex-M33',
+				dataModelCoreID: 'CM33',
+				id: 'arm_cortex-M33',
 				name: 'Arm Cortex-M33',
 				socID: 'MAX32657',
 				description: 'Some sort of description.',

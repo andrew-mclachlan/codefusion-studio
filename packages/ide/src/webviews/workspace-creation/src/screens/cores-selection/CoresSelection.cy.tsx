@@ -8,6 +8,10 @@ import {
 	setCoreConfig,
 	setSelectedSoc
 } from '../../state/slices/workspace-config/workspace-config.reducer';
+import {
+	ERROR_MESSAGES,
+	ERROR_TYPES
+} from '../../common/constants/validation-errors';
 
 function TestComponent() {
 	return (
@@ -29,7 +33,7 @@ function TestComponent() {
 	);
 }
 
-describe('WrkspFooter', () => {
+describe('Cores Selection', () => {
 	const primaryCoreId = 'Arm Cortex-M4F';
 	const defaultCoreId = 'RISC-V';
 	const primaryCoreCard = `coresSelection:card:${primaryCoreId}`;
@@ -81,7 +85,7 @@ describe('WrkspFooter', () => {
 			);
 			cy.dataTest('cores-selection:notification-error').should(
 				'contain.text',
-				'Primary core should be enabled.'
+				`${ERROR_MESSAGES[ERROR_TYPES.noSelection]}`
 			);
 
 			// Selecting a core should hide the error message
@@ -98,7 +102,6 @@ describe('WrkspFooter', () => {
 	});
 
 	it('Should display NotificationError based on the validation rules', () => {
-		// The business rules are found in useCoreValidation hook
 		const testStore = {...store};
 		testStore.dispatch(setSelectedSoc('MAX32690'));
 		testStore.dispatch(
@@ -144,11 +147,9 @@ describe('WrkspFooter', () => {
 						cy.dataTest('cores-selection:notification-error').should(
 							'exist'
 						);
-						cy.dataTest(
-							'cores-selection:notification-error--noPrimaryCoreEnabled'
-						).should(
+						cy.dataTest('cores-selection:notification-error').should(
 							'contain.text',
-							'Primary core should be enabled.'
+							`${ERROR_MESSAGES[ERROR_TYPES.noSelection]}`
 						);
 
 						// Enabling back the configured core
@@ -200,86 +201,211 @@ describe('WrkspFooter', () => {
 			});
 	});
 
-	it('Should render toggle and secure core options for Arm Cortex-M33 with TrustZone support', () => {
+	it('Should render the trustzone projects when the trustzone is enabled', () => {
 		const testStore = {...store};
 		testStore.dispatch(setSelectedSoc('MAX32657'));
 		testStore.dispatch(
 			setActiveScreen(navigationItems.coresSelection)
 		);
 
-		const primaryCore = 'Arm Cortex-M33';
-		const primaryCoreCard = `coresSelection:card:${primaryCore}`;
-		const TrustZoneToggleContainer = `toggle:trustzone-container-${primaryCore}`;
-		const TrustZoneToggle = `toggle:trustzone-${primaryCore}-span`;
-		const secureCore = `core-secure-${primaryCore}`;
-		const nonSecureCore = `core-non-secure-${primaryCore}`;
+		const coreId = 'arm_cortex-M33';
+		const coreCard = `coresSelection:card:${coreId}`;
+		const coreCheckbox = `cores-selection:${coreId}-card:checkbox`;
+		const trustZoneToggleContainer = `toggle:trustzone-container-${coreId}`;
+		const trustZoneToggle = `toggle:trustzone-${coreId}-span`;
+		const secureCore = `core-${coreId}-secure`;
+		const nonSecureCore = `core-${coreId}-nonsecure`;
 
 		cy.mount(<TestComponent />, testStore).then(() => {
-			// Configure the selected core (primary)
-			cy.dataTest(primaryCoreCard).should('exist');
+			cy.dataTest(coreCard).should('exist');
+			cy.dataTest(trustZoneToggleContainer).should('exist');
 
-			cy.dataTest(TrustZoneToggleContainer).should('exist');
-
-			cy.dataTest(TrustZoneToggle)
+			// Enable the TrustZone toggle
+			cy.dataTest(trustZoneToggle)
 				.click()
 				.then(() => {
-					cy.dataTest(TrustZoneToggle).should(
+					cy.dataTest(trustZoneToggle).should(
 						'have.attr',
 						'data-checked',
 						'true'
 					);
 
+					// Assert the the 2 projects are rendered
 					cy.dataTest(secureCore).should('exist');
 					cy.dataTest(nonSecureCore).should('exist');
-
-					cy.dataTest(primaryCoreCard).should(
+					cy.dataTest(coreCard).should(
 						'have.attr',
 						'data-active',
 						'true'
 					);
-
 					cy.dataTest(nonSecureCore).should(
 						'have.attr',
 						'data-active',
 						'true'
 					);
-
 					cy.dataTest(secureCore).should(
 						'have.attr',
 						'data-active',
 						'true'
 					);
 
-					// Deselecting one of secure and non-secure cores should make the primary core card in
-
+					// Un-check the secure project
 					cy.dataTest(secureCore).click();
-
 					cy.dataTest(secureCore).should(
 						'have.attr',
 						'data-active',
 						'false'
 					);
 
-					cy.dataTest(primaryCoreCard).within(() => {
-						cy.dataTest(
-							'cores-selection:Arm Cortex-M33-card:checkbox'
-						).should('have.class', 'indeterminate');
+					// Assert that the core card checkbox is in indeterminate state
+					cy.dataTest(coreCard).within(() => {
+						cy.dataTest(coreCheckbox).should(
+							'have.class',
+							'indeterminate'
+						);
 					});
 
+					// Un-check the non-secure project
 					cy.dataTest(nonSecureCore).click();
-
 					cy.dataTest(nonSecureCore).should(
 						'have.attr',
 						'data-active',
 						'false'
 					);
 
-					cy.dataTest(primaryCoreCard).within(() => {
-						cy.dataTest(
-							'cores-selection:Arm Cortex-M33-card:checkbox'
-						).should('not.have.class', 'indeterminate');
-					});
+					// Assert that the core card checkbox is unchecked state from being indeterminate
+					cy.dataTest(coreCard)
+						.within(() => {
+							cy.dataTest(coreCheckbox).should(
+								'not.have.class',
+								'indeterminate'
+							);
+						})
+						.should('have.attr', 'data-active', 'false');
 				});
+
+			// Check the base core checkbox should check both projects when the core card checkbox is un-checked
+			cy.dataTest(coreCheckbox).should('not.be.checked');
+			cy.dataTest(coreCard).within(() => {
+				cy.dataTest(coreCheckbox).click();
+			});
+			cy.dataTest(secureCore).should(
+				'have.attr',
+				'data-active',
+				'true'
+			);
+			cy.dataTest(nonSecureCore).should(
+				'have.attr',
+				'data-active',
+				'true'
+			);
+
+			// Checking the base core checkbox should check both projects when the core card checkbox is indeterminate
+			cy.dataTest(secureCore).click();
+			cy.dataTest(coreCard).within(() => {
+				cy.dataTest(coreCheckbox).should(
+					'have.class',
+					'indeterminate'
+				);
+				cy.dataTest(coreCheckbox).click();
+			});
+			cy.dataTest(secureCore).should(
+				'have.attr',
+				'data-active',
+				'true'
+			);
+			cy.dataTest(nonSecureCore).should(
+				'have.attr',
+				'data-active',
+				'true'
+			);
+
+			// Finally, un-checking the base core checkbox should un-check both projects
+			cy.dataTest(coreCheckbox).click();
+			cy.dataTest(secureCore).should(
+				'have.attr',
+				'data-active',
+				'false'
+			);
+			cy.dataTest(nonSecureCore).should(
+				'have.attr',
+				'data-active',
+				'false'
+			);
+
+			// Now, switching off the TrustZone toggle should remove both projects and the base core checkbox should be enabled
+			cy.dataTest(trustZoneToggle)
+				.click()
+				.then(() => {
+					cy.dataTest(trustZoneToggle).should(
+						'have.attr',
+						'data-checked',
+						'false'
+					);
+
+					// Assert the the 2 projects are not rendered
+					cy.dataTest(secureCore).should('not.exist');
+					cy.dataTest(nonSecureCore).should('not.exist');
+					cy.dataTest(coreCard).should(
+						'have.attr',
+						'data-active',
+						'true'
+					);
+				});
+
+			// Now, clicking on the card should toggle its selection without any issues
+			// and clicking  on the trustzone toggle again to render the projects back and all the checkboxes should be un-checked
+			cy.dataTest(coreCard)
+				.click()
+				.then(() => {
+					cy.dataTest(coreCard).should(
+						'have.attr',
+						'data-active',
+						'false'
+					);
+					cy.dataTest(trustZoneToggle)
+						.click()
+						.then(() => {
+							cy.dataTest(secureCore).should('exist');
+							cy.dataTest(nonSecureCore).should('exist');
+							cy.dataTest(coreCard).should(
+								'have.attr',
+								'data-active',
+								'false'
+							);
+							cy.dataTest(nonSecureCore).should(
+								'have.attr',
+								'data-active',
+								'false'
+							);
+							cy.dataTest(secureCore).should(
+								'have.attr',
+								'data-active',
+								'false'
+							);
+						});
+				});
+
+			// Un-check the secure project should assert that the core card checkbox is in indeterminate state
+			// and clicking on the core card should select both projects
+			cy.dataTest(secureCore).click();
+			cy.dataTest(coreCard).within(() => {
+				cy.dataTest(coreCheckbox).should(
+					'have.class',
+					'indeterminate'
+				);
+				cy.dataTest(coreCheckbox).click();
+			});
+			cy.dataTest(secureCore).should(
+				'have.attr',
+				'data-active',
+				'true'
+			);
+			cy.dataTest(nonSecureCore).should(
+				'have.attr',
+				'data-active',
+				'true'
+			);
 		});
 	});
 });

@@ -67,10 +67,14 @@ import {
   Workbench,
 } from "vscode-extension-tester";
 import { Locatorspaths } from "../../pageObjectsConfig/memory-page-objects";
-import { UIUtils } from "../../config-tools-utility/config-utils";
+import { UIUtils } from "../../../ui-test-utils/ui-utils";
 import * as path from "node:path";
 import * as fs from "node:fs";
 import { exec } from "child_process";
+import {
+  memoryTypeDropdown,
+  memoryTypeSelector,
+} from "../../page-objects/memory-allocation-section/create-partition-sidebar";
 
 describe("CFSIO-6338 Partition editing", () => {
   const locatorspath = new Locatorspaths();
@@ -113,11 +117,13 @@ describe("CFSIO-6338 Partition editing", () => {
     await UIUtils.clickElement(view, locatorspath.memoryMenu);
     await UIUtils.clickElement(view, locatorspath.partitionDetailsChevron(2));
     await UIUtils.clickElement(view, locatorspath.getDeletePartitionButton(1));
-    await UIUtils.clickElement(view, locatorspath.partitionDetailsChevron(2));
     await UIUtils.clickElement(view, locatorspath.partitionDetailsChevron(1));
     await UIUtils.clickElement(view, locatorspath.getEditPartitionButton(2));
-    await UIUtils.clickElement(view, locatorspath.memoryTypeDropdown);
-    await UIUtils.clickElement(view, locatorspath.memoryTypeSelector("Flash"));
+    await UIUtils.selectOptionFromDropdown(
+      view,
+      memoryTypeDropdown,
+      await memoryTypeSelector("Flash"),
+    );
     await UIUtils.clickElement(view, locatorspath.partitionNameTextBox);
     const locators = new Locatorspaths();
     await locators.setPartitionName(driver, "testEditPartition");
@@ -173,7 +179,6 @@ describe("CFSIO-6338 Partition editing", () => {
 
     const fileContent = fs.readFileSync(configPath, "utf-8");
     const peripheralData = JSON.parse(fileContent);
-    console.log(`Parsed ${peripheralData.length} peripherals`);
 
     const cm4Project = peripheralData.Projects.find(
       (proj: any) => proj.CoreId === "CM4",

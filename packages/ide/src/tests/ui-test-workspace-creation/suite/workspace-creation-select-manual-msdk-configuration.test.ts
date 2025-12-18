@@ -21,7 +21,7 @@ import { expect } from "chai";
 import { WebView, Workbench, By, VSBrowser } from "vscode-extension-tester";
 
 import { Locatorspaths } from "../pageElements/pageobjects";
-import { UIUtils } from "../utility-workspace/workspace-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import { TextData } from "../pageElements/text-data";
 import * as os from "os";
 import { existsSync } from "node:fs";
@@ -109,11 +109,9 @@ describe("Workspace MAX32690 creation manual configuration MSDK", () => {
       )
     ).getText();
     console.log("kitname:", kitName);
-    UIUtils.sleep(3000);
     await UIUtils.clickElement(view, locatorspath.kitSelect("EvKit_V1___TQFN"));
 
     console.log("Clicked on kitselect");
-    UIUtils.sleep(5000);
     await UIUtils.clickElement(view, locatorspath.continueButton);
     console.log("Clicked on continue button");
 
@@ -130,7 +128,7 @@ describe("Workspace MAX32690 creation manual configuration MSDK", () => {
     const templateName = await manualConfigure.getAttribute("id");
     console.log("Template name:", templateName);
     expect(templateName).to.include("custom");
-    manualConfigure.click();
+    await UIUtils.clickElement(view, manualConfigure);
 
     await UIUtils.sleep(2000);
 
@@ -160,11 +158,10 @@ describe("Workspace MAX32690 creation manual configuration MSDK", () => {
     const riscvCoresName = await riscvCores.getText();
     expect(await riscvCores.getText()).to.include("RISC-V");
     console.log("riscvcores text is included in the riscvcores element");
-    riscvCores.click();
+    await UIUtils.clickElement(view, riscvCores);
     console.log("Clicked on riscv cores element");
 
     await UIUtils.clickElement(view, locatorspath.continueButton);
-    UIUtils.sleep(2000);
 
     console.log("PLUGIN SELECTION SCREEN - ARM CORES");
 
@@ -176,7 +173,7 @@ describe("Workspace MAX32690 creation manual configuration MSDK", () => {
     const pluginid = await msdk.getAttribute("id");
     expect(pluginid).to.include("com.analog.project.msdk.plugin");
 
-    msdk.click();
+    await UIUtils.clickElement(view, msdk);
     console.log("Clicked on msdk plugin selection");
 
     await UIUtils.sleep(2000);
@@ -186,7 +183,7 @@ describe("Workspace MAX32690 creation manual configuration MSDK", () => {
         `//*[@id='control-input' and @current-value='${TextData.evKitText}']`,
       ),
     );
-    boarddefaultname.click();
+    await UIUtils.clickElement(view, boarddefaultname);
     console.log("Clicked on board default name input");
     const boardname = await boarddefaultname.getAttribute("current-value");
     console.log("Board name arm cortex is: " + boardname);
@@ -197,9 +194,8 @@ describe("Workspace MAX32690 creation manual configuration MSDK", () => {
       By.xpath("//*[@data-test='wrksp-footer:continue-btn']"),
     );
     await UIUtils.sleep(2000);
-    applybutton.click();
+    await UIUtils.clickElement(view, applybutton);
     console.log("Clicked on Apply button");
-    UIUtils.sleep(3000);
     // MSDK Plugin Selection for RISCV cores
     const msdkRiscv = await UIUtils.dataTest(
       view,
@@ -208,17 +204,15 @@ describe("Workspace MAX32690 creation manual configuration MSDK", () => {
     const pluginIdRiscv = await msdkRiscv.getAttribute("id");
     expect(pluginIdRiscv).to.include("com.analog.project.msdk.plugin");
 
-    UIUtils.sleep(2000);
-    msdkRiscv.click();
+    await UIUtils.clickElement(view, msdkRiscv);
     console.log("Clicked on msdk plugin selection for riscv");
-    UIUtils.sleep(2000);
     const boardNameRiscv = await UIUtils.findWebElement(
       view,
       By.xpath(
         `//*[@id='control-input' and @current-value='${TextData.evKitText}']`,
       ),
     );
-    boardNameRiscv.click();
+    await UIUtils.clickElement(view, boardNameRiscv);
     console.log("Clicked on board default name input");
     const getBoardNameRiscv =
       await boardNameRiscv.getAttribute("current-value");
@@ -229,7 +223,7 @@ describe("Workspace MAX32690 creation manual configuration MSDK", () => {
       By.xpath("//*[@data-test='wrksp-footer:continue-btn']"),
     );
     await UIUtils.sleep(2000);
-    applyButtonRiscv.click();
+    await UIUtils.clickElement(view, applyButtonRiscv);
     await UIUtils.sleep(2000);
     console.log("Clicked on apply button");
 
@@ -256,12 +250,12 @@ describe("Workspace MAX32690 creation manual configuration MSDK", () => {
 
     console.log("Sent workspace name to input element");
 
-    const createwsBtn = await view.findWebElement(
+    const createwsBtn = await UIUtils.findWebElement(view,
       By.xpath('//*[@id="root"]/div/div[3]/div/div/vscode-button[2]'),
     );
 
     console.log("Found create workspace button");
-    await createwsBtn.click();
+    await UIUtils.clickElement(view, createwsBtn);
     console.log("Clicked on create workspace button");
     await UIUtils.sleep(5000);
     // Assert that the workspace is created successfully
@@ -269,7 +263,6 @@ describe("Workspace MAX32690 creation manual configuration MSDK", () => {
     const location = `${userHome}/cfs/${TextData.cfsidevesrion}`;
     console.log(`location is ${location}`);
     const workspacePath = `${location}/${workspaceName}`;
-    UIUtils.sleep(5000);
     console.log(`workspacePath is ${workspacePath}`);
     expect(existsSync(workspacePath)).to.be.true;
     console.log(`Workspace created at: ${workspacePath}`);
@@ -279,7 +272,6 @@ describe("Workspace MAX32690 creation manual configuration MSDK", () => {
     const fileContent = fs.readFileSync(cfsWorkspaceFile, "utf-8");
     // Parsing json content to verify the SOC
     const workspaceData = JSON.parse(fileContent);
-    await UIUtils.sleep(3000);
     console.log("Parsed workspace data: below");
     // Assertions of Persistance of workspace data and schema verification
     if (!workspaceData) throw new Error("workspaceData is undefined or null");

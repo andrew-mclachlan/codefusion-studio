@@ -1,65 +1,21 @@
+/**
+ *
+ * Copyright (c) 2025 Analog Devices, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 import {useCallback} from 'react';
-import {ERROR_TYPES} from '../common/constants/validation-errors';
 import type {StateProject} from '../common/types/state';
 import {useConfigurationErrors} from '../state/slices/workspace-config/workspace-config.selector';
-
-// Rules:
-// - the primary core should be enabled & configured
-// - enabled cores should be configured
-const isCoreInErrorState = (
-	selectedCores: Record<string, StateProject>
-): string[] => {
-	const errorTypes = new Set<string>();
-	const cores = Object.values(selectedCores);
-
-	let isPrimaryCoreConfigured = false;
-	let hasUnconfiguredEnabledCore = false;
-
-	for (const core of cores) {
-		const isConfigured = Boolean(core.pluginId && core.pluginVersion);
-
-		if (core.isPrimary && core.isEnabled && isConfigured) {
-			isPrimaryCoreConfigured = true;
-
-			continue;
-		}
-
-		// Check for enabled cores that are not configured
-		if (core.isEnabled && !isConfigured) {
-			hasUnconfiguredEnabledCore = true;
-			break;
-		}
-	}
-
-	if (!isPrimaryCoreConfigured) {
-		errorTypes.add(ERROR_TYPES.noPrimaryCore);
-	}
-
-	if (hasUnconfiguredEnabledCore) {
-		errorTypes.add(ERROR_TYPES.unconfiguredCore);
-	}
-
-	// Return array of errors (empty if no errors)
-	return Array.from(errorTypes);
-};
-
-const getPrimaryCoreError = (
-	selectedCores: Record<string, StateProject>
-): string[] => {
-	// Filter to only include base cores (not secure/non-secure variants)
-	const baseCores = Object.values(selectedCores).filter(
-		core =>
-			!core.id.endsWith('-secure') && !core.id.endsWith('-nonsecure')
-	);
-
-	const primaryCore = baseCores.find(core => core.isPrimary);
-
-	if (primaryCore && !primaryCore.isEnabled) {
-		return [ERROR_TYPES.noPrimaryCoreEnabled];
-	}
-
-	return [];
-};
 
 export default function useCoreValidation() {
 	const coresErrors = useConfigurationErrors('cores');
@@ -67,26 +23,13 @@ export default function useCoreValidation() {
 	const isCoreCardErrorState = useCallback(
 		(coreState: StateProject): boolean => {
 			if (!coreState) return false;
-			let isError = false;
 
-			if (
-				coreState?.isEnabled &&
-				!Object.keys(coreState?.platformConfig).length &&
-				coresErrors.notifications.includes(
-					ERROR_TYPES.unconfiguredCore
-				)
-			) {
-				isError = true;
-			}
-
-			return isError;
+			return Boolean(coresErrors.notifications.length);
 		},
 		[coresErrors.notifications]
 	);
 
 	return {
-		isCoreInErrorState,
-		getPrimaryCoreError,
 		isCoreCardErrorState
 	};
 }

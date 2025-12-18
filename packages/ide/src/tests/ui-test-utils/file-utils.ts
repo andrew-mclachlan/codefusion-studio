@@ -37,7 +37,6 @@ export async function openFolder(folder: string): Promise<void> {
     const input = await InputBox.create();
     await input.setText(folder);
     console.log(`Opening folder:`);
-    // eslint-disable-next-line no-promise-executor-return
     await new Promise((res) => setTimeout(res, 1000)); // Wait before confirm
     await input.confirm();
     console.log(`Confirmed`);

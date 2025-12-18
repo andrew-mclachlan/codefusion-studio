@@ -40,12 +40,18 @@
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
-	padding: 10px 10px 10px 0px;
+	padding: 15px 16px 15px 16px;
+	width: 180px;
 }
 
-.disabled > div {
-	color: colors.$disabled-foreground;
-	cursor: not-allowed;
+.disabled {
+	cursor: default;
+	opacity: 0.4;
+
+	&::part(control):active {
+		transform: none !important;
+		background: inherit !important;
+	}
 }
 
 .coreSection {
@@ -56,6 +62,24 @@
 	align-items: flex-start;
 	gap: 4px;
 	align-self: stretch;
+
+	// Border override
+	[id^='core-selector-card'] {
+		border: 0.5px solid transparent;
+		border-radius: 4px;
+
+		&:hover {
+			border: 0.5px solid transparent;
+		}
+
+		[id^='core-selector-button'] {
+			border: 0.5px solid var(--vscode-commandCenter-inactiveBorder);
+
+			&:not(.disabled):hover {
+				border: 0.5px solid var(--vscode-commandCenter-activeBorder);
+			}
+		}
+	}
 }
 
 .cursorPointer {
@@ -83,5 +107,14 @@
 
 	&:hover {
 		background-color: transparent;
+	}
+}
+
+.coreSelectorTooltipContainer {
+	--tooltip-width: 192px;
+	--cfs-tooltip-body-padding: 5px 8px;
+
+	* {
+		color: var(--vscode-editor-foreground);
 	}
 }

@@ -52,7 +52,7 @@ import ConflictIcon from '../../../../common/icons/Conflict';
 import {LocalizedMessage} from '../../../../common/components/l10n/LocalizedMessage';
 import {
 	type AIBackends,
-	AISupportingCore,
+	type AISupportingCore,
 	getAICores,
 	loadAIBackends
 } from '../../utils/ai-tools';
@@ -64,7 +64,7 @@ import CircledCheckmarkIcon from '../../../../common/icons/CircledCheckmark';
 import WarningIcon from '../../../../common/icons/Warning';
 import ViewSourceIcon from '../../../../common/icons/ViewSource';
 import {openFile} from '../../../../common/api';
-import {AiSupportingBackend} from '../../../../common/types/ai-fusion-data-model';
+import type {AiSupportingBackend} from '../../../../common/types/ai-fusion-data-model';
 
 const unkownCore: AISupportingCore = {
 	Id: 'Unknown Core',
@@ -97,8 +97,10 @@ export function ModelList() {
 
 	const modelsByCore: Map<AISupportingCore, AIModelWithId[]> =
 		useMemo(() => {
-			const modelsByCore: Map<AISupportingCore, AIModelWithId[]> =
-				new Map();
+			const modelsByCore = new Map<
+				AISupportingCore,
+				AIModelWithId[]
+			>();
 			const coresById = new Map(
 				aiSupportingCores.map(core => [
 					core.Id + (core.Accelerator ?? ''),
@@ -128,8 +130,16 @@ export function ModelList() {
 		);
 	}
 
+	// Check if we fail to access CFSAI
 	if (Object.keys(aiBackends).length === 0) {
 		return <MissingCFSAIPackage />;
+	}
+
+	// Check if there is a corrupt model configuration (no backend)
+	const corruptModel = models.find(model => !model?.Backend?.Name);
+
+	if (corruptModel) {
+		return <CorruptModelConfig modelName={corruptModel?.Name} />;
 	}
 
 	return (
@@ -230,7 +240,7 @@ function ModelTable({models, backend, onDelete}: ModelTableProps) {
 
 	return (
 		<DataGrid
-			gridTemplateColumns={`1fr 100px 1fr ${backend?.AdvancedTools ? '125px' : ''} 150px`}
+			gridTemplateColumns={`1fr 85px 1fr ${backend?.AdvancedTools ? '125px' : ''} ${backend?.AdvancedTools ? '150px' : '125px'}`}
 			className={styles.table}
 			dataTest={`${models[0].Target.Core}.${models[0].Target.Accelerator ?? 'none'}-table`}
 		>
@@ -275,7 +285,10 @@ function ModelTable({models, backend, onDelete}: ModelTableProps) {
 			</DataGridRow>
 			{sortedModels.map(model => (
 				<DataGridRow key={model.Name} className={styles.row}>
-					<DataGridCell gridColumn='1'>
+					<DataGridCell
+						gridColumn='1'
+						className={styles.truncatedCell}
+					>
 						<div className={styles.tableText}>{model.Name}</div>
 					</DataGridCell>
 					<DataGridCell gridColumn='2'>
@@ -302,6 +315,7 @@ function ModelTable({models, backend, onDelete}: ModelTableProps) {
 						</DataGridCell>
 					)}
 					<DataGridCell
+						className={styles.actionsCell}
 						gridColumn={backend?.AdvancedTools ? '5' : '4'}
 					>
 						<ActionButtons
@@ -313,6 +327,32 @@ function ModelTable({models, backend, onDelete}: ModelTableProps) {
 				</DataGridRow>
 			))}
 		</DataGrid>
+	);
+}
+
+function CorruptModelConfig({modelName}: { readonly modelName?: string}) {
+	const l10n = useLocaleContext();
+
+	return (
+		<div
+			className={`${styles.emptyPackageError} ${emptyComponentStyle.container}`}
+		>
+			<ConflictIcon />
+			<div className={emptyComponentStyle.textArea}>
+				<h4>{l10n?.aitools.modelList.corruptModelConfigTitle}</h4>
+				<span>
+					<LocalizedMessage
+						parseHtml
+						id='aitools.modelList.corruptModelConfigDescription'
+					/>
+				</span>
+				{modelName && (
+					<span>
+						<strong>Model:</strong> {modelName}
+					</span>
+				)}
+			</div>
+		</div>
 	);
 }
 
@@ -366,7 +406,7 @@ function ActionButtons({
 					<Button
 						appearance='icon'
 						onClick={() => {
-							openFile(compatibilityState.reportPath ?? '');
+							void openFile(compatibilityState.reportPath ?? '');
 						}}
 					>
 						<ViewSourceIcon />
@@ -390,7 +430,7 @@ function ActionButtons({
 							}
 
 							setRunningAnalysis(true);
-							analyzeAIModel(model).then(() => {
+							void analyzeAIModel(model).then(() => {
 								setRunningAnalysis(false);
 							});
 						}}
@@ -399,6 +439,14 @@ function ActionButtons({
 					</Button>
 				</Tooltip>
 			)}
+			<Tooltip title='Edit' type='short' width={50}>
+				<Button
+					appearance='icon'
+					onClick={() => dispatch(editModel(model))}
+				>
+					<ConfigIcon16px />
+				</Button>
+			</Tooltip>
 			<Tooltip title='Delete' type='short' width={50}>
 				<Button
 					appearance='icon'
@@ -409,20 +457,12 @@ function ActionButtons({
 					<DeleteIcon />
 				</Button>
 			</Tooltip>
-			<Tooltip title='Edit' type='short' width={50}>
-				<Button
-					appearance='icon'
-					onClick={() => dispatch(editModel(model))}
-				>
-					<ConfigIcon16px />
-				</Button>
-			</Tooltip>
 		</div>
 	);
 }
 
 type CompatibilityStateViewProps = {
-	model: AIModelWithId;
+	readonly model: AIModelWithId;
 };
 
 function CompatibilityStateView({
@@ -441,7 +481,7 @@ function CompatibilityStateView({
 				})
 			);
 
-			validateAIModel(model)
+			void validateAIModel(model)
 				.then(result => {
 					dispatch(
 						setCompatibilityState({
@@ -462,14 +502,14 @@ function CompatibilityStateView({
 					);
 				});
 		}
-	}, [state, model]);
+	}, [state, model, dispatch]);
 
 	return (
 		<div className={styles.compatibilityState}>
 			{state === CompatabilityStatus.Compatible && (
 				<>
-					<span>{l10n?.compatible}</span>
 					<CircledCheckmarkIcon />
+					<span>{l10n?.compatible}</span>
 				</>
 			)}
 			{state === CompatabilityStatus.Incompatible && (

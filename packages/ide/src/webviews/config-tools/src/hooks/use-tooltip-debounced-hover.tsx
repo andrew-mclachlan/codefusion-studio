@@ -20,24 +20,29 @@ export function useTooltipDebouncedHover(delay = 800) {
 	const [isHovered, setIsHovered] = useState(false);
 
 	const debouncedHover = useMemo(
-		() => debounce(() => setIsHovered(true), delay),
+		() =>
+			debounce(() => {
+				setIsHovered(true);
+			}, delay),
 		[delay]
 	);
 
-	const displayTooltip = useCallback(() => {
-		debouncedHover();
-	}, [debouncedHover]);
+	const displayTooltip = useCallback(
+		() => debouncedHover(),
+		[debouncedHover]
+	);
 
 	const hideTooltip = useCallback(() => {
 		debouncedHover.cancel();
 		setIsHovered(false);
 	}, [debouncedHover]);
 
-	useEffect(() => {
-		return () => {
+	useEffect(
+		() => () => {
 			debouncedHover.cancel();
-		};
-	}, [debouncedHover]);
+		},
+		[debouncedHover]
+	);
 
 	return {isHovered, displayTooltip, hideTooltip, setIsHovered};
 }

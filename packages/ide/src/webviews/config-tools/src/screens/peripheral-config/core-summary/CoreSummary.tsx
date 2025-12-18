@@ -21,7 +21,7 @@ import CoreSummaryEntry from './CoreSummaryEntry';
 import styles from './CoreSummary.module.scss';
 import {
 	useActiveScreen,
-	useCoreFilters,
+	useProjectFilters,
 	usePeripheralScreenOpenProjectCards
 } from '../../../state/slices/app-context/appContext.selector';
 import {
@@ -44,7 +44,7 @@ import {
 import {usePeripheralAllocations} from '../../../state/slices/peripherals/peripherals.selector';
 
 function CoreSummary() {
-	const filteredCoreName = useCoreFilters()[0];
+	const filteredCoreName = useProjectFilters()[0];
 	const l10n: TLocaleContext | undefined =
 		useLocaleContext()?.peripherals;
 	const projects = getProjectInfoList();

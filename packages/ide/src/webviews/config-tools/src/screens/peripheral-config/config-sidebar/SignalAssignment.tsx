@@ -26,7 +26,7 @@ import {
 } from '../../../../../common/types/soc';
 import {
 	useCurrentSignalTarget,
-	useGetAllocatedProjectId
+	useSignalProjectId
 } from '../../../state/slices/peripherals/peripherals.selector';
 import {
 	removeAppliedSignal,
@@ -80,10 +80,7 @@ function SignalAssignment({
 	const targetPinId =
 		useCurrentSignalTarget(peripheral, signal) ?? '';
 
-	const allocatedProjectId = useGetAllocatedProjectId(
-		peripheral,
-		signal
-	);
+	const signalProjectId = useSignalProjectId(peripheral, signal);
 
 	const signalsForTargetPin = usePinAppliedSignals(targetPinId) ?? [];
 
@@ -112,7 +109,6 @@ function SignalAssignment({
 			Peripheral: peripheral,
 			Name: signal
 		};
-		const projectToAllocate: string | undefined = allocatedProjectId;
 		let initialPinConfig = {};
 
 		if (isToggledOn) {
@@ -124,12 +120,12 @@ function SignalAssignment({
 			) {
 				dispatch(setActiveConfiguredSignal({})); // Removes pinconfig selection
 			}
-		} else if (projectToAllocate && targetPinId) {
+		} else if (signalProjectId && targetPinId) {
 			initialPinConfig = await computeInitialPinConfig({
 				Pin: targetPinId,
 				Peripheral: peripheral,
 				Signal: signal,
-				ProjectId: projectToAllocate ?? ''
+				ProjectId: signalProjectId
 			});
 			dispatch(
 				setAppliedSignal({...payload, PinCfg: initialPinConfig})

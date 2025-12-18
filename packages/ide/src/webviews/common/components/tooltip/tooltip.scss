@@ -12,6 +12,7 @@
  * limitations under the License.
  *
  */
+@use '#layout' as layout;
 
 .tooltip {
 	position: relative;
@@ -20,7 +21,7 @@
 	.title {
 		position: absolute;
 		top: 100%;
-		z-index: 101;
+		z-index: var(--cfs-tooltip-z-index, layout.getZIndex('tooltip'));
 		padding: 2px 4px;
 		margin-top: 2px;
 		font-size: 12px;

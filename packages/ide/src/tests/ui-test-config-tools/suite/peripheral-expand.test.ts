@@ -20,7 +20,7 @@ import {
 } from "vscode-extension-tester";
 import { expect } from "chai";
 import { getConfigPathForFile } from "../config-tools-utility/cfsconfig-utils";
-import { UIUtils } from "../config-tools-utility/config-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import { pinTab } from "../page-objects/main-menu";
 import {
   mainPanelPinOnLineAndColumn,
@@ -54,38 +54,48 @@ describe("Peripheral Expansion", () => {
     await view.wait();
     await view.switchToFrame();
 
-    await (await view.findWebElement(pinTab)).click().then(async () => {
-      await UIUtils.sleep(3000);
-      const peripheral = await view.findWebElement(await pinDropdown("UART0"));
-      await peripheral.click().then(async () => {
-        // Assert peripheral expanded
-        expect(await view.findWebElement(await pinConfigButton("UART0", "RX")))
-          .to.exist;
-      });
-      // Assert pins focused
-      const firstPinToBeFocused = await view.findWebElement(
-        await mainPanelPinOnLineAndColumn(1, 2),
-      );
-      const secondPinToBeFocused = await view.findWebElement(
-        await mainPanelPinOnLineAndColumn(1, 3),
-      );
-      expect(
-        (await firstPinToBeFocused.getAttribute("class")) &&
-          (await secondPinToBeFocused.getAttribute("class")),
-      ).to.contain("focused");
-
-      const firstSignalToggle = await view.findWebElement(
-        await pinToggle("UART0", "RX"),
-      );
-      const pinToBeActivated = await view.findWebElement(
-        await mainPanelPinOnLineAndColumn(1, 3),
-      );
-      await firstSignalToggle.click().then(async () => {
-        // Assert single pin assignment renders as assigned
-        expect(await pinToBeActivated.getAttribute("class")).to.contain(
-          "assigned",
+    await(await UIUtils.findWebElement(view, pinTab))
+      .click()
+      .then(async () => {
+        await UIUtils.sleep(3000);
+        const peripheral = await UIUtils.findWebElement(
+          view,
+          await pinDropdown("UART0"),
         );
+        await peripheral.click().then(async () => {
+          // Assert peripheral expanded
+          expect(
+            await UIUtils.findWebElement(
+              view,
+              await pinConfigButton("UART0", "RX"),
+            ),
+          ).to.exist;
+        });
+        // Assert pins focused
+        const firstPinToBeFocused = await UIUtils.findWebElement(
+          view,
+          await mainPanelPinOnLineAndColumn(1, 2),
+        );
+        const secondPinToBeFocused = await UIUtils.findWebElement(view,
+          await mainPanelPinOnLineAndColumn(1, 3),
+        );
+        expect(
+          (await firstPinToBeFocused.getAttribute("class")) &&
+            (await secondPinToBeFocused.getAttribute("class")),
+        ).to.contain("focused");
+
+        const firstSignalToggle = await UIUtils.findWebElement(view,
+          await pinToggle("UART0", "RX"),
+        );
+        const pinToBeActivated = await UIUtils.findWebElement(view,
+          await mainPanelPinOnLineAndColumn(1, 3),
+        );
+        await firstSignalToggle.click().then(async () => {
+          // Assert single pin assignment renders as assigned
+          expect(await pinToBeActivated.getAttribute("class")).to.contain(
+            "assigned",
+          );
+        });
       });
-    });
   }).timeout(60_000);
 });

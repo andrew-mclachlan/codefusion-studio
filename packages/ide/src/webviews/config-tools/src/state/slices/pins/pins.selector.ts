@@ -17,7 +17,7 @@ import {createSelector} from '@reduxjs/toolkit';
 import type {RootState} from '../../store';
 import {getSocPinDictionary} from '../../../utils/soc-pins';
 import {useAssignedPeripherals} from '../peripherals/peripherals.selector';
-import {AppliedSignal} from '../../../../../common/types/soc';
+import type {AppliedSignal} from '../../../../../common/types/soc';
 
 export function usePin(id: string) {
 	return useAppSelector(state => state.pinsReducer.pins[id]);
@@ -157,15 +157,13 @@ export function useProjectAssignedPins(projectId: string) {
 	const peripheralsForProject = useAssignedPeripherals(projectId);
 
 	return useAssignedPins().filter(pin =>
-		peripheralsForProject.some(peripheral => {
-			return pin.appliedSignals.some(
+		peripheralsForProject.some(peripheral => pin.appliedSignals.some(
 				(signal: AppliedSignal) =>
 					// Check if peripheral is assigned as one or by signal
 					(peripheral.projectId === projectId &&
 						signal.Peripheral === peripheral.name) ||
 					peripheral.signals[signal.Name]?.projectId === projectId
-			);
-		})
+			))
 	);
 }
 

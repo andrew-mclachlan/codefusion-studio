@@ -42,7 +42,7 @@ import {
   Workbench,
 } from "vscode-extension-tester";
 
-import { UIUtils } from "../config-tools-utility/config-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import {
   driveStrengthDropdown,
   functionAttachedDropdown,
@@ -66,6 +66,7 @@ import {
   pinDropdown,
   pinConfigButton,
 } from "../page-objects/pin-config-section/pin-config-screen";
+import { waitForSidebarToOpen } from "../page-objects/pin-config-section/signal-config-sidebar";
 
 describe("Pin Configuration — Loading file Pins", () => {
   let workbench: Workbench;
@@ -129,7 +130,7 @@ describe("Pin Configuration — Loading file Pins", () => {
     await UIUtils.clickElement(view, await pinConfigButton("GPIO0", "P0.11"));
 
     // Then the Signal Config sidebar is opened
-    await UIUtils.waitForSidebarToOpen(view, 10000);
+    await waitForSidebarToOpen(view, 10000);
     console.log("Panel refreshed");
 
     // And I capture the configuration values from the UI

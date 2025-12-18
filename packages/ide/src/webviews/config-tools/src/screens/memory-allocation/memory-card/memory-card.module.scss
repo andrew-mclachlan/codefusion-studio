@@ -26,6 +26,11 @@
 	border-radius: 4px;
 }
 
+.innerCardContainer {
+	@extend .memoryCardContainer;
+	padding: 8px 12px 8px 12px;
+}
+
 .memoryCardHeader {
 	display: flex;
 	padding-top: 16px;
@@ -33,15 +38,18 @@
 	gap: 8px;
 	align-self: stretch;
 }
+
+.innerCardHeader {
+	@extend .memoryCardHeader;
+	padding-top: 0px;
+}
 .title {
 	box-sizing: border-box;
 	display: flex;
 	position: relative;
-	bottom: 10px;
 	gap: 8px;
 	flex-direction: column;
 	align-items: flex-start;
-	padding: 16px 16px 0px 0px;
 	width: 100%;
 }
 

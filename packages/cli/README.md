@@ -75,7 +75,7 @@ FLAGS
   -s, --search-path=<value>...  Specify additional plugin search path. Can be used multiple times.
 ```
 
-_See code: [src/commands/cfsplugins/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/cfsplugins/list.ts)_
+_See code: [src/commands/cfsplugins/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/cfsplugins/list.ts)_
 
 ## `cfsutil dt parse [FILEPATH]`
 
@@ -97,7 +97,7 @@ DESCRIPTION
   Devicetree (text) file parser
 ```
 
-_See code: [src/commands/dt/parse.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/dt/parse.ts)_
+_See code: [src/commands/dt/parse.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/dt/parse.ts)_
 
 ## `cfsutil elf analyze [FILEPATH]`
 
@@ -117,7 +117,7 @@ DESCRIPTION
   Heuristics from an ELF file
 ```
 
-_See code: [src/commands/elf/analyze.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/analyze.ts)_
+_See code: [src/commands/elf/analyze.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/analyze.ts)_
 
 ## `cfsutil elf info [FILEPATH]`
 
@@ -142,7 +142,7 @@ DESCRIPTION
   ELF parser CLI
 ```
 
-_See code: [src/commands/elf/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/info.ts)_
+_See code: [src/commands/elf/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/info.ts)_
 
 ## `cfsutil elf memory [FILEPATH]`
 
@@ -170,7 +170,7 @@ DESCRIPTION
   View relationships between segments, sections and symbols
 ```
 
-_See code: [src/commands/elf/memory.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/memory.ts)_
+_See code: [src/commands/elf/memory.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/memory.ts)_
 
 ## `cfsutil elf symbols [FILEPATH] [SQLQUERY]`
 
@@ -192,7 +192,7 @@ DESCRIPTION
   Query symbols contained within the ELF file
 ```
 
-_See code: [src/commands/elf/symbols.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/symbols.ts)_
+_See code: [src/commands/elf/symbols.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/symbols.ts)_
 
 ## `cfsutil generate`
 
@@ -212,7 +212,7 @@ DESCRIPTION
   Generate source code from the provided .cfsconfig file.
 ```
 
-_See code: [src/commands/generate.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/generate.ts)_
+_See code: [src/commands/generate.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/generate.ts)_
 
 ## `cfsutil help [COMMANDS]`
 
@@ -250,7 +250,7 @@ DESCRIPTION
   Registers a new package server to retrieve packages.
 ```
 
-_See code: [src/commands/pkg/add-remote.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/pkg/add-remote.ts)_
+_See code: [src/commands/pkg/add-remote.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/pkg/add-remote.ts)_
 
 ## `cfsutil pkg delete-remote REMOTENAME`
 
@@ -267,7 +267,7 @@ DESCRIPTION
   Unregister a package server so it is no longer considered for package retrieval
 ```
 
-_See code: [src/commands/pkg/delete-remote.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/pkg/delete-remote.ts)_
+_See code: [src/commands/pkg/delete-remote.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/pkg/delete-remote.ts)_
 
 ## `cfsutil pkg dependencies PACKAGEREFERENCE`
 
@@ -284,7 +284,7 @@ DESCRIPTION
   Retrieves a list of all the dependencies of a given package, including transitive dependencies.
 ```
 
-_See code: [src/commands/pkg/dependencies.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/pkg/dependencies.ts)_
+_See code: [src/commands/pkg/dependencies.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/pkg/dependencies.ts)_
 
 ## `cfsutil pkg install PACKAGEREFERENCE`
 
@@ -301,7 +301,7 @@ DESCRIPTION
   Install a cfs package, including all its dependencies.
 ```
 
-_See code: [src/commands/pkg/install.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/pkg/install.ts)_
+_See code: [src/commands/pkg/install.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/pkg/install.ts)_
 
 ## `cfsutil pkg list [PATTERN]`
 
@@ -318,7 +318,7 @@ DESCRIPTION
   List installed packages.
 ```
 
-_See code: [src/commands/pkg/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/pkg/list.ts)_
+_See code: [src/commands/pkg/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/pkg/list.ts)_
 
 ## `cfsutil pkg local-consumers NAME`
 
@@ -335,7 +335,7 @@ DESCRIPTION
   Retrieves a list of all installed packages that depend on a given package, including transitive consumers.
 ```
 
-_See code: [src/commands/pkg/local-consumers.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/pkg/local-consumers.ts)_
+_See code: [src/commands/pkg/local-consumers.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/pkg/local-consumers.ts)_
 
 ## `cfsutil pkg login REMOTENAME`
 
@@ -358,7 +358,7 @@ DESCRIPTION
   Login to a package server.
 ```
 
-_See code: [src/commands/pkg/login.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/pkg/login.ts)_
+_See code: [src/commands/pkg/login.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/pkg/login.ts)_
 
 ## `cfsutil pkg logout REMOTENAME`
 
@@ -376,7 +376,7 @@ DESCRIPTION
   download.
 ```
 
-_See code: [src/commands/pkg/logout.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/pkg/logout.ts)_
+_See code: [src/commands/pkg/logout.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/pkg/logout.ts)_
 
 ## `cfsutil pkg info PACKAGEREFERENCE`
 
@@ -393,7 +393,7 @@ DESCRIPTION
   Retrieve a given package metadata. The package does not need to be installed for this information to be retrieved.
 ```
 
-_See code: [src/commands/pkg/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/pkg/info.ts)_
+_See code: [src/commands/pkg/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/pkg/info.ts)_
 
 ## `cfsutil pkg search PATTERN`
 
@@ -410,7 +410,7 @@ DESCRIPTION
   Retrieve packages available for install.
 ```
 
-_See code: [src/commands/pkg/search.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/pkg/search.ts)_
+_See code: [src/commands/pkg/search.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/pkg/search.ts)_
 
 ## `cfsutil pkg uninstall NAME`
 
@@ -429,7 +429,7 @@ DESCRIPTION
   download.
 ```
 
-_See code: [src/commands/pkg/uninstall.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/pkg/uninstall.ts)_
+_See code: [src/commands/pkg/uninstall.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/pkg/uninstall.ts)_
 
 ## `cfsutil plugins`
 
@@ -728,7 +728,7 @@ DESCRIPTION
   Generates the project
 ```
 
-_See code: [src/commands/project/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/project/create.ts)_
+_See code: [src/commands/project/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/project/create.ts)_
 
 ## `cfsutil socs export`
 
@@ -788,7 +788,7 @@ FLAGS
 
 ```
 
-_See code: [src/commands/cfsplugins/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/cfsplugins/list.ts)_
+_See code: [src/commands/cfsplugins/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/cfsplugins/list.ts)_
 
 ## `cfsutil dt parse [FILEPATH]`
 
@@ -812,7 +812,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/dt/parse.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/dt/parse.ts)_
+_See code: [src/commands/dt/parse.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/dt/parse.ts)_
 
 ## `cfsutil elf analyze [FILEPATH]`
 
@@ -834,7 +834,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/elf/analyze.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/analyze.ts)_
+_See code: [src/commands/elf/analyze.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/analyze.ts)_
 
 ## `cfsutil elf info [FILEPATH]`
 
@@ -861,7 +861,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/elf/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/info.ts)_
+_See code: [src/commands/elf/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/info.ts)_
 
 ## `cfsutil elf memory [FILEPATH]`
 
@@ -891,7 +891,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/elf/memory.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/memory.ts)_
+_See code: [src/commands/elf/memory.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/memory.ts)_
 
 ## `cfsutil elf symbols [FILEPATH] [SQLQUERY]`
 
@@ -915,7 +915,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/elf/symbols.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/symbols.ts)_
+_See code: [src/commands/elf/symbols.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/symbols.ts)_
 
 ## `cfsutil generate`
 
@@ -937,7 +937,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/generate.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/generate.ts)_
+_See code: [src/commands/generate.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/generate.ts)_
 
 ## `cfsutil help [COMMANDS]`
 
@@ -979,7 +979,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/package-manager/add-remote.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/add-remote.ts)_
+_See code: [src/commands/package-manager/add-remote.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/add-remote.ts)_
 
 ## `cfsutil package-manager delete-remote`
 
@@ -998,7 +998,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/package-manager/delete-remote.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/delete-remote.ts)_
+_See code: [src/commands/package-manager/delete-remote.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/delete-remote.ts)_
 
 ## `cfsutil package-manager dependencies`
 
@@ -1018,7 +1018,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/package-manager/dependencies.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/dependencies.ts)_
+_See code: [src/commands/package-manager/dependencies.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/dependencies.ts)_
 
 ## `cfsutil package-manager install`
 
@@ -1038,7 +1038,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/package-manager/install.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/install.ts)_
+_See code: [src/commands/package-manager/install.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/install.ts)_
 
 ## `cfsutil package-manager list`
 
@@ -1057,7 +1057,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/package-manager/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/list.ts)_
+_See code: [src/commands/package-manager/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/list.ts)_
 
 ## `cfsutil package-manager local-consumers`
 
@@ -1076,7 +1076,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/package-manager/local-consumers.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/local-consumers.ts)_
+_See code: [src/commands/package-manager/local-consumers.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/local-consumers.ts)_
 
 ## `cfsutil package-manager login`
 
@@ -1098,7 +1098,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/package-manager/login.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/login.ts)_
+_See code: [src/commands/package-manager/login.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/login.ts)_
 
 ## `cfsutil package-manager logout`
 
@@ -1118,7 +1118,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/package-manager/logout.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/logout.ts)_
+_See code: [src/commands/package-manager/logout.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/logout.ts)_
 
 ## `cfsutil package-manager info`
 
@@ -1138,7 +1138,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/package-manager/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/info.ts)_
+_See code: [src/commands/package-manager/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/info.ts)_
 
 ## `cfsutil package-manager search`
 
@@ -1157,7 +1157,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/package-manager/search.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/search.ts)_
+_See code: [src/commands/package-manager/search.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/search.ts)_
 
 ## `cfsutil package-manager uninstall`
 
@@ -1177,7 +1177,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/package-manager/uninstall.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/uninstall.ts)_
+_See code: [src/commands/package-manager/uninstall.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/uninstall.ts)_
 
 ## `cfsutil plugins`
 
@@ -1495,7 +1495,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/project/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/project/create.ts)_
+_See code: [src/commands/project/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/project/create.ts)_
 
 ## `cfsutil socs export`
 
@@ -1544,7 +1544,7 @@ FLAGS
   -s, --search-path=<value>...  Specify additional plugin search path. Can be used multiple times.
 ```
 
-_See code: [src/commands/cfsplugins/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/cfsplugins/list.ts)_
+_See code: [src/commands/cfsplugins/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/cfsplugins/list.ts)_
 
 ## `cfsutil dt parse [FILEPATH]`
 
@@ -1566,7 +1566,7 @@ DESCRIPTION
   Devicetree (text) file parser
 ```
 
-_See code: [src/commands/dt/parse.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/dt/parse.ts)_
+_See code: [src/commands/dt/parse.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/dt/parse.ts)_
 
 ## `cfsutil elf analyze [FILEPATH]`
 
@@ -1586,7 +1586,7 @@ DESCRIPTION
   Heuristics from an ELF file
 ```
 
-_See code: [src/commands/elf/analyze.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/analyze.ts)_
+_See code: [src/commands/elf/analyze.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/analyze.ts)_
 
 ## `cfsutil elf info [FILEPATH]`
 
@@ -1611,7 +1611,7 @@ DESCRIPTION
   ELF parser CLI
 ```
 
-_See code: [src/commands/elf/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/info.ts)_
+_See code: [src/commands/elf/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/info.ts)_
 
 ## `cfsutil elf memory [FILEPATH]`
 
@@ -1639,7 +1639,7 @@ DESCRIPTION
   View relationships between segments, sections and symbols
 ```
 
-_See code: [src/commands/elf/memory.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/memory.ts)_
+_See code: [src/commands/elf/memory.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/memory.ts)_
 
 ## `cfsutil elf symbols [FILEPATH] [SQLQUERY]`
 
@@ -1661,7 +1661,7 @@ DESCRIPTION
   Query symbols contained within the ELF file
 ```
 
-_See code: [src/commands/elf/symbols.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/symbols.ts)_
+_See code: [src/commands/elf/symbols.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/symbols.ts)_
 
 ## `cfsutil generate`
 
@@ -1681,7 +1681,7 @@ DESCRIPTION
   Generate source code from the provided .cfsconfig file.
 ```
 
-_See code: [src/commands/generate.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/generate.ts)_
+_See code: [src/commands/generate.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/generate.ts)_
 
 ## `cfsutil help [COMMANDS]`
 
@@ -2000,7 +2000,7 @@ DESCRIPTION
   Generates the project
 ```
 
-_See code: [src/commands/project/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/project/create.ts)_
+_See code: [src/commands/project/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/project/create.ts)_
 
 ## `cfsutil socs export`
 
@@ -2025,7 +2025,7 @@ DESCRIPTION
   Output the SoC data model for the specified SoC.
 ```
 
-_See code: [src/commands/socs/export.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/socs/export.ts)_
+_See code: [src/commands/socs/export.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/socs/export.ts)_
 
 ## `cfsutil socs list`
 
@@ -2044,7 +2044,7 @@ DESCRIPTION
   List available SoCs.
 ```
 
-_See code: [src/commands/socs/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/socs/list.ts)_
+_See code: [src/commands/socs/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/socs/list.ts)_
 
 ## `cfsutil workspace create`
 
@@ -2063,7 +2063,7 @@ DESCRIPTION
   Generates a workspace based on a configuration file.
 ```
 
-_See code: [src/commands/workspace/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/workspace/create.ts)_
+_See code: [src/commands/workspace/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/workspace/create.ts)_
 <!-- commandsstop -->
 \t' for tab).
   -m, --minify           Minify the JSON output
@@ -2077,7 +2077,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/socs/export.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/socs/export.ts)_
+_See code: [src/commands/socs/export.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/socs/export.ts)_
 
 ## `cfsutil socs list`
 
@@ -2098,7 +2098,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/socs/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/socs/list.ts)_
+_See code: [src/commands/socs/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/socs/list.ts)_
 
 ## `cfsutil workspace create`
 
@@ -2119,7 +2119,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/workspace/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/workspace/create.ts)_
+_See code: [src/commands/workspace/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/workspace/create.ts)_
 <!-- commandsstop -->
 * [`cfsutil cfsplugins list`](#cfsutil-cfsplugins-list)
 * [`cfsutil dt parse [FILEPATH]`](#cfsutil-dt-parse-filepath)
@@ -2156,7 +2156,7 @@ FLAGS
 
 ```
 
-_See code: [src/commands/cfsplugins/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/cfsplugins/list.ts)_
+_See code: [src/commands/cfsplugins/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/cfsplugins/list.ts)_
 
 ## `cfsutil dt parse [FILEPATH]`
 
@@ -2180,7 +2180,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/dt/parse.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/dt/parse.ts)_
+_See code: [src/commands/dt/parse.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/dt/parse.ts)_
 
 ## `cfsutil elf analyze [FILEPATH]`
 
@@ -2202,7 +2202,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/elf/analyze.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/analyze.ts)_
+_See code: [src/commands/elf/analyze.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/analyze.ts)_
 
 ## `cfsutil elf info [FILEPATH]`
 
@@ -2229,7 +2229,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/elf/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/info.ts)_
+_See code: [src/commands/elf/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/info.ts)_
 
 ## `cfsutil elf memory [FILEPATH]`
 
@@ -2259,7 +2259,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/elf/memory.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/memory.ts)_
+_See code: [src/commands/elf/memory.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/memory.ts)_
 
 ## `cfsutil elf symbols [FILEPATH] [SQLQUERY]`
 
@@ -2283,7 +2283,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/elf/symbols.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/symbols.ts)_
+_See code: [src/commands/elf/symbols.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/symbols.ts)_
 
 ## `cfsutil generate`
 
@@ -2305,7 +2305,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/generate.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/generate.ts)_
+_See code: [src/commands/generate.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/generate.ts)_
 
 ## `cfsutil help [COMMANDS]`
 
@@ -2645,7 +2645,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/project/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/project/create.ts)_
+_See code: [src/commands/project/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/project/create.ts)_
 
 ## `cfsutil socs export`
 
@@ -2672,7 +2672,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/socs/export.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/socs/export.ts)_
+_See code: [src/commands/socs/export.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/socs/export.ts)_
 
 ## `cfsutil socs list`
 
@@ -2693,7 +2693,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/socs/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/socs/list.ts)_
+_See code: [src/commands/socs/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/socs/list.ts)_
 
 ## `cfsutil workspace create`
 
@@ -2714,7 +2714,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/workspace/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/workspace/create.ts)_
+_See code: [src/commands/workspace/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/workspace/create.ts)_
 <!-- commandsstop -->
 \t' for tab).
   -m, --minify           Minify the JSON output
@@ -2727,7 +2727,7 @@ DESCRIPTION
   Output the SoC data model for the specified SoC.
 ```
 
-_See code: [src/commands/socs/export.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/socs/export.ts)_
+_See code: [src/commands/socs/export.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/socs/export.ts)_
 
 ## `cfsutil socs list`
 
@@ -2746,7 +2746,7 @@ DESCRIPTION
   List available SoCs.
 ```
 
-_See code: [src/commands/socs/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/socs/list.ts)_
+_See code: [src/commands/socs/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/socs/list.ts)_
 
 ## `cfsutil workspace create`
 
@@ -2765,7 +2765,7 @@ DESCRIPTION
   Generates a workspace based on a configuration file.
 ```
 
-_See code: [src/commands/workspace/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/workspace/create.ts)_
+_See code: [src/commands/workspace/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/workspace/create.ts)_
 <!-- commandsstop -->
 * [`cfsutil cfsplugins list`](#cfsutil-cfsplugins-list)
 * [`cfsutil dt parse [FILEPATH]`](#cfsutil-dt-parse-filepath)
@@ -2811,7 +2811,7 @@ FLAGS
   -s, --search-path=<value>...  Specify additional plugin search path. Can be used multiple times.
 ```
 
-_See code: [src/commands/cfsplugins/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/cfsplugins/list.ts)_
+_See code: [src/commands/cfsplugins/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/cfsplugins/list.ts)_
 
 ## `cfsutil dt parse [FILEPATH]`
 
@@ -2833,7 +2833,7 @@ DESCRIPTION
   Devicetree (text) file parser
 ```
 
-_See code: [src/commands/dt/parse.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/dt/parse.ts)_
+_See code: [src/commands/dt/parse.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/dt/parse.ts)_
 
 ## `cfsutil elf analyze [FILEPATH]`
 
@@ -2853,7 +2853,7 @@ DESCRIPTION
   Heuristics from an ELF file
 ```
 
-_See code: [src/commands/elf/analyze.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/analyze.ts)_
+_See code: [src/commands/elf/analyze.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/analyze.ts)_
 
 ## `cfsutil elf info [FILEPATH]`
 
@@ -2878,7 +2878,7 @@ DESCRIPTION
   ELF parser CLI
 ```
 
-_See code: [src/commands/elf/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/info.ts)_
+_See code: [src/commands/elf/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/info.ts)_
 
 ## `cfsutil elf memory [FILEPATH]`
 
@@ -2906,7 +2906,7 @@ DESCRIPTION
   View relationships between segments, sections and symbols
 ```
 
-_See code: [src/commands/elf/memory.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/memory.ts)_
+_See code: [src/commands/elf/memory.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/memory.ts)_
 
 ## `cfsutil elf symbols [FILEPATH] [SQLQUERY]`
 
@@ -2928,7 +2928,7 @@ DESCRIPTION
   Query symbols contained within the ELF file
 ```
 
-_See code: [src/commands/elf/symbols.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/symbols.ts)_
+_See code: [src/commands/elf/symbols.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/symbols.ts)_
 
 ## `cfsutil generate`
 
@@ -2948,7 +2948,7 @@ DESCRIPTION
   Generate source code from the provided .cfsconfig file.
 ```
 
-_See code: [src/commands/generate.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/generate.ts)_
+_See code: [src/commands/generate.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/generate.ts)_
 
 ## `cfsutil help [COMMANDS]`
 
@@ -2986,7 +2986,7 @@ DESCRIPTION
   Registers a new package server to retrieve packages.
 ```
 
-_See code: [src/commands/package-manager/add-remote.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/add-remote.ts)_
+_See code: [src/commands/package-manager/add-remote.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/add-remote.ts)_
 
 ## `cfsutil package-manager delete-remote`
 
@@ -3003,7 +3003,7 @@ DESCRIPTION
   Unregister a package server so it is no longer considered for package retrieval
 ```
 
-_See code: [src/commands/package-manager/delete-remote.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/delete-remote.ts)_
+_See code: [src/commands/package-manager/delete-remote.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/delete-remote.ts)_
 
 ## `cfsutil package-manager dependencies`
 
@@ -3021,7 +3021,7 @@ DESCRIPTION
   Retrieves a list of all the dependencies of a given package, including transitive dependencies.
 ```
 
-_See code: [src/commands/package-manager/dependencies.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/dependencies.ts)_
+_See code: [src/commands/package-manager/dependencies.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/dependencies.ts)_
 
 ## `cfsutil package-manager install`
 
@@ -3039,7 +3039,7 @@ DESCRIPTION
   Install a cfs package, including all its dependencies.
 ```
 
-_See code: [src/commands/package-manager/install.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/install.ts)_
+_See code: [src/commands/package-manager/install.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/install.ts)_
 
 ## `cfsutil package-manager list`
 
@@ -3056,7 +3056,7 @@ DESCRIPTION
   List installed packages.
 ```
 
-_See code: [src/commands/package-manager/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/list.ts)_
+_See code: [src/commands/package-manager/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/list.ts)_
 
 ## `cfsutil package-manager local-consumers`
 
@@ -3073,7 +3073,7 @@ DESCRIPTION
   Retrieves a list of all installed packages that depend on a given package, including transitive consumers.
 ```
 
-_See code: [src/commands/package-manager/local-consumers.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/local-consumers.ts)_
+_See code: [src/commands/package-manager/local-consumers.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/local-consumers.ts)_
 
 ## `cfsutil package-manager login`
 
@@ -3093,7 +3093,7 @@ DESCRIPTION
   download.
 ```
 
-_See code: [src/commands/package-manager/login.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/login.ts)_
+_See code: [src/commands/package-manager/login.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/login.ts)_
 
 ## `cfsutil package-manager logout`
 
@@ -3111,7 +3111,7 @@ DESCRIPTION
   download.
 ```
 
-_See code: [src/commands/package-manager/logout.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/logout.ts)_
+_See code: [src/commands/package-manager/logout.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/logout.ts)_
 
 ## `cfsutil package-manager info`
 
@@ -3129,7 +3129,7 @@ DESCRIPTION
   Retrieve a given package metadata. The package does not need to be installed for this information to be retrieved.
 ```
 
-_See code: [src/commands/package-manager/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/info.ts)_
+_See code: [src/commands/package-manager/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/info.ts)_
 
 ## `cfsutil package-manager search`
 
@@ -3146,7 +3146,7 @@ DESCRIPTION
   Retrieve packages available for install.
 ```
 
-_See code: [src/commands/package-manager/search.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/search.ts)_
+_See code: [src/commands/package-manager/search.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/search.ts)_
 
 ## `cfsutil package-manager uninstall`
 
@@ -3164,7 +3164,7 @@ DESCRIPTION
   download.
 ```
 
-_See code: [src/commands/package-manager/uninstall.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/package-manager/uninstall.ts)_
+_See code: [src/commands/package-manager/uninstall.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/package-manager/uninstall.ts)_
 
 ## `cfsutil plugins`
 
@@ -3463,7 +3463,7 @@ DESCRIPTION
   Generates the project
 ```
 
-_See code: [src/commands/project/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/project/create.ts)_
+_See code: [src/commands/project/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/project/create.ts)_
 
 ## `cfsutil socs export`
 
@@ -3512,7 +3512,7 @@ FLAGS
 
 ```
 
-_See code: [src/commands/cfsplugins/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/cfsplugins/list.ts)_
+_See code: [src/commands/cfsplugins/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/cfsplugins/list.ts)_
 
 ## `cfsutil dt parse [FILEPATH]`
 
@@ -3536,7 +3536,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/dt/parse.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/dt/parse.ts)_
+_See code: [src/commands/dt/parse.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/dt/parse.ts)_
 
 ## `cfsutil elf analyze [FILEPATH]`
 
@@ -3558,7 +3558,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/elf/analyze.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/analyze.ts)_
+_See code: [src/commands/elf/analyze.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/analyze.ts)_
 
 ## `cfsutil elf info [FILEPATH]`
 
@@ -3585,7 +3585,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/elf/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/info.ts)_
+_See code: [src/commands/elf/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/info.ts)_
 
 ## `cfsutil elf memory [FILEPATH]`
 
@@ -3615,7 +3615,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/elf/memory.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/memory.ts)_
+_See code: [src/commands/elf/memory.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/memory.ts)_
 
 ## `cfsutil elf symbols [FILEPATH] [SQLQUERY]`
 
@@ -3639,7 +3639,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/elf/symbols.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/elf/symbols.ts)_
+_See code: [src/commands/elf/symbols.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/elf/symbols.ts)_
 
 ## `cfsutil generate`
 
@@ -3661,7 +3661,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/generate.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/generate.ts)_
+_See code: [src/commands/generate.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/generate.ts)_
 
 ## `cfsutil help [COMMANDS]`
 
@@ -4001,7 +4001,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/project/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/project/create.ts)_
+_See code: [src/commands/project/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/project/create.ts)_
 
 ## `cfsutil socs export`
 
@@ -4028,7 +4028,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/socs/export.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/socs/export.ts)_
+_See code: [src/commands/socs/export.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/socs/export.ts)_
 
 ## `cfsutil socs list`
 
@@ -4049,7 +4049,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/socs/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/socs/list.ts)_
+_See code: [src/commands/socs/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/socs/list.ts)_
 
 ## `cfsutil workspace create`
 
@@ -4070,7 +4070,7 @@ DESCRIPTION
 
 ```
 
-_See code: [src/commands/workspace/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/workspace/create.ts)_
+_See code: [src/commands/workspace/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/workspace/create.ts)_
 <!-- commandsstop -->
 \t' for tab).
   -m, --minify           Minify the JSON output
@@ -4083,7 +4083,7 @@ DESCRIPTION
   Output the SoC data model for the specified SoC.
 ```
 
-_See code: [src/commands/socs/export.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/socs/export.ts)_
+_See code: [src/commands/socs/export.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/socs/export.ts)_
 
 ## `cfsutil socs list`
 
@@ -4102,7 +4102,7 @@ DESCRIPTION
   List available SoCs.
 ```
 
-_See code: [src/commands/socs/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/socs/list.ts)_
+_See code: [src/commands/socs/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/socs/list.ts)_
 
 ## `cfsutil workspace create`
 
@@ -4121,7 +4121,7 @@ DESCRIPTION
   Generates a workspace based on a configuration file.
 ```
 
-_See code: [src/commands/workspace/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/src/commands/workspace/create.ts)_
+_See code: [src/commands/workspace/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/src/commands/workspace/create.ts)_
 <!-- commandsstop -->
 * [`cfsutil cfsplugins list`](#cfsutil-cfsplugins-list)
 * [`cfsutil dt parse [FILEPATH]`](#cfsutil-dt-parse-filepath)
@@ -4156,7 +4156,7 @@ FLAGS
   -s, --search-path=<value>...  Specify additional plugin search path. Can be used multiple times.
 ```
 
-_See code: [src/commands/cfsplugins/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/packages/cli/src/commands/cfsplugins/list.ts)_
+_See code: [src/commands/cfsplugins/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/packages/cli/src/commands/cfsplugins/list.ts)_
 
 ## `cfsutil dt parse [FILEPATH]`
 
@@ -4178,7 +4178,7 @@ DESCRIPTION
   Devicetree (text) file parser
 ```
 
-_See code: [src/commands/dt/parse.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/packages/cli/src/commands/cfsplugins/dt/parse.ts)_
+_See code: [src/commands/dt/parse.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/packages/cli/src/commands/cfsplugins/dt/parse.ts)_
 
 ## `cfsutil elf analyze [FILEPATH]`
 
@@ -4198,7 +4198,7 @@ DESCRIPTION
   Heuristics from an ELF file
 ```
 
-_See code: [src/commands/elf/analyze.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/packages/cli/src/commands/cfsplugins/elf/analyze.ts)_
+_See code: [src/commands/elf/analyze.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/packages/cli/src/commands/cfsplugins/elf/analyze.ts)_
 
 ## `cfsutil elf info [FILEPATH]`
 
@@ -4223,7 +4223,7 @@ DESCRIPTION
   ELF parser CLI
 ```
 
-_See code: [src/commands/elf/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/packages/cli/src/commands/cfsplugins/elf/info.ts)_
+_See code: [src/commands/elf/info.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/packages/cli/src/commands/cfsplugins/elf/info.ts)_
 
 ## `cfsutil elf memory [FILEPATH]`
 
@@ -4251,7 +4251,7 @@ DESCRIPTION
   View relationships between segments, sections and symbols
 ```
 
-_See code: [src/commands/elf/memory.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/packages/cli/src/commands/cfsplugins/elf/memory.ts)_
+_See code: [src/commands/elf/memory.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/packages/cli/src/commands/cfsplugins/elf/memory.ts)_
 
 ## `cfsutil elf symbols [FILEPATH] [SQLQUERY]`
 
@@ -4273,7 +4273,7 @@ DESCRIPTION
   Query symbols contained within the ELF file
 ```
 
-_See code: [src/commands/elf/symbols.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/packages/cli/src/commands/cfsplugins/elf/symbols.ts)_
+_See code: [src/commands/elf/symbols.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/packages/cli/src/commands/cfsplugins/elf/symbols.ts)_
 
 ## `cfsutil generate`
 
@@ -4293,7 +4293,7 @@ DESCRIPTION
   Generate source code from the provided .cfsconfig file.
 ```
 
-_See code: [src/commands/generate.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/packages/cli/src/commands/cfsplugins/generate.ts)_
+_See code: [src/commands/generate.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/packages/cli/src/commands/cfsplugins/generate.ts)_
 
 ## `cfsutil help [COMMANDS]`
 
@@ -4612,7 +4612,7 @@ DESCRIPTION
   Generates the project
 ```
 
-_See code: [src/commands/project/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/packages/cli/src/commands/cfsplugins/project/create.ts)_
+_See code: [src/commands/project/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/packages/cli/src/commands/cfsplugins/project/create.ts)_
 
 ## `cfsutil socs export`
 
@@ -4637,7 +4637,7 @@ DESCRIPTION
   Output the SoC data model for the specified SoC.
 ```
 
-_See code: [src/commands/socs/export.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/packages/cli/src/commands/cfsplugins/socs/export.ts)_
+_See code: [src/commands/socs/export.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/packages/cli/src/commands/cfsplugins/socs/export.ts)_
 
 ## `cfsutil socs list`
 
@@ -4656,7 +4656,7 @@ DESCRIPTION
   List available SoCs.
 ```
 
-_See code: [src/commands/socs/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/packages/cli/src/commands/cfsplugins/socs/list.ts)_
+_See code: [src/commands/socs/list.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/packages/cli/src/commands/cfsplugins/socs/list.ts)_
 
 ## `cfsutil workspace create`
 
@@ -4675,5 +4675,5 @@ DESCRIPTION
   Generates a workspace based on a configuration file.
 ```
 
-_See code: [src/commands/workspace/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.0/packages/cli/src/commands/cfsplugins/workspace/create.ts)_
+_See code: [src/commands/workspace/create.ts](https://github.com/analogdevicesinc/codefusion-studio/blob/V2.0.1/packages/cli/src/commands/cfsplugins/workspace/create.ts)_
 <!-- commandsstop -->

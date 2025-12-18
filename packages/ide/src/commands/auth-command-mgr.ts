@@ -13,14 +13,7 @@
  *
  */
 
-import {
-  ExtensionContext,
-  window,
-  commands,
-  Uri,
-  workspace,
-  env,
-} from "vscode";
+import { env, ExtensionContext, Uri, window } from "vscode";
 import { registerCommand } from "./commands";
 import {
   AuthConfig,
@@ -130,14 +123,11 @@ export class AuthCommandManager {
 
       session = await this.sessionManager.createSession();
 
-      // Test if user is logged in
+      // Update package manager credentials
       const client = new CfsApiClient({
         baseUrl: this.authConfig.ccmUrl,
         authorizer: session.authorizer,
       });
-      await client.testConnection();
-
-      // Update package manager credentials
       if (this.packageManager) {
         this.credentialProvider = new MyAnalogCloudsmithCredentialProvider(
           client,

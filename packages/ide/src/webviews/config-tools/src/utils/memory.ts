@@ -24,7 +24,7 @@ import {
 import {ByteUnitMap, type ByteUnit} from '../types/memory';
 import {BYTE_UNITS} from '../constants/memory';
 import {getSocCoreList} from './soc-cores';
-import {SocCoreMemory} from 'cfs-plugins-api';
+import type {SocCoreMemory} from 'cfs-plugins-api';
 
 const coreMemoryDictionary: Record<string, MemoryBlock> = {};
 const coreMemoryAliasDictionary: Record<string, MemoryAlias[]> = {};

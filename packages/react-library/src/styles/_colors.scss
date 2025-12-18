@@ -91,7 +91,7 @@ $input-foreground: var(--vscode-input-foreground, #d4d4d4);
 $input-border: var(--vscode-input-border, #3c3c3c);
 $input-focus-border: var(--vscode-focusBorder, #3c3c3c);
 
-$dropdown-border: var(--vscode-panelInput-border, #454545);
+$dropdown-border: var(--vscode-dropdown-border, #454545);
 
 $badge-background: color-mix(
 	in srgb,

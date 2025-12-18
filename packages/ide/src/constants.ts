@@ -111,7 +111,6 @@ export const GET_DEFAULT_LOCATION = "getDefaultLocation";
 export const CHECK_FILE_EXISTS = "checkFileExists";
 export const CHECK_CUSTOM_BOARD = "checkCustomBoard";
 export const GET_SOC_DATA = "getSocData";
-export const DOWNLOAD_SDK = "downloadSdk";
 export const SET_SDK_PATH = "setSdkPath";
 export const ACTIVE_CONTEXT = "activeContext";
 export const CFS_TELEMETRY_ENABLE = "telemetry.enable";
@@ -165,3 +164,14 @@ export enum SECURITY_TASKS_SEARCH_STRING {
   generateKey = "generate mcuboot key",
   generateEnvelopedPackage = "generate enveloped package",
 }
+
+// Toolchains
+export const ADI_SELECTED_TOOLCHAIN_SETTING = "toolchain.selectedToolchain";
+
+// SDK Paths
+export const DOWNLOAD_SDK = "Download SDK";
+export const SDK_DOWNLOAD_URL = "https://analog.com/CodeFusionStudio";
+export const SELECT_SDK_PATH = "Choose SDK path";
+
+// JLink Configuration
+export const SELECT_JLINK_PATH = "Choose JLink path";

@@ -13,6 +13,9 @@
  *
  */
 
+@use '#fonts' as fonts;
+@use '#colors' as colors;
+
 .container {
 	display: flex;
 	justify-content: space-between;
@@ -30,5 +33,17 @@
 	}
 	.conflictIcon {
 		height: 16px;
+	}
+
+	.assignmentLabel {
+		@include fonts.label-l3;
+		color: colors.$description-foreground;
+		margin: 0;
+		display: flex;
+		align-items: center;
+
+		& span {
+			margin: 0 2px;
+		}
 	}
 }

@@ -17,6 +17,8 @@
 # Usage
 # sh scripts/generate_tflm_cortex.sh [CFS=<path>] [HASH=<hash>]
 
+#!/bin/bash
+
 for arg in "$@"; do
   case $arg in
     CFS=*)
@@ -37,7 +39,7 @@ done
 START=`pwd`
 BUILD_DIR=${START}/tflibs
 OUT_DIR=${START}/tflibs/lib
-PACKAGE_DIR=${START}/packages/libs/cortex-m/tflite-micro
+PACKAGE_DIR=${START}/platforms/cortex-m/lib/tflite-micro
 
 # Use arg for CFS_DIR if provided
 if [ -n "${CFS_DIR}" ]; then 
@@ -114,22 +116,44 @@ done
 
 cd ${OUT_DIR}/cortex-m/tflite-micro
 
-# Move 3rd party stuff out of downloads
+# Move 3rd party stuff we use out of downloads
+echo "Moving 3rd party..."
 rm -rf third_party/*
-mv tensorflow/lite/micro/tools/make/downloads/gemmlowp third_party/
-mv tensorflow/lite/micro/tools/make/downloads/flatbuffers third_party/
-mv tensorflow/lite/micro/tools/make/downloads/kissfft third_party/
-mv tensorflow/lite/micro/tools/make/downloads/ruy third_party/
+
+mkdir -p third_party/gemmlowp/fixedpoint \
+         third_party/gemmlowp/internal \
+         third_party/flatbuffers \
+         third_party/kissfft \
+         third_party/ruy/ruy/profiler
+
+mv tensorflow/lite/micro/tools/make/downloads/gemmlowp/fixedpoint/* third_party/gemmlowp/fixedpoint/
+mv tensorflow/lite/micro/tools/make/downloads/gemmlowp/internal/* third_party/gemmlowp/internal/
+mv tensorflow/lite/micro/tools/make/downloads/gemmlowp/LICENSE third_party/gemmlowp/
+mv tensorflow/lite/micro/tools/make/downloads/flatbuffers/include third_party/flatbuffers/
+mv tensorflow/lite/micro/tools/make/downloads/flatbuffers/LICENSE third_party/flatbuffers/
+mv tensorflow/lite/micro/tools/make/downloads/kissfft/* third_party/kissfft/
+mv tensorflow/lite/micro/tools/make/downloads/ruy/LICENSE third_party/ruy/
+mv tensorflow/lite/micro/tools/make/downloads/ruy/ruy/profiler/instrumentation.h third_party/ruy/ruy/profiler/
 
 # Trim stuff we don't need for the user build
-for DIR in ci gen tools xtensa test; do
-  rm -rf `find . -name "${DIR}"`
-done
+echo "Pruning sources..."
+# Remove directories we don't need:
+rm -rf -- \
+  codegen gen python \
+  tensorflow/lite/micro/tools \
+  third_party/flatbuffers/include/flatbuffers/pch \
+  signal/micro/kernels/xtensa \
+  signal/testdata
 
-for EXT in bzl; do
-  rm -rf `find . -name "*.${EXT}"`
-done
-rm -rf `find . -name "*BUILD" -or -name "python_requirements.*"`
+# Remove all files except for the ones we need:
+find . -type f ! \( \
+  -name '*.cc' -o \
+  -name '*.h'   -o \
+  -name 'LICENSE' -o \
+  -name 'git_version.txt' \
+\) -delete
+# Remove any empty dirs
+find . -type d -empty -delete
 
 # Zip up output
 echo "Compressing package..."

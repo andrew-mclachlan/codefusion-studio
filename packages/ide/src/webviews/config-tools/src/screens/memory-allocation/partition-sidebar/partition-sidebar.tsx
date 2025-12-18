@@ -118,7 +118,7 @@ export function PartitionSidebar({
 	useEffect(() => {
 		for (const project of projects ?? []) {
 			if (!pluginOptions[project.projectId]) {
-				getControlsForProjectIds(
+				void getControlsForProjectIds(
 					[project.projectId],
 					CONTROL_SCOPES.MEMORY
 				).then(controls => {
@@ -129,7 +129,7 @@ export function PartitionSidebar({
 				});
 			}
 		}
-	}, [projects]);
+	}, [projects, pluginOptions]);
 
 	const partitionTitle = useMemo(
 		() => (

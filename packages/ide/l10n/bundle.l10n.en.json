@@ -505,7 +505,7 @@
           "title": "Info"
         },
         "assigned-cores": {
-          "label": "Assigned Core(s)"
+          "label": "Assigned Project(s)"
         },
         "start-address": {
           "label": "Start Address"
@@ -590,6 +590,8 @@
           "title": "Are you sure you want to remove this model configuration?",
           "message": "Generated files will remain in your project."
         },
+        "corruptModelConfigTitle": "Error loading model configuration",
+        "corruptModelConfigDescription": "AI Model configuration is corrupt.",
         "missingPackageTitle": "Error loading cfsai package",
         "missingPackageDescription": "Could not find or parse <a href=\"vscode://settings/@cfs.sdk.path\">SDK-Path</a>/Tools/cfsai/ui.json. Please verify the CodeFusion Studio SDK is at the expected path.",
         "zephelin": {

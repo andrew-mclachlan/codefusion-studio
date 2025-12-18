@@ -30,10 +30,7 @@ import {
 	getSocPeripheralDictionary
 } from '../../../utils/soc-peripherals';
 import Accordion from '../../../../../common/components/accordion/Accordion';
-import {
-	getPeripheralError,
-	hasPeripheralPinConflicts
-} from '../../../utils/peripheral-errors';
+import {hasPeripheralPinConflicts} from '../../../utils/peripheral-errors';
 import {
 	useAssignedPins,
 	usePinsByPeripheral
@@ -57,6 +54,7 @@ import {
 	useNewPeripheralAssignment,
 	useNewSignalAssignment
 } from '../../../state/slices/app-context/appContext.selector';
+import useProjectPeripheralErrorCount from '../../../hooks/use-project-peripheral-error-count';
 
 type PeripheralAllocationCardProps = Readonly<{
 	projectId: string;
@@ -64,21 +62,22 @@ type PeripheralAllocationCardProps = Readonly<{
 	peripheral:
 		| FormattedPeripheral<FormattedPeripheralSignal>
 		| PeripheralConfig;
-	projectControls?: Record<string, any[]> | undefined;
 }>;
 
 function PeripheralAllocationCard({
 	projectId,
-	peripheral,
-	projectControls
+	peripheral
 }: PeripheralAllocationCardProps) {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const dispatch = useAppDispatch();
 	const signalCount = Object.keys(peripheral.signals).length;
 
-	const isSignalActive = useActiveSignal()?.startsWith(
-		peripheral.name
-	);
+	const [activeSignalPeripheral, activeSignalName] =
+		useActiveSignal()?.split(' ') ?? [];
+
+	const isSignalActive =
+		activeSignalPeripheral === peripheral.name &&
+		activeSignalName in peripheral.signals;
 
 	const isPeripheralActive =
 		useActivePeripheral(true) === `${peripheral.name}:${projectId}`;
@@ -106,12 +105,9 @@ function PeripheralAllocationCard({
 	const allocation =
 		usePeripheralAllocations()?.[projectId]?.[peripheral.name];
 
-	const hasPeripheralUnnasignedPinError = getPeripheralError(
-		pins,
-		{
-			[peripheral.name]: allocation
-		},
-		projectControls ?? {}
+	const peripheralErrorCount = useProjectPeripheralErrorCount(
+		projectId,
+		peripheral.name
 	);
 
 	const hasPeripheralPinConflictError = hasPeripheralPinConflicts(
@@ -160,15 +156,12 @@ function PeripheralAllocationCard({
 				>
 					<Accordion
 						disableBorderOnHover
-						highlight={
-							isPeripheralActive ||
-							(isSignalActive && signalProject === projectId)
-						}
+						highlight={isPeripheralActive || isSignalActive}
 						id={peripheral.name}
 						title={peripheral.name}
 						icon={
 							<div className={styles.accordionHeaderIcon}>
-								{hasPeripheralUnnasignedPinError ||
+								{peripheralErrorCount > 0 ||
 								hasPeripheralPinConflictError ? (
 									<div className={styles.conflictIconWrapper}>
 										<ConflictIcon />
@@ -248,7 +241,6 @@ function PeripheralAllocationCard({
 					projectId={projectId}
 					peripheralName={peripheral.name}
 					preassigned={isPreassigned}
-					controls={projectControls ?? {}}
 				/>
 			)}
 		</div>

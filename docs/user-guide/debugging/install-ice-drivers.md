@@ -37,7 +37,7 @@ The ADI ICE drivers are required to debug SHARC-FX processors using the ICE-1000
 3. In the **Browse for drivers on your computer** dialog:
 
       - Make sure **Include subfolders** is selected.  
-      - Navigate to: `C:\analog\cfs\2.0.0\Data\ICEDrivers\emulators`
+      - Navigate to: `C:\analog\cfs\<version>\Data\ICEDrivers\emulators`
 
       ![Browse for ICE driver folder](images/browse-for-ice-driver.png)
 
@@ -59,7 +59,7 @@ The ADI ICE drivers are required to debug SHARC-FX processors using the ICE-1000
 2. Run the following command:
 
       ```bash
-      pnputil /add-driver "C:\analog\cfs\2.0.0\Data\ICEDrivers\emulators\adiusb.inf" /install
+      pnputil /add-driver "C:\analog\cfs\<version>\Data\ICEDrivers\emulators\adiusb.inf" /install
       ```
 
 3. Wait for the confirmation message:

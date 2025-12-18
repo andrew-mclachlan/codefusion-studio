@@ -38,7 +38,10 @@ import {useCallback} from 'react';
 
 export default function PartitionAssignmentDetails() {
 	const dispatch = useDispatch();
-	const partitions = useFilteredPartitions();
+	const partitions = useFilteredPartitions().sort(
+		(a, b) =>
+			parseInt(a.startAddress, 16) - parseInt(b.startAddress, 16)
+	);
 	const filteredBlocks = useFilteredMemoryBlocks();
 	const activeView = useMemoryScreenActiveView();
 	const openProjectCards = useOpenProjectCards();

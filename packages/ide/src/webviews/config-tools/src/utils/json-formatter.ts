@@ -54,6 +54,7 @@ export const formatPeripheralSignalsTargets = (
 	persistedPins: ConfiguredPin[]
 ) => {
 	const peripheralDict: Record<string, PeripheralSignalsTargets> = {};
+
 	for (const peripheral of json.Peripherals) {
 		const newPeripheral: PeripheralSignalsTargets = {
 			signalsTargets: {}
@@ -63,32 +64,34 @@ export const formatPeripheralSignalsTargets = (
 	}
 
 	for (const pin of json.Packages[0].Pins) {
-		if (pin.Signals && !isPinReserved(pin.Name)) {
-			// Default the current target pin of the signal to the first in the list
-			for (const signal of pin.Signals) {
-				const isSignalFoundInPeripheral =
+		if (!pin.Signals || isPinReserved(pin.Name)) {
+			continue;
+		}
+
+		// Default the current target pin of the signal to the first in the list
+		for (const signal of pin.Signals) {
+			const isSignalFoundInPeripheral =
+				peripheralDict[signal.Peripheral ?? ''].signalsTargets[
+					signal.Name
+				];
+
+			if (isSignalFoundInPeripheral) {
+				// Found the pin for the signal associated with the peripheral
+				const persistedPin = persistedPins?.find(
+					pPin =>
+						pPin.Peripheral === signal.Peripheral &&
+						pPin.Signal === signal.Name
+				);
+
+				if (persistedPin) {
 					peripheralDict[signal.Peripheral ?? ''].signalsTargets[
 						signal.Name
-					];
-
-				if (!isSignalFoundInPeripheral) {
-					peripheralDict[signal.Peripheral ?? ''].signalsTargets[
-						signal.Name
-					] = pin.Name;
-				} else {
-					// Found the pin for the signal associated with the peripheral
-					const persistedPin = persistedPins?.find(
-						pPin =>
-							pPin.Peripheral === signal.Peripheral &&
-							pPin.Signal === signal.Name
-					);
-
-					if (persistedPin) {
-						peripheralDict[signal.Peripheral ?? ''].signalsTargets[
-							signal.Name
-						] = persistedPin.Pin;
-					}
+					] = persistedPin.Pin;
 				}
+			} else {
+				peripheralDict[signal.Peripheral ?? ''].signalsTargets[
+					signal.Name
+				] = pin.Name;
 			}
 		}
 	}
@@ -269,12 +272,14 @@ export const formatPeripheralAllocations = (
 									([key, value]) => {
 										const numericBase =
 											numericBaseMap[peripheral.Name]?.[key];
+
 										if (numericBase === 'Hexadecimal') {
 											return [
 												key,
 												value.toUpperCase().replace(/^0X/i, '')
 											];
 										}
+
 										return [key, value];
 									}
 								)
@@ -302,6 +307,7 @@ export const formatPeripheralAllocations = (
 
 export function formatSocCoreMemoryBlocks(dataModel: Soc): Soc {
 	const updatedModel: Soc = JSON.parse(JSON.stringify(dataModel));
+
 	const memoryMap = new Map<string, MemoryBlock>();
 
 	// Add Core memory blocks without AliasType

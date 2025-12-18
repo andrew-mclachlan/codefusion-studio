@@ -39,8 +39,8 @@ type PartitionDetailsProps = {
 	};
 };
 
-export const PartitionDetails = memo(function PartitionDetails({
-	errors
+function PartitionDetailsComponent({
+	errors = undefined
 }: PartitionDetailsProps) {
 	const i10n: TLocaleContext | undefined = useLocaleContext()?.memory;
 	const memoryTypes = getMemoryTypes();
@@ -118,4 +118,6 @@ export const PartitionDetails = memo(function PartitionDetails({
 			/>
 		</div>
 	);
-});
+}
+
+export const PartitionDetails = memo(PartitionDetailsComponent);

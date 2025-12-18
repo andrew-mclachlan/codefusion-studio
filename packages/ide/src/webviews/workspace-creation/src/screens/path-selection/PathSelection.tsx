@@ -20,8 +20,8 @@ import WorkspaceCreationLayout from '../../common/components/WorkspaceCreationLa
 import BrowseFile from '../core-config/core-config-components/browse-file/BrowseFile';
 import {
 	useConfigurationErrors,
+	useEnabledCores,
 	useSelectedBoardPackage,
-	useSelectedCores,
 	useSelectedSoc,
 	useWorkspaceName,
 	useWorkspacePath,
@@ -39,7 +39,6 @@ import {getDefaultLocation} from '../../utils/user-default-path';
 
 import styles from './PathSelection.module.scss';
 import {
-	getEnabledCores,
 	isPathInvalid,
 	isWorkspaceNameInvalid
 } from '../../utils/workspace-config';
@@ -50,7 +49,6 @@ const DEBOUNCE_DELAY = isCypressEnvironment() ? 0 : 250;
 function PathSelectionScreen() {
 	const dispatch = useAppDispatch();
 	const selectedSoc = useSelectedSoc();
-	const selectedCores = useSelectedCores();
 	const workspacePath = useWorkspacePath();
 	const workspaceName = useWorkspaceName();
 	const workspaceTemplate = useWorkspaceTemplate();
@@ -60,9 +58,7 @@ function PathSelectionScreen() {
 
 	const {isEmptyName, isEmptyPath, isInvalidName, isInvalidPath} =
 		useConfigurationErrors('workspaceDetails').form ?? {};
-
-	// to remove out baseCore entry incase trustZone is enabled
-	const enabledCores = getEnabledCores(selectedCores);
+	const enabledCores = useEnabledCores();
 
 	const configuredCores = useMemo(
 		() =>

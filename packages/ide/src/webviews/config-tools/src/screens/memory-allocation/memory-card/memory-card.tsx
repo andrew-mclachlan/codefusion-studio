@@ -24,6 +24,7 @@ type MemoryCardProps = Readonly<{
 	children?: ReactNode;
 	dataTest?: string;
 	isExpandable?: boolean;
+	isParent?: boolean;
 	isOpen?: boolean;
 	setOpen?: (open: boolean) => void;
 }>;
@@ -33,6 +34,7 @@ function MemoryCard({
 	children,
 	dataTest,
 	isExpandable = true,
+	isParent = true,
 	isOpen: controlledIsOpen,
 	setOpen: controlledSetOpen
 }: MemoryCardProps) {
@@ -65,11 +67,21 @@ function MemoryCard({
 	return (
 		<Card key={key} disableHoverEffects>
 			<section
-				className={styles.memoryCardContainer}
+				className={
+					isParent
+						? styles.memoryCardContainer
+						: styles.innerCardContainer
+				}
 				id='memoryCardContainer'
 				data-test={dataTest}
 			>
-				<section className={styles.memoryCardHeader}>
+				<section
+					className={
+						isParent
+							? styles.memoryCardHeader
+							: styles.innerCardHeader
+					}
+				>
 					<div className={styles.title}>{titleSlot}</div>
 					{Boolean(endSlot.length) && (
 						<div

@@ -21,7 +21,7 @@ import { expect } from "chai";
 import { WebView, Workbench, By, VSBrowser } from "vscode-extension-tester";
 
 import { Locatorspaths } from "../pageElements/pageobjects";
-import { UIUtils } from "../utility-workspace/workspace-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import { TextData } from "../pageElements/text-data";
 import * as os from "os";
 import { existsSync } from "node:fs";
@@ -86,6 +86,8 @@ describe("Workspace MAX32690 creation manual configuration", () => {
 
     console.log("Clicked on radiobuttonsoc");
 
+    await UIUtils.dismissAllNotifications(workbench, browser);
+
     await UIUtils.clickElement(view, locatorspath.continueButton);
 
     console.log("Clicked on continue button");
@@ -109,16 +111,14 @@ describe("Workspace MAX32690 creation manual configuration", () => {
       )
     ).getText();
     console.log("kitname:", kitName);
-    UIUtils.sleep(3000);
     const kitClick = await UIUtils.findWebElement(
       view,
       locatorspath.kitSelect("EvKit_V1___TQFN"),
     );
 
-    kitClick.click();
+    await UIUtils.clickElement(view, kitClick);
 
     console.log("Clicked on kitselect");
-    UIUtils.sleep(5000);
     await UIUtils.clickElement(view, locatorspath.continueButton);
     console.log("Clicked on continue button");
 
@@ -135,7 +135,7 @@ describe("Workspace MAX32690 creation manual configuration", () => {
     const templateName = await manualConfigure.getAttribute("id");
     console.log("Template name:", templateName);
     expect(templateName).to.include("custom");
-    manualConfigure.click();
+    await UIUtils.clickElement(view, manualConfigure);
 
     await UIUtils.sleep(2000);
 
@@ -163,8 +163,7 @@ describe("Workspace MAX32690 creation manual configuration", () => {
     const riscvCoresName = await riscvCores.getText();
     expect(await riscvCores.getText()).to.include("RISC-V");
     console.log("riscvcores text is included in the riscvcores element");
-    UIUtils.sleep(2000);
-    riscvCores.click();
+    await UIUtils.clickElement(view, riscvCores);
     console.log("Clicked on riscv cores element");
     await UIUtils.sleep(2000);
 
@@ -174,16 +173,14 @@ describe("Workspace MAX32690 creation manual configuration", () => {
     console.log("PLUGIN SELECTION SCREEN - ARM CORES");
     const zephyrSel = await UIUtils.waitForElement(
       view,
-      By.css(
-        `[data-test='coreConfig:card:com.analog.project.zephyr.plugin']`,
-      ),
+      By.css(`[data-test='coreConfig:card:com.analog.project.zephyr.plugin']`),
       2000,
     );
     const pluginId = await zephyrSel.getAttribute("id");
     expect(pluginId).to.include("com.analog.project.zephyr.plugin");
 
     await UIUtils.sleep(2000);
-    zephyrSel.click();
+    await UIUtils.clickElement(view, zephyrSel);
     console.log("Clicked on zephyr plugin selection");
 
     await UIUtils.sleep(2000);
@@ -193,7 +190,7 @@ describe("Workspace MAX32690 creation manual configuration", () => {
         `//*[@id='control-input' and @current-value='${TextData.evkitName32690}']`,
       ),
     );
-    boardDefaultName.click();
+    await UIUtils.clickElement(view, boardDefaultName);
     console.log("Clicked on board default name input");
     const boardName = await boardDefaultName.getAttribute("current-value");
     console.log("Board name arm cortex is: " + boardName);
@@ -204,31 +201,27 @@ describe("Workspace MAX32690 creation manual configuration", () => {
       By.xpath("//*[@data-test='wrksp-footer:continue-btn']"),
     );
     await UIUtils.sleep(2000);
-    applyButton.click();
+    await UIUtils.clickElement(view, applyButton);
     console.log("Clicked on Apply button");
     await UIUtils.sleep(3000);
     // Zephyr Plugin Selection for RISCV cores
     const zephyrSelRiscv = await UIUtils.waitForElement(
       view,
-      By.css(
-        `[data-test='coreConfig:card:com.analog.project.zephyr.plugin']`,
-      ),
+      By.css(`[data-test='coreConfig:card:com.analog.project.zephyr.plugin']`),
       2000,
     );
     const pluginIdRiscv = await zephyrSelRiscv.getAttribute("id");
     expect(pluginIdRiscv).to.include("com.analog.project.zephyr.plugin");
 
-    UIUtils.sleep(2000);
-    zephyrSelRiscv.click();
+    await UIUtils.clickElement(view, zephyrSelRiscv);
     console.log("Clicked on zephyr plugin selection for riscv");
-    UIUtils.sleep(2000);
     const boardNameRiscv = await UIUtils.findWebElement(
       view,
       By.xpath(
         `//*[@id='control-input' and @current-value='${TextData.evkitName32690}']`,
       ),
     );
-    boardNameRiscv.click();
+    await UIUtils.clickElement(view, boardNameRiscv);
     console.log("Clicked on board default name input");
     const getBoardNameRiscv =
       await boardNameRiscv.getAttribute("current-value");
@@ -239,7 +232,7 @@ describe("Workspace MAX32690 creation manual configuration", () => {
       By.xpath("//*[@data-test='wrksp-footer:continue-btn']"),
     );
     await UIUtils.sleep(2000);
-    applyButtonRiscv.click();
+    await UIUtils.clickElement(view, applyButtonRiscv);
     await UIUtils.sleep(2000);
     console.log("Clicked on Apply button");
 
@@ -266,14 +259,14 @@ describe("Workspace MAX32690 creation manual configuration", () => {
 
     console.log("Sent workspace name to input element");
 
-    const createwsBtn = await view.findWebElement(
+    const createwsBtn = await UIUtils.findWebElement(
+      view,
       By.xpath('//*[@id="root"]/div/div[3]/div/div/vscode-button[2]'),
     );
 
     console.log("Found create workspace button");
-    await createwsBtn.click();
+    await UIUtils.clickElement(view, createwsBtn);
     console.log("Clicked on create workspace button");
-    await UIUtils.sleep(5000);
     // Assert that the workspace is created successfully
     const userHome = os.homedir();
     const location = `${userHome}/cfs/${TextData.cfsidevesrion}`;

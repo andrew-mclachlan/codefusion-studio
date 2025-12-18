@@ -12,12 +12,12 @@
  * limitations under the License.
  *
  */
+import Mocha from "mocha";
 import * as path from "path";
 import * as glob from "glob";
 
 export function run(): Promise<void> {
   // Create the mocha test
-  // eslint-disable-next-line no-undef
   const mocha = new Mocha({
     ui: "tdd",
     color: true,

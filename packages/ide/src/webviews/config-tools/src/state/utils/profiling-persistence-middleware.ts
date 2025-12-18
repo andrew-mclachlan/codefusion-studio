@@ -24,7 +24,7 @@ import {
 	toggleProfilingEnabled
 } from '../slices/profiling/profiling.reducer';
 import {updateProfilingConfig} from '../../utils/api';
-import {RootState} from '../store';
+import {type RootState} from '../store';
 
 export const persistedProfilingActions: Array<
 	ActionCreatorWithPayload<any>
@@ -39,9 +39,8 @@ export function getProfilingPersistenceListenerMiddleware(
 		listenerMiddleware.startListening({
 			actionCreator: action,
 			effect(action, listenerApi) {
-				const projectId = (action.payload as {projectId: string})
-					.projectId;
-				updateProfilingConfig(
+				const {projectId} = action.payload as {projectId: string};
+				void updateProfilingConfig(
 					(listenerApi.getState() as RootState).profilingReducer
 						.zephelin[projectId],
 					'Zephelin',

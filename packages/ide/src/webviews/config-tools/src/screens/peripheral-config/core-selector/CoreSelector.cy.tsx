@@ -90,7 +90,7 @@ describe('Core selector', () => {
 				title='PERIPHERAL_NAME'
 				projectConfig={Projects as unknown as ProjectInfo[]}
 				projects={Projects as unknown as ProjectInfo[]}
-				peripheralSecurity={'Any'}
+				peripheralSecurity='Any'
 				onSelect={onSelect}
 				onCancel={onCancel}
 			/>,
@@ -119,6 +119,45 @@ describe('Core selector', () => {
 		});
 		cy.dataTest(`core-selector-cancel-btn`).should('exist').click();
 		cy.wrap(onCancel).should('have.been.called');
+	});
+
+	it('should disable unavailable cores and show tooltip.', () => {
+		const {Projects} = mockedConfigDict;
+		const onSelect = cy.stub();
+
+		cy.mount(
+			<CoreSelector
+				title='PERIPHERAL_NAME'
+				peripheralSecurity='Non-Secure'
+				projectConfig={Projects as unknown as ProjectInfo[]}
+				projects={Projects as unknown as ProjectInfo[]}
+				onSelect={onSelect}
+				onCancel={() => undefined}
+			/>,
+			reduxStore
+		);
+
+		// Test core is disabled
+		cy.dataTest('core-CM4-proj-container-disabled')
+			.should('exist')
+			.click();
+		cy.wrap(onSelect).should('not.have.been.called');
+
+		// Test tooltip opens and contains correct data
+		cy.dataTest('core-CM4-proj-container-disabled').trigger(
+			'mouseover'
+		);
+		cy.wait(1000); // Tooltips has debounce delay
+		cy.dataTest('core-CM4-proj-tooltip')
+			.should('exist')
+			.should('contain.text', 'PERIPHERAL_NAME')
+			.and('contain.text', 'ARM Cortex-M4');
+
+		// Test tooltip closes
+		cy.dataTest('core-CM4-proj-container-disabled').trigger(
+			'mouseout'
+		);
+		cy.dataTest('core-CM4-proj-tooltip').should('not.exist');
 	});
 
 	it('should mark project.Secure=FALSE disabled for peripheralSecurity=Secure', () => {

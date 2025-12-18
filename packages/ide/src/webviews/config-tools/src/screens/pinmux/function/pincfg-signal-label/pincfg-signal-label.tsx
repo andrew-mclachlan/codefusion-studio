@@ -52,7 +52,7 @@ export default function PinCfgSignalLabel({
 	let top: number | undefined =
 		itemTop - containerTop + itemHeight + notchHeight + 8;
 	const left = itemLeft - containerLeft;
-	let bottom: number | undefined = undefined;
+	let bottom: number | undefined;
 
 	if (itemBottom + 2 * tooltipHeight > containerBottom) {
 		top = undefined;

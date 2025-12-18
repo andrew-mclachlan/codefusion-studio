@@ -24,9 +24,9 @@ import { Utils } from "../utils/utils";
 abstract class CfsCustomEditor implements vscode.CustomTextEditorProvider {
   static viewType: string;
 
-  constructor(context: vscode.ExtensionContext) {}
+  constructor(_context: vscode.ExtensionContext) {}
 
-  static register(...args: any[]): vscode.Disposable {
+  static register(..._args: any[]): vscode.Disposable {
     throw new Error("Method not implemented.");
   }
 
@@ -35,8 +35,8 @@ abstract class CfsCustomEditor implements vscode.CustomTextEditorProvider {
   }
 
   abstract resolveCustomTextEditor(
-    document: vscode.TextDocument,
-    webviewPanel: vscode.WebviewPanel,
+    _document: vscode.TextDocument,
+    _webviewPanel: vscode.WebviewPanel,
   ): Promise<void>;
 
   getDocumentAsJson(

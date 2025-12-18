@@ -89,7 +89,7 @@ function PeripheralBlock({
 				cores={cores}
 				security={security}
 				allocatedCore={allocatedCore}
-				highlighted={highlighted}
+				isHighlighted={highlighted}
 				isAllocateHovered={(isHovered: boolean) => {
 					if (isHovered) {
 						hideTooltip();
@@ -115,7 +115,7 @@ function PeripheralBlock({
 			categorizedAllocations={categorizedAllocations}
 			isOpen={isGroupOpen}
 			setIsOpen={setIsGroupOpen}
-			highlighted={highlighted}
+			isHighlighted={highlighted}
 			signalName={signalName}
 		/>
 	);

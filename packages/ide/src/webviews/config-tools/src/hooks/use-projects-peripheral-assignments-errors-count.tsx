@@ -15,7 +15,7 @@
 
 import {useMemo} from 'react';
 import {useAssignedPins} from '../state/slices/pins/pins.selector';
-import {getPeripheralError} from '../utils/peripheral-errors';
+import {getPeripheralErrorCount} from '../utils/peripheral-errors';
 import type {PeripheralConfig} from '../types/peripherals';
 import type {ControlCfg} from '../../../common/types/soc';
 
@@ -23,7 +23,7 @@ import type {ControlCfg} from '../../../common/types/soc';
  * Custom hook to get the total number of errors across multiple projects
  * if a signal, peripheral pair is required and not assigned to a pin then count it as an error
  * @param projectAllocations - Record of project peripheral allocations
- * @returns - the total number of errors found across all projects
+ * @returns A map of project IDs to their respective error counts
  */
 export function useProjectsPeripheralAssignmentsErrors(
 	projectAllocations: Record<
@@ -40,7 +40,7 @@ export function useProjectsPeripheralAssignmentsErrors(
 		// Process each project's allocations and sum up errors
 		Object.entries(projectAllocations).forEach(
 			([projectId, allocations]) => {
-				const projectErrorCount = getPeripheralError(
+				const projectErrorCount = getPeripheralErrorCount(
 					assignedPins,
 					allocations,
 					projectsControls[projectId]

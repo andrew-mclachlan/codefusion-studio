@@ -30,7 +30,7 @@ function DownArrow({width, height}: SVGProps) {
 		>
 			<path
 				d='M5.02674 4.14141L9.35829 -2.80501e-08L10 0.60606L5.29412 5L4.70588 5L9.27183e-07 0.60606L0.641712 -4.09064e-07L5.02674 4.14141Z'
-				fill='#CCCCCC'
+				fill='currentColor'
 			/>
 		</svg>
 	);

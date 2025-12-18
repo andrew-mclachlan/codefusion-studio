@@ -29,7 +29,7 @@ export function Profiling() {
 				<div>
 					<h1 className={styles.pageTitle}>
 						{i10n?.profiling.title}{' '}
-						<Badge appearance='secondary'>BETA</Badge>
+						<Badge appearance='primary'>BETA</Badge>
 					</h1>
 					<span className={styles.pageTitleDescription}>
 						{i10n?.profiling.subtitle}

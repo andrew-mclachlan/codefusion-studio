@@ -23,5 +23,5 @@ export const TextData = {
   plugintext: "Zephyr Single Core Blinky",
   evkitName32690: "max32690evkit/max32690/m4",
   evkitname78XXX: "max78002evkit/max78002/m4",
-  cfsidevesrion: "2.0.0",
+  cfsidevesrion: "2.0.1",
 };

@@ -1,6 +1,6 @@
 {
 	"name": "cfs-data-models",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"private": true,
 	"description": "Data models for CodeFusion Studio.",
 	"type": "module",

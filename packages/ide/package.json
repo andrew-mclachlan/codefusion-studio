@@ -13,7 +13,7 @@
     "name": "Analog Devices Inc"
   },
   "license": "See LICENSE",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "engines": {
     "vscode": "^1.90.0",
     "node": "^20.x"
@@ -546,6 +546,7 @@
     },
     "configuration": [
       {
+        "id": "cfs-general",
         "title": "General",
         "properties": {
           "cfs.configureWorkspace": {
@@ -646,6 +647,7 @@
         }
       },
       {
+        "id": "cfs-catalog-manager",
         "title": "Catalog Manager",
         "properties": {
           "cfs.catalogManager.checkForUpdates": {
@@ -658,13 +660,14 @@
           "cfs.catalogManager.catalogLocation": {
             "type": "string",
             "order": 2,
-            "default": "${userHome}/cfs/2.0.0/.catalog",
+            "default": "${userHome}/cfs/2.0.1/.catalog",
             "description": "Path to the directory where the catalog catalog will be stored.",
             "scope": "machine-overridable"
           }
         }
       },
       {
+        "id": "cfs-cmsis",
         "title": "CMSIS",
         "properties": {
           "cfs.cmsis.root": {
@@ -688,6 +691,7 @@
         }
       },
       {
+        "id": "cfs-cfg-tools",
         "title": "Config Tools",
         "properties": {
           "cfs.cfgtools.views.aiTools.showDeleteConfirmDialog": {
@@ -705,6 +709,7 @@
         }
       },
       {
+        "id": "cfs-elf-file-explorer",
         "title": "Elf File Explorer",
         "properties": {
           "elf.queries": {
@@ -720,6 +725,7 @@
         }
       },
       {
+        "id": "cfs-openocd",
         "title": "OpenOCD",
         "properties": {
           "cfs.openocd.path": {
@@ -770,6 +776,7 @@
         }
       },
       {
+        "id": "cfs-plugins",
         "title": "Plugins",
         "properties": {
           "cfs.plugins.searchDirectories": {
@@ -794,6 +801,7 @@
         }
       },
       {
+        "id": "cfs-project",
         "title": "Project",
         "properties": {
           "cfs.project.target": {
@@ -835,6 +843,7 @@
         }
       },
       {
+        "id": "cfs-jlink",
         "title": "SEGGER",
         "properties": {
           "cfs.jlink.path": {
@@ -858,6 +867,7 @@
         }
       },
       {
+        "id": "cfs-toolchain",
         "title": "Toolchain",
         "properties": {
           "cfs.toolchain.id": {
@@ -897,6 +907,7 @@
         }
       },
       {
+        "id": "cfs-tools",
         "title": "Tools",
         "properties": {
           "cfs.tools.searchDirectories": {
@@ -915,6 +926,7 @@
         }
       },
       {
+        "id": "cfs-zephyr",
         "title": "Zephyr",
         "properties": {
           "cfs.zephyr.sdk.path": {
@@ -933,6 +945,7 @@
         }
       },
       {
+        "id": "cfs-core-dump-analysis",
         "title": "Core Dump Analysis",
         "properties": {
           "cfs.coreDump.binFile": {
@@ -986,6 +999,7 @@
         }
       },
       {
+        "id": "cfs-sigma-studio-plus",
         "title": "SigmaStudio+",
         "properties": {
           "cfs.sigmaStudioPlus.path": {
@@ -1290,7 +1304,8 @@
     "cfgtools:compile-tests": "tsc -p src/tests/ui-test-config-tools/tsconfig.json && yarn ws:data-models generate-index",
     "ide:build": "vite build --config ./vite.config.config-tools.mts && copyfiles .env out/",
     "ide:dev": "vite --config ./vite.config.config-tools.mts",
-    "ide:run-extester": "yarn ide:compile-tests && node out/tests/ui-test/tests/ui-test/runTest.js",
+    "ide:lint": "eslint --ext .ts --ignore-path .gitignore --ignore-pattern \"src/webviews/**\" .",
+    "ide:run-extester": "yarn ide:compile-tests && node out/tests/ui-test/runTest.js",
     "ide:compile-tests": "tsc -p src/tests/ui-test/tsconfig.json",
     "elf:dev": "vite --config ./vite.config.elf-explorer.mts",
     "elf:build": "vite build --config ./vite.config.elf-explorer.mts",
@@ -1315,9 +1330,7 @@
     "vite:watch": "vite build --watch",
     "dev:config-tools": "vite --config ./vite.config.config-tools.mts",
     "pretest": "yarn run build:extension",
-    "lint": "yarn run stylelint && yarn run eslint && yarn run markdownlint",
     "stylelint": "npx stylelint \"**/src/**/*.{scss,css}\" --fix",
-    "eslint": "eslint --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore .",
     "markdownlint": "npx markdownlint-cli docs/**/*.md",
     "test:cy-run-component": "cypress run --component --browser electron",
     "test:ui": "extest setup-and-run \"out/tests/ui-test/**/*-test.js\" -c 1.85.2 -u --mocha_config .mocharc.js",
@@ -1393,7 +1406,7 @@
     "vite": "^5.2.11",
     "vite-plugin-node-polyfills": "^0.19.0",
     "vite-tsconfig-paths": "^4.3.2",
-    "vscode-extension-tester": "^8.8.1"
+    "vscode-extension-tester": "^8.19.0"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.0.1",
@@ -1415,6 +1428,7 @@
     "react-redux": "^9.0.4",
     "react-router-dom": "^6.21.1",
     "recharts": "^2.12.6",
+    "semver": "^7.7.2",
     "swiper": "^11.0.5"
   },
   "resolutions": {

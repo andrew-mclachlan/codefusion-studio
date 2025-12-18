@@ -15,15 +15,16 @@
 
 import {MultiSelect, type MultiSelectOption} from 'cfs-react-library';
 import {getSocMemoryTypeList} from '../../../utils/memory';
-import {useEffect, useState} from 'react';
-import {getSocCoreList} from '../../../utils/soc-cores';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import styles from './memory-filtering.module.scss';
 import {useDispatch} from 'react-redux';
 import {
-	setCoresFilter,
+	setProjectFilter,
 	setMemoryTypeFilter
 } from '../../../state/slices/app-context/appContext.reducer';
-import {useCoreFilters} from '../../../state/slices/app-context/appContext.selector';
+import {useProjectFilters} from '../../../state/slices/app-context/appContext.selector';
+import {getProjectInfoList} from '../../../utils/config';
+import ProjectOption from '../../../components/project-option/project-option';
 
 export type MemoryFilters = {
 	memoryTypes: string[];
@@ -31,33 +32,67 @@ export type MemoryFilters = {
 };
 
 export function MemoryFiltering() {
-	const coreFilter = useCoreFilters();
+	const projects = getProjectInfoList();
+	const projectFilter = useProjectFilters();
 	const [selectedMemoryTypes, setSelectedMemoryTypes] = useState<
 		MultiSelectOption[]
 	>([]);
 
 	const dispatch = useDispatch();
 
-	// Clear the cores filter when navigating away from the memory allocation screen
-	useEffect(
-		() => () => {
-			dispatch(setCoresFilter([]));
+	const projectOptions = useMemo(
+		() =>
+			projects?.map(project => ({
+				label: <ProjectOption project={project} />,
+				value: project.ProjectId
+			})),
+		[projects]
+	);
+
+	const initialSelectedProjectOptions = useMemo(
+		() =>
+			projectFilter
+				.map(projectId => {
+					const project = projects?.find(
+						p => p.ProjectId === projectId
+					);
+
+					return project
+						? {
+								label: <ProjectOption project={project} />,
+								value: project.ProjectId
+							}
+						: null;
+				})
+				.filter(Boolean) as MultiSelectOption[],
+		[projectFilter, projects]
+	);
+
+	const onMemoryTypeSelection = useCallback(
+		(selectedOption: MultiSelectOption[]) => {
+			setSelectedMemoryTypes(selectedOption);
+			const options = selectedOption.map(option => option.value);
+			dispatch(setMemoryTypeFilter(options));
+		},
+		[setSelectedMemoryTypes, dispatch]
+	);
+
+	const onProjectSelection = useCallback(
+		(projectOptions: MultiSelectOption[]) => {
+			const options = projectOptions.map(option => option.value);
+			dispatch(setProjectFilter(options));
 		},
 		[dispatch]
 	);
 
-	const onMemoryTypeSelection = (
-		selectedOption: MultiSelectOption[]
-	) => {
-		setSelectedMemoryTypes(selectedOption);
-		const options = selectedOption.map(option => option.value);
-		dispatch(setMemoryTypeFilter(options));
-	};
-
-	const onCoreSelection = (coreOptions: MultiSelectOption[]) => {
-		const options = coreOptions.map(option => option.value);
-		dispatch(setCoresFilter(options));
-	};
+	// Clear the filters when navigating away from the memory allocation screen
+	useEffect(
+		() => () => {
+			dispatch(setProjectFilter([]));
+			dispatch(setMemoryTypeFilter([]));
+		},
+		[dispatch]
+	);
 
 	return (
 		<div className={styles.container}>
@@ -81,21 +116,17 @@ export function MemoryFiltering() {
 			</div>
 			<div className={styles.cores}>
 				<MultiSelect
-					dropdownText='Core'
-					initialSelectedOptions={coreFilter.map(core => ({
-						label: core,
-						value: core
-					}))}
-					options={getSocCoreList().map(core => ({
-						label: core.Name,
-						value: core.Name
-					}))}
+					dropdownText='Project'
+					initialSelectedOptions={initialSelectedProjectOptions}
+					options={projectOptions ?? []}
 					variant='filter'
-					dataTest='core-filter'
+					dataTest='project-filter'
 					chipText={
-						coreFilter.length > 0 ? coreFilter.length.toString() : ''
+						projectFilter.length > 0
+							? projectFilter.length.toString()
+							: ''
 					}
-					onSelection={onCoreSelection}
+					onSelection={onProjectSelection}
 				/>
 			</div>
 		</div>

@@ -15,7 +15,7 @@ The Resource Profiling report provides resource and performance estimates for yo
 - Optimization opportunities — Suggested strategies such as quantization, pruning, and layer-level alternatives for large or compute-heavy layers.
 
 !!! tip
-    You can generate this report with the [`cfsai compat`](../ai-tools/cli/cfsai-report.md) command, or from the System Planner UI in [Embedded AI Tools](../tools/config-tool/manage-ai-models.md).
+    You can generate this report with the [`cfsai compat`](../ai-tools/cli/cfsai-report.md) command, or from the System Planner UI in [Embedded AI Tools](../tools/manage-ai-models.md).
 
 ## Model summary
 

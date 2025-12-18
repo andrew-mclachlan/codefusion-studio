@@ -1,7 +1,7 @@
 ---
 description: Download and installation instructions for CodeFusion Studio
 author: Analog Devices
-date: 2025-10-23
+date: 2025-12-15
 ---
 
 # Install CodeFusion Studio
@@ -12,11 +12,11 @@ To get started with CodeFusion Studio, first install the SDK using the CodeFusio
 
 ### Download
 
-The CodeFusion Studio installer (version 2.0.0) can be downloaded from the following links.
+The CodeFusion Studio installer (version 2.0.1) can be downloaded from the following links.
 
-- [:octicons-link-external-24: Linux](https://download.analog.com/codefusion-studio/2.0.0/CodeFusionStudio_2.0.0.run){:target="_blank"}
-- [:octicons-link-external-24: macOS](https://download.analog.com/codefusion-studio/2.0.0/CodeFusionStudio_2.0.0.dmg){:target="_blank"}
-- [:octicons-link-external-24: Windows](https://download.analog.com/codefusion-studio/2.0.0/CodeFusionStudio_2.0.0.exe){:target="_blank"}
+- [:octicons-link-external-24: Linux](https://download.analog.com/codefusion-studio/2.0.1/CodeFusionStudio_2.0.1.run){:target="_blank"}
+- [:octicons-link-external-24: macOS](https://download.analog.com/codefusion-studio/2.0.1/CodeFusionStudio_2.0.1.dmg){:target="_blank"}
+- [:octicons-link-external-24: Windows](https://download.analog.com/codefusion-studio/2.0.1/CodeFusionStudio_2.0.1.exe){:target="_blank"}
 
 ### Install
 
@@ -27,6 +27,7 @@ The CodeFusion Studio installer (version 2.0.0) can be downloaded from the follo
 1. Double click the installer (`.exe`, `.dmg`, `.run`) to launch the setup wizard. ![Installer Setup](images/installer-setup.png)
 2. Follow the on-screen instructions to begin setup.
 3. Specify the installation folder when prompted. We recommend using the default location.
+   ![Recommended Installation Location](images/installer-default-location.png)
 4. Select the default or desired components to install, then proceed to the next step.
 
     !!! note "Install ICE drivers for SHARC-FX (Windows only)"
@@ -61,21 +62,21 @@ To run the installer from the command line, use the following:
 **macOS:**
 
 ``` bash
-hdiutil mount CodeFusionStudio_2.0.0.dmg -mountpoint cfs
-cfs/CodeFusionStudio_2.0.0.app/Contents/MacOS/CodeFusionStudio_2.0.0 install --am --al -c
+hdiutil mount CodeFusionStudio_2.0.1.dmg -mountpoint cfs
+cfs/CodeFusionStudio_2.0.1.app/Contents/MacOS/CodeFusionStudio_2.0.1 install --am --al -c
 hdiutil unmount cfs
 ```
 
 **Windows:**
 
 ``` bash
-CodeFusionStudio_2.0.0.exe install --am --al -c
+CodeFusionStudio_2.0.1.exe install --am --al -c
 ```
 
 **Linux:**
 
 ``` bash
-./CodeFusionStudio_2.0.0.run install --am --al -c
+./CodeFusionStudio_2.0.1.run install --am --al -c
 ```
 
 ## Next steps

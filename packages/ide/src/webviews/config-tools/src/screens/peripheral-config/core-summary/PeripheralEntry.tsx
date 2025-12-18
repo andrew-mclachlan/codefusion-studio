@@ -20,48 +20,33 @@ import {
 	setActivePeripheral
 } from '../../../state/slices/peripherals/peripherals.reducer';
 import {useAppDispatch} from '../../../state/store';
-import {
-	useActivePeripheral,
-	usePeripheralAllocations
-} from '../../../state/slices/peripherals/peripherals.selector';
+import {useActivePeripheral} from '../../../state/slices/peripherals/peripherals.selector';
 import styles from './CoreSummaryEntry.module.scss';
-import {useAssignedPins} from '../../../state/slices/pins/pins.selector';
 import {memo} from 'react';
 import ConflictIcon from '../../../../../common/icons/Conflict';
-import {getPeripheralError} from '../../../utils/peripheral-errors';
-import type {ControlCfg} from '../../../../../common/types/soc';
 import Tooltip from '../../../../../common/components/tooltip/Tooltip';
 import {Button, DeleteIcon} from 'cfs-react-library';
+import useProjectPeripheralErrorCount from '../../../hooks/use-project-peripheral-error-count';
 
 type PeripheralEntryProps = Readonly<{
 	projectId: string;
 	peripheralName: string;
 	preassigned: boolean;
-	controls: Record<string, ControlCfg[]>;
 }>;
 
 function PeripheralEntry({
 	projectId,
 	peripheralName,
-	preassigned,
-	controls
+	preassigned
 }: PeripheralEntryProps) {
 	const dispatch = useAppDispatch();
 
 	const isActive =
 		useActivePeripheral(true) === `${peripheralName}:${projectId}`;
 
-	const pins = useAssignedPins();
-
-	const allocation =
-		usePeripheralAllocations()?.[projectId]?.[peripheralName];
-
-	const hasPeripheralUnnasignedPinError = getPeripheralError(
-		pins,
-		{
-			[peripheralName]: allocation
-		},
-		controls
+	const peripheralErrorCount = useProjectPeripheralErrorCount(
+		projectId,
+		peripheralName
 	);
 
 	return (
@@ -80,7 +65,7 @@ function PeripheralEntry({
 			</div>
 			<div className={styles.actionButtons}>
 				<div className={styles.iconWrapper}>
-					{hasPeripheralUnnasignedPinError ? (
+					{peripheralErrorCount > 0 ? (
 						<div className={styles.conflictIconWrapper}>
 							<ConflictIcon data-test='peripheral-assignment:conflict' />
 						</div>

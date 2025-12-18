@@ -127,20 +127,28 @@ export default class Export extends Command {
 
       if (flags.output === 'stdio') {
         gzip.pipe(process.stdout);
+
+        await new Promise<void>((resolve, reject) => {
+          gzip.on('end', resolve);
+          gzip.on('error', reject);
+          gzip.write(output);
+          gzip.end();
+        });
       } else {
         const outputFile = createWriteStream(flags.output);
         gzip.pipe(outputFile);
-        outputFile.on('finish', () => {
-          this.log(`Output written to: ${flags.output}`);
+
+        await new Promise<void>((resolve, reject) => {
+          outputFile.on('finish', () => {
+            this.log(`Output written to: ${flags.output}`);
+            resolve();
+          });
+          outputFile.on('error', reject);
+          gzip.on('error', reject);
+          gzip.write(output);
+          gzip.end();
         });
       }
-
-      await new Promise<void>((resolve, reject) => {
-        gzip.on('end', resolve);
-        gzip.on('error', reject);
-        gzip.write(output);
-        gzip.end();
-      });
     } else {
       await writeOutput(output);
     }

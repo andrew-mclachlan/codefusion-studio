@@ -37,7 +37,10 @@ export class Locatorspaths {
   public async setPartitionName(driver: WebDriver, name: string) {
     const input = await driver.findElement(this.partitionNameTextBox);
 
-    await input.sendKeys(Key.chord(Key.CONTROL, "a"));
+    // Use COMMAND key on macOS, CONTROL key on other platforms
+    const modifierKey =
+      process.platform === "darwin" ? Key.COMMAND : Key.CONTROL;
+    await input.sendKeys(Key.chord(modifierKey, "a"));
     await input.sendKeys(Key.DELETE);
 
     await input.sendKeys(name);

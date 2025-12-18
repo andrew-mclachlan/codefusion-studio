@@ -159,7 +159,7 @@ export class CfsApiClient {
         });
 
         if (error) {
-            throw error;
+            throw new Error(error.message, { cause: error });
         }
     }
 

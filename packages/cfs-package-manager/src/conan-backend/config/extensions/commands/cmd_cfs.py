@@ -330,9 +330,9 @@ def cfs_search(conan_api: ConanAPI, parser, subparser, *args):
         for error in authErrors:
             exceptionMsg += f"Authentication error on remote '{error}'\n"
         raise ConanException(exceptionMsg)
-    pkg_list = [pkg for remote in pkg_dict.values() for pkg in remote if "error" not in pkg]
+    pkg_list = {pkg for remote in pkg_dict.values() for pkg in remote if "error" not in pkg}
 
-    cli_out_write("\n".join(pkg_list))
+    cli_out_write("\n".join(sorted(pkg_list)))
 
 
 @conan_subcommand()

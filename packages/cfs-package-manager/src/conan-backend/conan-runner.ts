@@ -75,7 +75,7 @@ export class ConanRunner {
 					const remoteNames = remoteNameMatches.map(
 						(match) => match[1]
 					);
-					throw new ConanError("AUTH_ERROR", execError.stderr, {
+					throw new ConanError("AUTH_ERROR", stderr, {
 						remotes: remoteNames.length > 0 ? remoteNames : undefined,
 						cause: error
 					});
@@ -86,9 +86,26 @@ export class ConanRunner {
 					});
 				}
 				if (stderr.match(/ERROR: No remotes defined/)) {
-					throw new ConanError("NO_REMOTE", stderr, {
+					throw new ConanError("NO_REMOTE", "No remotes defined", {
 						cause: error
 					});
+				}
+				if (stderr.includes("Unable to connect to remote")) {
+					const remoteNameMatches = Array.from(
+						stderr.matchAll(/Unable to connect to remote ([^=]+)=/g)
+					);
+					const remoteNames = remoteNameMatches.map(
+						(match) => match[1]
+					);
+					throw new ConanError(
+						"NET_ERROR",
+						"Unable to connect to remote",
+						{
+							remotes:
+								remoteNames.length > 0 ? remoteNames : undefined,
+							cause: error
+						}
+					);
 				}
 				// If stderr is available, use it as error message, otherwise use a generic message
 				throw new ConanError("EXEC_ERROR", stderr, {
@@ -109,6 +126,7 @@ type ConanErrorCode =
 	| "PROFILE_EXISTS"
 	| "EXEC_ERROR"
 	| "NO_REMOTE"
+	| "NET_ERROR"
 	| "UNKNOWN_ERROR";
 
 export class ConanError<T extends ConanErrorCode> extends Error {

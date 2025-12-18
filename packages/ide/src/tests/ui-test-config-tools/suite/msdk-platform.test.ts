@@ -14,7 +14,7 @@
  */
 import { VSBrowser, WebView, Workbench } from "vscode-extension-tester";
 import { expect } from "chai";
-import { UIUtils } from "../config-tools-utility/config-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import { getConfigPathForFile } from "../config-tools-utility/cfsconfig-utils";
 import { pinTab } from "../page-objects/main-menu";
 import {
@@ -49,7 +49,7 @@ describe("MSDK Firmware Platform", () => {
     await view.wait();
     await view.switchToFrame();
 
-    const navItem = await view.findWebElement(pinTab);
+    const navItem = await UIUtils.findWebElement(view, pinTab);
     await navItem.click().then(async () => {
       await UIUtils.sleep(3000);
       const pin = await UIUtils.findWebElement(
@@ -61,7 +61,7 @@ describe("MSDK Firmware Platform", () => {
 
       await pin.click().then(async () => {
         // Assert pin details sidebar is rendered
-        expect(await view.findWebElement(pinDetailsContainer)).to.exist;
+        expect(await UIUtils.findWebElement(view, pinDetailsContainer)).to.exist;
 
         await new Promise((res) => {
           setTimeout(res, 500);

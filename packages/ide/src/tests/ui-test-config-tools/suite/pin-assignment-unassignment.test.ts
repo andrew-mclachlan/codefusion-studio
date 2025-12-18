@@ -65,7 +65,7 @@ import {
   Workbench,
 } from "vscode-extension-tester";
 
-import { UIUtils } from "../config-tools-utility/config-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import {
   getConfigPathForFile,
   parseJSONFile,

@@ -50,25 +50,39 @@ nav:
       - Set up CFS: user-guide/installation/set-up-cfs.md
       - Package Manager:
           - Overview: user-guide/installation/package-manager/index.md
-          - Log in to access private packages: user-guide/installation/package-manager/auth.md
           - Manage packages from the Command Palette: user-guide/installation/package-manager/manage-packages-command-palette.md
           - Manage packages from the command line (`cfsutil`): user-guide/installation/package-manager/manage-packages-cfsutil.md
+          - Available packages: user-guide/installation/package-manager/available-packages.md
           - Install required packages: user-guide/installation/package-manager/install-required.md
+          - Log in to access restricted packages: user-guide/installation/package-manager/auth.md
+          - Troubleshoot package issues: user-guide/installation/package-manager/troubleshooting-package-manager.md
     - Workspace Management:
       - user-guide/workspaces/index.md
       - Create a new workspace: user-guide/workspaces/create-new-workspace.md
+      - Supported templates: user-guide/workspaces/supported-templates.md
       - Open a workspace: user-guide/workspaces/open-workspace.md
       - Explore and open MSDK examples: user-guide/workspaces/open-and-migrate-example.md
       - Migrate a project to System Planner: user-guide/workspaces/migrate-project-to-system-planner.md
-      - CFS settings: user-guide/workspaces/cfs-settings.md
-      - Catalog Manager: user-guide/workspaces/catalog-manager.md
-      - Build and flash tasks: user-guide/workspaces/tasks.md
-      - The CFS Terminal: user-guide/workspaces/cfs-terminal.md
-      - Zephyr RTOS: user-guide/workspaces/zephyr.md
-      - Troubleshooting: user-guide/workspaces/troubleshooting.md
       - Target-specific setup:
         - user-guide/workspaces/targets/index.md
         - TrustZone: user-guide/workspaces/targets/trustzone.md
+    - System Planner:
+      - user-guide/tools/index.md
+      - Peripheral Allocation: user-guide/tools/peripheral-allocation.md
+      - Pin Config: user-guide/tools/pin-config.md
+      - Clock Config: user-guide/tools/clock-config.md
+      - Memory Allocation: user-guide/tools/memory-allocation.md
+      - Registers: user-guide/tools/registers.md
+      - Embedded AI tools: user-guide/tools/manage-ai-models.md
+      - Profiling: user-guide/tools/profiling.md
+      - Generate Code: user-guide/tools/generate-code.md
+    - Build and Flash:
+      - user-guide/build-and-flash/index.md
+      - Build and flash tasks: user-guide/build-and-flash/tasks.md
+      - CFS settings: user-guide/build-and-flash/cfs-settings.md
+      - The CFS Terminal: user-guide/build-and-flash/cfs-terminal.md
+      - Zephyr RTOS: user-guide/build-and-flash/zephyr.md
+      - Troubleshooting: user-guide/build-and-flash/troubleshooting.md
     - Debugging:
       - user-guide/debugging/index.md
       - Install Olimex JTAG drivers: user-guide/debugging/install-olimex-drivers.md
@@ -92,25 +106,12 @@ nav:
               - Analyze core dumps: user-guide/debugging/debug-tools/core-dump-analysis/core-dump-analyze.md
               - Interpret core dump results: user-guide/debugging/debug-tools/core-dump-analysis/core-dump-interpret.md
       - Troubleshooting: user-guide/debugging/troubleshooting.md
-    - Tools:
-      - user-guide/tools/index.md
-      - System Planner:
-        - user-guide/tools/config-tool/index.md
-        - Peripheral Allocation: user-guide/tools/config-tool/peripheral-allocation.md
-        - Pin Config: user-guide/tools/config-tool/pin-config.md
-        - Clock Config: user-guide/tools/config-tool/clock-config.md
-        - Memory Allocation: user-guide/tools/config-tool/memory-allocation.md
-        - Registers: user-guide/tools/config-tool/registers.md
-        - Embedded AI tools: user-guide/tools/config-tool/manage-ai-models.md
-        - Profiling: user-guide/tools/config-tool/profiling.md
-        - Generate Code: user-guide/tools/config-tool/generate-code.md
-      - CFS Command Line Utility: user-guide/tools/cfsutil.md
-      - ELF File Explorer: user-guide/tools/elf-file-explorer.md
-      - Device Tree View: user-guide/tools/device-tree-view.md
-    - Plugins:
-      - user-guide/plugins/index.md
-      - Plugins overview: user-guide/plugins/plugin-integration-overview.md
-      - Develop plugins: user-guide/plugins/develop-plugins.md
+    - Developer Tools:
+      - user-guide/developer-tools/index.md
+      - CFS Command Line Utility: user-guide/developer-tools/cfsutil.md
+      - ELF File Explorer: user-guide/developer-tools/elf-file-explorer.md
+      - Device Tree View: user-guide/developer-tools/device-tree-view.md
+      - Catalog Manager: user-guide/developer-tools/catalog-manager.md
     - AI Tools:
       - user-guide/ai-tools/index.md
       - Supported AI model formats: user-guide/ai-tools/supported-ai-model-formats.md
@@ -122,6 +123,10 @@ nav:
         - Utility commands: user-guide/ai-tools/cli/cfsai-utility.md
       - Compatibiity Analyzer report: user-guide/ai-tools/compat-report.md
       - Resource Profiling report: user-guide/ai-tools/profiling-report.md
+    - Plugins:
+      - user-guide/plugins/index.md
+      - Plugins overview: user-guide/plugins/plugin-integration-overview.md
+      - Develop plugins: user-guide/plugins/develop-plugins.md
     - Uninstalling CodeFusion Studio: user-guide/uninstall/uninstall-cfs.md
   - Tutorials:
     - tutorials/index.md
@@ -137,6 +142,7 @@ nav:
     - Third-party: user-guide/resources/third-party-resources.md
   - Release Notes:
     - release-notes/index.md
+    - 2.0.1: release-notes/2.0.1.md
     - 2.0.0: release-notes/2.0.0.md
     - 1.1.0: release-notes/1.1.0.md
     - 1.0.2: release-notes/1.0.2.md

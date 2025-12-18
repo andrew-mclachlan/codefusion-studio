@@ -1,5 +1,6 @@
 import {
 	useConfigurationErrors,
+	useSelectedCores,
 	useSelectedSoc
 } from '../../state/slices/workspace-config/workspace-config.selector';
 import {getCoreList} from '../../utils/core-list';
@@ -15,7 +16,7 @@ import {setCoresInitialState} from '../../state/slices/workspace-config/workspac
 export default function CoresSelectionContainer() {
 	const dispatch = useAppDispatch();
 	const selectedSoc = useSelectedSoc();
-
+	const selectedCoresDict = useSelectedCores();
 	const errors = useConfigurationErrors('cores');
 
 	const projectsList: CatalogCoreInfo[] = useMemo(
@@ -24,9 +25,11 @@ export default function CoresSelectionContainer() {
 	);
 
 	useEffect(() => {
-		// Init all available projects on first load, so the user can choose which to mark as externally managed
+		if (Object.keys(selectedCoresDict).length) return;
+
+		// Init all available projects on first load
 		dispatch(setCoresInitialState(projectsList.map(prj => prj.id)));
-	}, [dispatch, projectsList]);
+	}, [dispatch, projectsList, selectedCoresDict]);
 
 	return (
 		<div className={styles.coresSelectionContainer}>

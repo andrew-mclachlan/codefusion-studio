@@ -54,9 +54,10 @@ function AllocatedCore({
 
 	const [peripheral, signalName] = activeSignal?.split(' ') ?? [];
 
-	const currentSignalTarget = activeSignal
-		? useCurrentSignalTarget(peripheral, signalName)
-		: null;
+	const currentSignalTarget = useCurrentSignalTarget(
+		peripheral,
+		signalName
+	);
 
 	const clearAppliedSignal = () => {
 		const targetPinId = currentSignalTarget ?? '';
@@ -80,7 +81,7 @@ function AllocatedCore({
 					signalName
 				})
 			);
-			//to remove applied signal
+			// To remove applied signal
 			clearAppliedSignal();
 			dispatch(setActiveSignal(undefined));
 		} else if (activePeripheral) {

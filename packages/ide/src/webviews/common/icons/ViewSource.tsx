@@ -31,8 +31,8 @@ function ViewSourceIcon() {
 				fill='currentColor'
 			/>
 			<path
-				fill-rule='evenodd'
-				clip-rule='evenodd'
+				fillRule='evenodd'
+				clipRule='evenodd'
 				d='M10.57 1.64L13.85 4.94L14 5.3V15L13.5 15.5H2.5L2 15V2L2.5 1.5H10.22L10.57 1.64ZM10 5.5H13L10 2.5V5.5ZM3 2.5V14.5H13V6.5H9.5L9 6V2.5H3Z'
 				fill='currentColor'
 			/>

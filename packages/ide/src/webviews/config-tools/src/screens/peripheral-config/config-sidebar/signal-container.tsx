@@ -14,7 +14,6 @@
  */
 
 import {DropDown} from 'cfs-react-library';
-import PinAssignmentInfo from '../core-summary/PinAssignmentInfo';
 import ConflictIcon from '../../../../../common/icons/Conflict';
 import Toggle from '../../../../../common/components/toggle/Toggle';
 import styles from './signal-container.module.scss';
@@ -55,29 +54,25 @@ function SignalContainer({
 				{signal}
 			</span>
 
-			<PinAssignmentInfo
-				signal={signal}
-				peripheral={peripheral}
-				showRequiredLabel={false}
-				showDash={false}
-			/>
-			{!isToggledOn &&
-				(pins.length === 1 ? (
-					<div>{pins[0].Name}</div>
-				) : (
-					<div>
-						<DropDown
-							controlId='pin-permission'
-							currentControlValue={targetPinId}
-							size='small'
-							options={pins.map(pin => ({
-								label: pin.Name,
-								value: pin.Name
-							}))}
-							onHandleDropdown={handleDropdown}
-						/>
-					</div>
-				))}
+			{pins.length === 1 ? (
+				<p
+					data-test='pin-assignment-label'
+					className={styles.assignmentLabel}
+				>{`${pins[0].Label} (${pins[0].Name})`}</p>
+			) : (
+				<div>
+					<DropDown
+						controlId='pin-permission'
+						currentControlValue={targetPinId}
+						size='small'
+						options={pins.map(pin => ({
+							label: `${pin.Label} (${pin.Name})`,
+							value: pin.Name
+						}))}
+						onHandleDropdown={handleDropdown}
+					/>
+				</div>
+			)}
 			<Toggle
 				isToggledOn={isToggledOn}
 				handleToggle={handleToggle}

@@ -19,7 +19,7 @@ import {
   EditorView,
 } from "vscode-extension-tester";
 import { expect } from "chai";
-import { UIUtils } from "../config-tools-utility/config-utils";
+import { UIUtils } from "../../ui-test-utils/ui-utils";
 import { getConfigPathForFile } from "../config-tools-utility/cfsconfig-utils";
 import { peripheralTab } from "../page-objects/main-menu";
 import {
@@ -156,7 +156,7 @@ describe("Peripheral Allocation Help Banner", () => {
 
     // === AND: I click on the "peripherals" navigation item ===
     expect(
-      await view.findWebElement(peripheralTab),
+      await UIUtils.findWebElement(view, peripheralTab),
       "Peripheral nav button should be found",
     ).to.exist;
     await UIUtils.clickElement(view, peripheralTab);

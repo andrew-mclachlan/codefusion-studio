@@ -13,7 +13,7 @@
  *
  */
 
-import {useEffect, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {createPortal} from 'react-dom';
 import type {
 	TFormControl,
@@ -172,13 +172,14 @@ function PeripheralConfigForm({
 			}
 		});
 
-		const configFormat = Object.keys(numericBase).length > 0 ? { numericBase } : undefined;
+		const configFormat =
+			Object.keys(numericBase).length > 0 ? {numericBase} : undefined;
 
 		dispatch(
 			setPeripheralConfig({
-        config: newConfig,
-        peripheralId: activePeripheral,
-        ...(configFormat && { configFormat })
+				config: newConfig,
+				peripheralId: activePeripheral,
+				...(configFormat && {configFormat})
 			})
 		);
 	};
@@ -190,23 +191,16 @@ function PeripheralConfigForm({
 		setPortalTarget(portalTarget ? portalTarget : undefined);
 	}, []);
 
-	const handleReset = (controls: TFormControl[]) => {
-		const controlIds = controls.map(control => control.id);
-		const newConfig = {...currentConfig};
-
-		controlIds.forEach(id => {
-			if (Object.prototype.hasOwnProperty.call(resetValues, id)) {
-				newConfig[id] = resetValues[id];
-			}
-		});
-
+	const handleReset = useCallback(() => {
 		dispatch(
 			setPeripheralConfig({
-				config: newConfig,
+				// NOTE: We need to reset all controls,
+				// since some parts of the controls may be hidden.
+				config: resetValues,
 				peripheralId: activePeripheral
 			})
 		);
-	};
+	}, [activePeripheral, dispatch, resetValues]);
 
 	return (
 		<>

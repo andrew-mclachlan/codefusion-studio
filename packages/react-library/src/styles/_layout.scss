@@ -59,3 +59,15 @@ $spacing-6: 20px;
 $spacing-7: 24px;
 $spacing-8: 32px;
 $spacing-9: 40px;
+
+//map of z-index values
+//TODO: CFSIO-12451 to add more z-index indices.
+$z-index-map: (
+	'tooltip': 6000
+);
+
+// @param {String} $key - The z-index key.
+// @return {Number} - The z-index value.
+@function getZIndex($key) {
+	@return map-get($z-index-map, $key);
+}

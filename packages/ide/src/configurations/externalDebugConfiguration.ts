@@ -20,17 +20,13 @@ import { platform } from "node:process";
 import {
   ACTIVE_CONTEXT,
   BROWSE_STRING,
-  BUILD,
   EXTENSION_ID,
   JLINK_PATH,
   OZONE_EXE,
 } from "../constants";
 import { existsSync } from "node:fs";
 import { Utils } from "../utils/utils";
-import {
-  LAUNCH_DEBUG_WITH_OZONE_COMMAND_ID,
-  RUN_BUILD_TASK_COMMAND_ID,
-} from "../commands/constants";
+import { LAUNCH_DEBUG_WITH_OZONE_COMMAND_ID } from "../commands/constants";
 import { exec } from "node:child_process";
 
 /**

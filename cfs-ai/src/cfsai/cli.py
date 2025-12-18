@@ -15,29 +15,19 @@ import logging
 import os
 from dataclasses import dataclass
 from pathlib import Path, PurePath
-from typing import Annotated, Any, Optional, get_args
+from typing import Annotated, Any, Optional
 from urllib.parse import urlparse
 
 import typer
-from cfsai_compatibility_analyzer import CompatibilityAnalyzer
-from cfsai_resource_profiler import TFLiteResourceProfiler
 from pydantic import BaseModel, HttpUrl
 from rich.console import Console
-from rich.table import Table
 
 from cfsai import __version__
 from cfsai.backend_manager import BackendManager
-from cfsai.backend_runtime import backend_executor, backend_http_server
 from cfsai.logger import setup_logger
 from cfsai.support import DEFAULT_MODEL_CACHE, _resolve_source, support, validate
-from cfsai.ui import convert_export_to_ui
 from cfsai.utils import check_file_paths, check_prj_path
-from cfsai_types.backend_api import (
-    BackendApi,
-    BackendApiMethodName,
-    BackendProtocol,
-    ContainerBackend,
-)
+from cfsai_types.backend_api import BackendApi
 from cfsai_types.config.aiconfig import (
     _DEFAULT_CACHE_BASE,
     AiConfig,
@@ -52,8 +42,6 @@ from cfsai_types.exceptions import SupportError
 from cfsai_types.hardware_profile import HardwareProfile
 from cfsai_types.support import GroundTruth
 from cfsai_types.support.backend import SupportedBackend
-
-VALID_API_NAMES = set(get_args(BackendApiMethodName))
 
 console = Console()
 logger = logging.getLogger(__name__)
@@ -423,10 +411,12 @@ def _get_cfg_and_api(
                 'caught earlier, please report this as an issue'
             )
             raise typer.Exit(code=1)
-        if v.backend.name in ret:
-            ret[v.backend.name][1].append(v)
+        # Group model config by backend and core.
+        key = f"{v.backend.name}.{v.target.core}" 
+        if key in ret:
+            ret[key][1].append(v)
         else:
-            ret[v.backend.name] = (api, [v])
+            ret[key] = (api, [v])
 
     return tuple(
         [(api, VerifiedBackendConfig(items=cfgs)) for api, cfgs in ret.values()]
@@ -609,78 +599,6 @@ def build(
             logger.error(e)
             raise typer.Exit(code=1)
 
-
-def _execute(
-        backend: Annotated[
-            str,
-            typer.Argument(
-                help='Name of the backend to use'
-            )
-        ],
-        command: Annotated[
-            str,
-            typer.Argument(
-                help='Sub command to execute'
-            )
-        ]
-    ) -> None:
-    """Run the passed backend implementation."""
-    mgr = BackendManager()
-    _backend = mgr.get(backend)
-
-    if _backend is None:
-        logger.error(SupportError(
-            msg=f'Invalid backend "{backend}" received',
-            support=mgr.registered_backends()
-        ))
-        raise typer.Exit(code=1)
-
-    if command not in VALID_API_NAMES:
-        logger.error(SupportError(
-            msg=f'Command "{command}" is not valid',
-            support=list(VALID_API_NAMES)
-        ))
-        raise typer.Exit(code=1)
-
-    info = _backend.info()
-    if not isinstance(info.kind, ContainerBackend):
-        logger.error(f'{backend} is not a contained backend')
-        raise typer.Exit(code=1)
-
-    if info.kind.protocol == BackendProtocol.HTTP:
-        logger.warning(f'"{backend}" prefers to be an HTTP server')
-
-    backend_executor(_backend.api(), command) # type: ignore[arg-type]
-
-def _serve(
-        backend: Annotated[
-            str,
-            typer.Argument(
-                help='Name of the backend to use'
-            )
-        ]
-    ) -> None:
-    """Run the passed backend implementation."""
-    mgr = BackendManager()
-    _backend = mgr.get(backend)
-
-    if _backend is None:
-        logger.error(SupportError(
-            msg=f'Invalid backend "{backend}" received',
-            support=mgr.registered_backends()
-        ))
-        raise typer.Exit(code=1)
-
-    info = _backend.info()
-    if not isinstance(info.kind, ContainerBackend):
-        logger.error(f'{backend} is not a contained backend')
-        raise typer.Exit(code=1)
-
-    if info.kind.protocol == BackendProtocol.DIRECT:
-        logger.warning(f'"{backend}" prefers to be a directly executed')
-
-    backend_http_server(_backend.api())
-
 # This should be moved to cfsai-tflite in a refactor but here now for 
 # convenience
 def _is_valid_tflite_file(f: Path) -> bool:
@@ -821,6 +739,7 @@ def profile(
     hw_profile, model_path = _validate_model_and_target(gt, model, target)
 
     # Initialize resource profiler with performance characteristics
+    from cfsai_resource_profiler import TFLiteResourceProfiler
     profiler = TFLiteResourceProfiler()
     
     # Perform comprehensive resource analysis with hardware context
@@ -873,6 +792,7 @@ def compat(
     # Validate input parameters
     hw_profile, model_path = _validate_model_and_target(gt, model, target)
 
+    from cfsai_compatibility_analyzer import CompatibilityAnalyzer
     analyzer = CompatibilityAnalyzer()
     compatibility_report = analyzer.analyze_model(
         model_path.as_posix(), 
@@ -940,6 +860,7 @@ def export(
         }
     )
     if ui:
+        from cfsai.ui import convert_export_to_ui
         console.print_json(
             json.dumps(convert_export_to_ui(export_data.model_dump()))
         )
@@ -1029,6 +950,7 @@ def list_extensions(ctx: typer.Context, backend: str) -> None:
     if json_format:
         _print_consumable_json(json.dumps(props))
     else:
+        from rich.table import Table
         table = Table(title=backend)
         table.add_column("Name")
         table.add_column("Description")

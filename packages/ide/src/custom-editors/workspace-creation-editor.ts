@@ -16,13 +16,7 @@
 import * as vscode from "vscode";
 import { ViewProviderPanel } from "../view-provider/view-provider-panel";
 import CfsCustomEditor from "./cfs-custom-editor";
-import {
-  CfsFeatureScope,
-  CfsPluginInfo,
-  CfsPluginManager,
-  CfsPluginProperty,
-  getHostPlatform,
-} from "cfs-lib";
+import { CfsPluginInfo, CfsPluginManager, getHostPlatform } from "cfs-lib";
 import type { CfsPackageManagerProvider } from "cfs-package-manager";
 import { CfsDataModelManager } from "cfs-lib";
 

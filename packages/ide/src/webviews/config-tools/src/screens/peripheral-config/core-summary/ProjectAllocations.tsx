@@ -19,12 +19,10 @@ import type {ProjectInfo} from '../../../utils/config';
 
 export default function ProjectAllocations({
 	allocations,
-	project,
-	projectControls
+	project
 }: Readonly<{
 	allocations: PeripheralConfig[];
 	project: ProjectInfo;
-	projectControls: Record<string, any[]> | undefined;
 }>) {
 	return (
 		<>
@@ -33,7 +31,6 @@ export default function ProjectAllocations({
 					key={peripheral.name}
 					projectId={project.ProjectId}
 					peripheral={peripheral}
-					projectControls={projectControls}
 				/>
 			))}
 		</>

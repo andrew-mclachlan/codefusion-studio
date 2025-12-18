@@ -63,7 +63,6 @@ import {
   getConfigPathForFile,
   parseJSONFile,
 } from "../../config-tools-utility/cfsconfig-utils";
-import { UIUtils } from "../../config-tools-utility/config-utils";
 import { memoryAllocationTab } from "../../page-objects/main-menu";
 import {
   cm4PartitionCardTitles,
@@ -71,6 +70,7 @@ import {
   partitionDetailsChevron,
   partitionDetailsDropdowns,
 } from "../../page-objects/memory-allocation-section/memory-allocation-screen";
+import { UIUtils } from "../../../ui-test-utils/ui-utils";
 
 describe("Memory Allocation", () => {
   let workbench: Workbench;
@@ -86,9 +86,10 @@ describe("Memory Allocation", () => {
   });
 
   it("Renders existing partitions from the config file", async () => {
-    await browser.openResources(
-      getConfigPathForFile("max32690-wlp-core-config.cfsconfig"),
+    const configPath = getConfigPathForFile(
+      "max32690-wlp-core-config.cfsconfig",
     );
+    await browser.openResources(configPath);
     await UIUtils.sleep(5000);
     console.log("Waiting for the element to be located in the DOM");
     view = new WebView();
@@ -96,7 +97,7 @@ describe("Memory Allocation", () => {
     await view.switchToFrame();
 
     expect(
-      await view.findWebElement(memoryAllocationTab),
+      await UIUtils.findWebElement(view, memoryAllocationTab),
       "Could not find Memory link in Nav Bar",
     ).to.exist;
     await UIUtils.clickElement(view, memoryAllocationTab);
@@ -126,6 +127,9 @@ describe("Memory Allocation", () => {
     await view.switchBack();
     const ev = new EditorView();
     await ev.closeAllEditors();
+
+    // Teardown - reset cfsconfig files
+    exec(`git checkout ${configPath}`);
   }).timeout(60000);
 
   it("Deletes the existing partition and verifies the schema", async () => {

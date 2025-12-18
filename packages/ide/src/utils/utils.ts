@@ -24,9 +24,7 @@ import {
   SELECT_OPENOCD_RISCV_INTERFACE_COMMAND_ID,
   SELECT_OPENOCD_RISCV_TARGET_COMMAND_ID,
   SELECT_OPENOCD_TARGET_COMMAND_ID,
-  SELECT_SDK_PATH_COMMAND_ID,
   SET_JLINK_PATH_COMMAND_ID,
-  SET_SDK_PATH_COMMAND_ID,
 } from "../commands/constants";
 import {
   EXTENSION_ID,
@@ -37,21 +35,14 @@ import {
   OPENOCD_RISCV_TARGET,
   OPENOCD_TARGET,
   PACK,
-  PROGRAM_FILE,
   PROJECT,
-  RISCV_PROGRAM_FILE,
   SDK_PATH,
 } from "../constants";
 import { ERROR } from "../messages";
 import { PropertyNode } from "../properties";
 import { resolveUserHomePath } from "./resolveVariables";
 
-import {
-  DOWNLOAD_SDK,
-  SDK_DOWNLOAD_URL,
-  SELECT_JLINK_PATH,
-  SELECT_SDK_PATH,
-} from "./constants";
+import { SELECT_JLINK_PATH } from "../constants";
 import { openFileAtLocation } from "./open-file-location";
 import { ViewContainerItem } from "../view-container";
 
@@ -60,8 +51,6 @@ const SELECT_OPENOCD_INTERFACE = "Choose OpenOCD Interface";
 const SELECT_OPENOCD_RISCV_TARGET = "Choose OpenOCD RISCV Target";
 const SELECT_OPENOCD_RISCV_INTERFACE = "Choose OpenOCD RISCV Interface";
 const SELECT_CMSIS_PACK = "Choose CMSIS Pack";
-const SELECT_PROGRAM_FILE = "Choose Program File";
-const SELECT_RISCV_PROGRAM_FILE = "Choose Program File";
 
 export enum ToolchainType {
   ARM = "arm.none.elf",
@@ -82,7 +71,6 @@ export function extractSessionId(input: any): string | undefined {
   return undefined;
 }
 
-import { executeTask } from "../commands/commands";
 import { SoC } from "cfs-ccm-lib";
 export class Utils {
   /**
@@ -349,33 +337,6 @@ export class Utils {
   static async getSdkPath(): Promise<string | undefined> {
     let conf = vscode.workspace.getConfiguration(EXTENSION_ID);
     let sdkPath: string | undefined = conf.get(SDK_PATH);
-
-    if (!sdkPath) {
-      // If sdk path is missing the user will be prompted to select the appropriate sdk path
-      await vscode.commands.executeCommand(SET_SDK_PATH_COMMAND_ID);
-      conf = vscode.workspace.getConfiguration(EXTENSION_ID);
-      sdkPath = conf.get(SDK_PATH);
-    }
-
-    if (!sdkPath) {
-      vscode.window
-        .showWarningMessage(
-          "The path to the CFS SDK is missing or not valid and this prevented the extension from loading correctly. Please download and install the CFS SDK, or set the path to the CFS SDK through the CodeFusion Studio extension settings.",
-          DOWNLOAD_SDK,
-          SELECT_SDK_PATH,
-        )
-        .then((choice) => {
-          switch (choice) {
-            case DOWNLOAD_SDK:
-              vscode.env.openExternal(vscode.Uri.parse(SDK_DOWNLOAD_URL));
-              break;
-            case SELECT_SDK_PATH:
-              vscode.commands.executeCommand(SELECT_SDK_PATH_COMMAND_ID);
-              break;
-          }
-        });
-    }
-
     return sdkPath;
   }
 
@@ -468,11 +429,12 @@ export class Utils {
     return defaultLocation;
   }
 
-  static getExtensionVersion(): string | undefined {
+  static getExtensionVersion(): string {
     const extension = vscode.extensions.getExtension("analogdevices.cfs-ide");
 
     if (!extension) {
-      return undefined;
+      // This is kind of unexpected case, since this code is part of the extension itself
+      throw new Error("Extension 'analogdevices.cfs-ide' not found");
     }
 
     return extension.packageJSON.version.split("-")[0];

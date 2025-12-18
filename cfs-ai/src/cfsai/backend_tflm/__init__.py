@@ -14,7 +14,7 @@ from pydantic.type_adapter import TypeAdapter
 
 from cfsai.backend_tflm.extensions import CfsaiTflmExtensions
 from cfsai.backend_tflm.local import LocalCfsaiTflm
-from cfsai_types.backend_api import Backend, BackendApi, BackendInfo, LocalBackend
+from cfsai_types.backend_api import Backend, BackendApi, BackendInfo
 from cfsai_types.config.targets import BackendTarget, GenericTarget
 from cfsai_types.support.backend import SupportedBackend
 
@@ -31,8 +31,7 @@ class CfsaiTflm(Backend):
             Backend information.
         """
         return BackendInfo(
-            name='tflm',
-            kind=LocalBackend()
+            name='tflm'
         )
 
     def api(self) -> BackendApi:

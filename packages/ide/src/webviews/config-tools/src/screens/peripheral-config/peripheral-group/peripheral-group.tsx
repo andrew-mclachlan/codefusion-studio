@@ -62,8 +62,8 @@ function PeripheralGroup({group, peripherals}: PeripheralGroupProps) {
 	const peripheralBlocks = useMemo(
 		() => (
 			<div
-				onMouseEnter={() => setHighlighted(true)}
-				onMouseLeave={() => setHighlighted(false)}
+				onMouseEnter={() => { setHighlighted(true); }}
+				onMouseLeave={() => { setHighlighted(false); }}
 			>
 				{peripherals.map(p => (
 					<PeripheralBlock

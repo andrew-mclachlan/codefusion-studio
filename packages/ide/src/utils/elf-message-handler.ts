@@ -12,7 +12,6 @@
  * limitations under the License.
  *
  */
-/* eslint-disable complexity */
 import {
   convertHeaderBigIntsToStrings,
   getBucket,
@@ -220,6 +219,9 @@ export async function elfMessageHandler(
         }
       });
 
+      const addressValue = symbol?.address;
+      const hasAddress = addressValue !== undefined && addressValue !== null;
+
       return {
         ...symbol,
         localstack:
@@ -247,11 +249,7 @@ export async function elfMessageHandler(
             : symbol.recursive
           : null,
         bucket: symbol?.section ? getBucketInfoForSymbol(symbol) : undefined,
-        address:
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-          symbol?.address || symbol?.address === 0
-            ? decimalToHex(symbol?.address as number)
-            : undefined,
+        address: hasAddress ? decimalToHex(addressValue as number) : undefined,
       };
     });
 

@@ -17,9 +17,10 @@ import type {SVGProps as ReactSVGProps} from 'react';
 type SVGProps = ReactSVGProps<SVGSVGElement> & {
 	readonly width?: string;
 	readonly height?: string;
+	readonly dataTest?: string;
 };
 
-function ConflictIcon({width, height, ...props}: SVGProps) {
+function ConflictIcon({width, height, dataTest, ...props}: SVGProps) {
 	return (
 		<svg
 			width={width ?? '16'}
@@ -27,6 +28,7 @@ function ConflictIcon({width, height, ...props}: SVGProps) {
 			viewBox='0 0 15 16'
 			fill='none'
 			xmlns='http://www.w3.org/2000/svg'
+			data-test={dataTest ?? 'conflict-icon'}
 			{...props}
 		>
 			<path

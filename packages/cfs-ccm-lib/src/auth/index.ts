@@ -23,11 +23,14 @@ export {
     TokenSessionFileStorage,
 } from './token/token.js';
 export type {
+    AccessToken,
     BrowserResponse,
     TokenAuthConfig,
     TokenAuthSessionConfig,
+    TokenSessionInfo,
     TokenCodeExchangeInitiator,
     TokenCodeExchangeReporter,
+    TokenCodeExchangeValidator,
 } from './token/token.js';
 export { PublicAuthorizer } from './public/public.js';
 export type { PublicAuthConfig } from './public/public.js';

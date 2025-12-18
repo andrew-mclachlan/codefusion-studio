@@ -2,15 +2,40 @@
   "Copyright": "Copyright (c) 2025 Analog Devices, Inc.  All rights reserved. This software is proprietary to Analog Devices, Inc. and its licensors.",
   "DataModelVersion": "1.1.0",
   "DataModelSchemaVersion": "1.1.0",
-  "Timestamp": "2025-09-01T16:45:30.842Z",
+  "Timestamp": "2025-09-16T12:10:18.374Z",
   "Soc": "MAX32690",
   "BoardName": "AD-APARD32690-SL",
   "Package": "WLP",
   "Pins": [
     {
+      "Pin": "F4",
+      "Peripheral": "MISC",
+      "Signal": "CLKEXT"
+    },
+    {
+      "Pin": "F9",
+      "Peripheral": "CAN0",
+      "Signal": "TX"
+    },
+    {
+      "Pin": "G3",
+      "Peripheral": "CAN1",
+      "Signal": "TX"
+    },
+    {
       "Pin": "G5",
       "Peripheral": "USBHS",
       "Signal": "CLKEXT"
+    },
+    {
+      "Pin": "G9",
+      "Peripheral": "CAN0",
+      "Signal": "RX"
+    },
+    {
+      "Pin": "L4",
+      "Peripheral": "CAN1",
+      "Signal": "RX"
     }
   ],
   "ClockNodes": [
@@ -37,8 +62,10 @@
       "ExternallyManaged": false,
       "PlatformConfig": {
         "ProjectName": "m4",
-        "ZephyrBoardName": "apard32690/max32690/m4",
+        "BuildSystem": "ninja",
+        "ZephyrBoardName": "max32690evkit/max32690/m4",
         "KConfigFlags": "# Build for debug (no optimizations) by default\nCONFIG_DEBUG=y\nCONFIG_NO_OPTIMIZATIONS=y\n\n# Enable thread awareness when debugging\nCONFIG_THREAD_NAME=y\nCONFIG_DEBUG_THREAD_INFO=y\nCONFIG_THREAD_ANALYZER=y\n",
+        "EnableCoreDump": false,
         "CMakeArgs": "# Include compiler flags to enable source navigation with ELF File Explorer\nzephyr_cc_option(-fstack-usage)\nzephyr_cc_option(-fdump-ipa-cgraph)\nzephyr_cc_option(-gdwarf-4)\n"
       },
       "Family": "Cortex-M",
@@ -46,11 +73,36 @@
       "Partitions": [],
       "Peripherals": [
         {
-          "Name": "CM4 SysTick",
-          "Signals": [],
-          "Config": {
-            "ENABLE": "FALSE"
-          }
+          "Name": "MISC",
+          "Signals": [
+            {
+              "Name": "CLKEXT",
+              "Config": {
+                "PWR": "VDDIO"
+              }
+            },
+            {
+              "Name": "PDOWN",
+              "Config": {}
+            },
+            {
+              "Name": "RSTN",
+              "Config": {}
+            },
+            {
+              "Name": "SQWOUT",
+              "Config": {}
+            },
+            {
+              "Name": "SWDCLK",
+              "Config": {}
+            },
+            {
+              "Name": "SWDIO",
+              "Config": {}
+            }
+          ],
+          "Config": {}
         }
       ]
     },
@@ -80,6 +132,7 @@
   ],
   "ClockFrequencies": {
     "P0.27": 1000,
+    "P0.23": "Undef",
     "Cortex-M4": 120000000,
     "FLC0/1": 120000000,
     "SYS_OSC": 120000000,

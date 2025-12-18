@@ -28,6 +28,7 @@ export function matchesStartOfWord(
 
 	return regex.test(text);
 }
+
 /**
  * Custom hook to filter streams based on search query
  * @param streams - Array of streams to filter
