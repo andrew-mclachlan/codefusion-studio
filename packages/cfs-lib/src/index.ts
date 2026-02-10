@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2024 - 2025 Analog Devices, Inc.
+ * Copyright (c) 2024 - 2026 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,5 +81,5 @@ export {
 	getAiToolsPlugin,
 	type AiToolsUiData
 } from "./ai-tools/index.js";
-
+export { TELEMETRY_APP_ID, TELEMETRY_URL } from "./telemetry/telemetry-credentials.js";
 export { getHostPlatform } from "./utils/node-utils.js";

@@ -29,7 +29,7 @@ import {
   deleteFolder,
   openFolder,
 } from "../../ui-test-utils/file-utils";
-import { CFS_IDE_VERSION } from "../../ui-test-utils/settings-utils";
+import { CFS_SDK_VERSION } from "../../ui-test-utils/settings-utils";
 
 describe("Settings shortcut tests", () => {
   const testDirectory = "src/tests/ui-test/data/Hello_World";
@@ -83,7 +83,7 @@ describe("Settings shortcut tests", () => {
     let sdkpath;
     const texts = await Promise.all(picks.map((item) => item.getText()));
     for (const text of texts) {
-      if (text.match(".*" + CFS_IDE_VERSION)) {
+      if (text.match(".*" + CFS_SDK_VERSION)) {
         sdkpath = text;
         break;
       }

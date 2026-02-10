@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2025 Analog Devices, Inc.
+ * Copyright (c) 2026 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,5 @@
  *
  */
 
-export const TextData = {
-  configtitlemax32690: "max32690-tqfn.cfsconfig",
-  openCFShomepage: "CFS Home Page",
-  buildSystemValue: "ninja",
-  evKitText: "EvKit_V1",
-  soc78XXX: "MAX78002",
-  socNameSelect: "MAX32690",
-  plugintext: "Zephyr Single Core Blinky",
-  evkitName32690: "max32690evkit/max32690/m4",
-  evkitname78XXX: "max78002evkit/max78002/m4",
-  cfsidevesrion: "2.0.2",
-};
+export const TELEMETRY_APP_ID = "";
+export const TELEMETRY_URL = "";

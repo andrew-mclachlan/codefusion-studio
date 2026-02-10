@@ -20,7 +20,7 @@
 import { expect } from "chai";
 import { platform } from "node:process";
 import { InputBox, Workbench } from "vscode-extension-tester";
-import { CFS_IDE_VERSION } from "../../ui-test-utils/settings-utils";
+import { CFS_SDK_VERSION } from "../../ui-test-utils/settings-utils";
 import { configureWorkspace } from "../../ui-test-utils/activation-utils";
 import { SELECT_SDK_PATH_COMMAND_ID } from "../../../commands/constants";
 import {
@@ -58,7 +58,7 @@ describe("Command Tests", () => {
     const picks = await input.getQuickPicks();
     expect(picks).not.equal(undefined);
     const labels = await Promise.all(picks.map((item) => item.getLabel()));
-    const sdkPath = labels.find((label) => label.match(".*" + CFS_IDE_VERSION));
+    const sdkPath = labels.find((label) => label.match(".*" + CFS_SDK_VERSION));
 
     expect(sdkPath).not.equal(undefined);
     if (sdkPath !== undefined) {

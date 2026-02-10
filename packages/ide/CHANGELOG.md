@@ -2,6 +2,11 @@
 
 # Release Notes
 
+## 2.0.2
+
+### 🐞 Bug fixes, Minor Improvements
+- Fixed a regression that prevented CFS Telemetry events from being collected.
+
 ## 2.0.1
 
 ### ✨ New Features

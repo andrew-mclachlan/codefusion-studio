@@ -13,7 +13,7 @@
     "name": "Analog Devices Inc"
   },
   "license": "See LICENSE",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "engines": {
     "vscode": "^1.90.0",
     "node": "^20.x"
@@ -660,8 +660,8 @@
           "cfs.catalogManager.catalogLocation": {
             "type": "string",
             "order": 2,
-            "default": "${userHome}/cfs/2.0.1/.catalog",
-            "description": "Path to the directory where the catalog catalog will be stored.",
+            "default": "${userHome}/cfs/2.0.2/.catalog",
+            "description": "Path to the directory where the catalog will be stored.",
             "scope": "machine-overridable"
           }
         }

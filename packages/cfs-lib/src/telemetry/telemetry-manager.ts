@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2025 Analog Devices, Inc.
+ * Copyright (c) 2025-2026 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import { SingleTelemetryMessage } from "../types/single-telemetry-message.js";
 import { MultipleTelemetryMessages } from "../types/multiple-telemetry-messages.js";
+import { TELEMETRY_APP_ID, TELEMETRY_URL } from "./telemetry-credentials.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,8 +35,9 @@ export class TelemetryManager {
 	private vscodeVersion: string;
 	private userId: string;
 	private sessionId: string;
-	private telemetryUrl = process.env.CFS_TELEMETRY_URL;
-	private telemetryAppId = process.env.CFS_TELEMETRY_APP_ID ?? "";
+	// checks .env for local development, if not found uses values injected during build
+	private telemetryUrl = process.env.CFS_TELEMETRY_URL ?? TELEMETRY_URL;
+	private telemetryAppId = process.env.CFS_TELEMETRY_APP_ID ?? TELEMETRY_APP_ID;
 
 	constructor(
 		hasUserOptedIn: boolean,
@@ -59,6 +61,8 @@ export class TelemetryManager {
 		if (this.telemetryAppId) {
 			const request = this.buildSingleRequestBody(action, metadata);
 			return this.sendRequest(request);
+		} else {
+			console.error("Telemetry App ID is not set.");
 		}
 	};
 
@@ -68,6 +72,8 @@ export class TelemetryManager {
 		if (this.telemetryAppId) {
 			const request = this.buildMultipleRequestsBody(actions);
 			return this.sendRequest(request);
+		} else {
+			console.error("Telemetry App ID is not set.");
 		}
 	};
 

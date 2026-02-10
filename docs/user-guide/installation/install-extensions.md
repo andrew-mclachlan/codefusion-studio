@@ -6,7 +6,7 @@ date: 2025-12-15
 
 # Install the CodeFusion Studio VS Code extension
 
-You can install the CodeFusion Studio extension using one of the following methods:
+You can install the CodeFusion Studio extension using one of the following methods. Once the extension is installed, Visual Studio Code will automatically upgrade it when a new version becomes available (unless automatic updates are disabled).
 
 ## **Option 1: Install from within VS Code (recommended)**
 
