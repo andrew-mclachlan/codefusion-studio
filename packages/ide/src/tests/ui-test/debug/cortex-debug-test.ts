@@ -60,7 +60,7 @@ describe("Cortex Debug Configuration Test", () => {
 
   it("Checking for CFS Cortex Debug Configuration", async () => {
     // Delete the .vscode folder to remove any settings
-    await deleteFile(testDirectory + "/.vscode/launch.json");
+    deleteFile(testDirectory + "/.vscode/launch.json");
     await workbench.getDriver().sleep(10000);
     // Select "Add Configuration"
     await workbench.executeCommand("Debug: Add Configuration...");

@@ -13,7 +13,14 @@
  *
  */
 
-import { env, ExtensionContext, Uri, window } from "vscode";
+import {
+  env,
+  ExtensionContext,
+  ProgressOptions,
+  ProgressLocation,
+  Uri,
+  window,
+} from "vscode";
 import { registerCommand } from "./commands";
 import {
   AuthConfig,
@@ -46,25 +53,47 @@ export class AuthCommandManager {
       const authConfig = new AuthConfigParser().getConfig();
       authConfig.sessionUrlHandler = createFlowInitiator;
       const instance = new AuthCommandManager(authConfig, packageManager);
+      const callbackWithProgress = <T>(
+        callback: () => Promise<T>,
+        progressTitle: string,
+      ) => {
+        const progressOptions: ProgressOptions = {
+          location: ProgressLocation.Window,
+          title: progressTitle,
+          cancellable: false,
+        };
+
+        return () =>
+          window.withProgress(progressOptions, callback.bind(instance));
+      };
 
       registerCommand(
         context,
         CLOUD_CATALOG_AUTH.STATUS,
-        instance.statusCommandCallback,
+        callbackWithProgress(
+          instance.statusCommandCallback,
+          "Checking myAnalog login status...",
+        ),
         instance,
       );
 
       registerCommand(
         context,
         CLOUD_CATALOG_AUTH.LOGIN,
-        instance.loginCommandCallback,
+        callbackWithProgress(
+          instance.loginCommandCallback,
+          "Logging in to myAnalog...",
+        ),
         instance,
       );
 
       registerCommand(
         context,
         CLOUD_CATALOG_AUTH.LOGOUT,
-        instance.logoutCommandCallback,
+        callbackWithProgress(
+          instance.logoutCommandCallback,
+          "Logging out of myAnalog...",
+        ),
         instance,
       );
     } catch (error) {
@@ -93,16 +122,18 @@ export class AuthCommandManager {
     try {
       const session = await this.sessionManager.getSession();
       if (!session) {
-        window.showInformationMessage("You are not logged in");
+        window.showInformationMessage("You are not logged in to myAnalog");
         return false;
       }
 
       window.showInformationMessage(
-        `You are logged in as ${session.userEmail}`,
+        `You are logged in to myAnalog as ${session.userEmail}`,
       );
       return true;
     } catch (err) {
-      window.showErrorMessage("An error occurred while checking login status");
+      window.showErrorMessage(
+        "An error occurred while checking myAnalog login status",
+      );
       return false;
     }
   }
@@ -113,10 +144,10 @@ export class AuthCommandManager {
       session = await this.sessionManager.getSession();
       if (session) {
         window.showInformationMessage(
-          `You are already logged in as ${session.userEmail}`,
+          `You are already logged in to myAnalog as ${session.userEmail}`,
         );
         window.showInformationMessage(
-          "To log in with a different account, please log out first",
+          "To log in with a different myAnalog account, please log out first",
         );
         return;
       }
@@ -138,7 +169,7 @@ export class AuthCommandManager {
       }
 
       window.showInformationMessage(
-        `You are logged in as ${session.userEmail}`,
+        `You are logged in to myAnalog as ${session.userEmail}`,
       );
     } catch (err) {
       try {
@@ -162,7 +193,9 @@ export class AuthCommandManager {
         }
       }
 
-      window.showErrorMessage("An error occurred while trying to login");
+      window.showErrorMessage(
+        "An error occurred while trying to login to myAnalog",
+      );
     }
   }
 
@@ -170,7 +203,7 @@ export class AuthCommandManager {
     try {
       const session = await this.sessionManager.getSession();
       if (!session) {
-        window.showInformationMessage("You are not logged in");
+        window.showInformationMessage("You are not logged in to myAnalog");
         return;
       }
 
@@ -182,9 +215,13 @@ export class AuthCommandManager {
       }
 
       await session.endSession();
-      window.showInformationMessage("You have been logged out successfully.");
+      window.showInformationMessage(
+        "You have been logged out of myAnalog successfully",
+      );
     } catch (err) {
-      window.showErrorMessage("An error occurred while trying to logout");
+      window.showErrorMessage(
+        "An error occurred while trying to logout of myAnalog",
+      );
     }
   }
 }

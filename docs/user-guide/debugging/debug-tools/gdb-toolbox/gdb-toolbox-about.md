@@ -11,7 +11,7 @@ The GDB Toolbox provides access to both default and user-defined JSON-based scri
 The Toolbox works with MSDK, SHARC-FX, and Zephyr projects, and supports both single-core and multi-core debug sessions.
 
 !!!Tip
-    For information on other debugging tools such as breakpoints, watch, and call stack, see [Debug an application](../../debug-an-application.md).
+    For information on other debugging tools such as breakpoints, watch, and call stack, see [Debugging interface](../../debug-interface.md).
 
 ## GDB Toolbox scripts
 
@@ -34,21 +34,24 @@ The following default scripts are added to your workspace when it's created and 
 | **Analyze Global Heap**           | Analyzes heap usage and prints a JSON report showing total heap size (total), currently used memory (used), and the peak memory usage (max).              | Core agnostic   | Zephyr                          |
 | **Analyze Stack**                 | Performs a detailed analysis of stack usage. Traverses stack frames, prints local variables and arguments, and calculates used and remaining stack space. | Core agnostic   | MSDK                            |
 | **Analyze Stack High-water Mark** | Analyzes the maximum stack depth reached during runtime using a known fill pattern. Requires the stack painter to be run beforehand.                      | Core agnostic   | MSDK                            |
+| **Analyze Threads**               | Analyzes all active threads and extracts each thread’s stack usage, register state, and call trace. Requires OpenOCD (see note below).                    | Core agnostic   | Zephyr                          |
 | **Dump Memory**                   | Dumps the current memory state to a log file.                                                                                                             | Core agnostic   | MSDK, Zephyr, SHARC-FX          |
 | **Dump Registers**                | Dumps the current register state to a log file.                                                                                                           | Core agnostic   | MSDK, Zephyr, SHARC-FX          |
 | **Interrupt Status**              | Analyzes IRQ and system handlers by reading the NVIC state to identify enabled, active, and pending interrupts, and their associated handlers.            | ARM             | MSDK                            |
 | **Paint Stack**                   | Fills the stack with a known pattern (`0xDEADBEEF`) to enable runtime analysis of maximum stack usage. Must be run before the High-water Mark script.     | Core agnostic   | MSDK                            |
-| **Thread Analyzer**               | Analyzes all active threads and extracts each thread’s stack usage, register state, and call trace.                                                       | Core agnostic   | Zephyr                          |
 
 [^1]:Only compatible scripts are shown during a debug session. This context-awareness ensures you only run scripts that are supported by the active project.
+
+!!! note "Analyze Threads requires OpenOCD"
+    The Analyze Threads script requires an OpenOCD debug configuration (for example, `CFS: Debug with GDB and OpenOCD (Arm Embedded)`). JLinkGDBServer does not support Zephyr thread awareness, which causes this script to fail when using a J-Link debug configuration.
 
 ### GDB directory
 
 The `gdb` directory stores optional GDB scripts that are referenced by the JSON scripts.
 
-GDB scripts (`.gdb` files) are plain text files that contain either raw GDB commands or Python code using the GDB Python API. Most scripts in this directory use native GDB commands, but advanced scripts such as **Thread Analyzer** leverage Python for intelligent analysis. These scripts are referenced in Toolbox JSON configs.
+GDB scripts (`.gdb` files) are plain text files that contain either raw GDB commands or Python code using the GDB Python API. Most scripts in this directory use native GDB commands, but advanced scripts such as **Analyze Threads** leverage Python for intelligent analysis. These scripts are referenced in Toolbox JSON configs.
 
-For example, the **Thread Analyzer** Toolbox script includes a `source` field that points to a `thread-analyzer.gdb` GDB script in the `gdb` directory:
+For example, the **Analyze Threads** Toolbox script includes a `source` field that points to a `thread-analyzer.gdb` GDB script in the `gdb` directory:
 
 ```json
 {

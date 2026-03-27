@@ -30,7 +30,9 @@ export class MyAnalogCloudsmithCredentialProvider
 	private readonly repoClient: RepositoryClient;
 	private readonly repoCache = new Map<string, PackageRepository>();
 
-	public readonly name: string = "myAnalog";
+	public static readonly name: string = "myAnalog";
+	public readonly name: string =
+		MyAnalogCloudsmithCredentialProvider.name;
 
 	constructor(ccmClient: CfsApiClient) {
 		this.repoClient = new RepositoryClient(ccmClient);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2025 Analog Devices, Inc.
+ * Copyright (c) 2025-2026 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 export interface CfsPackageReference {
 	name: string;
 	version: string;
+	cfsSoc?: string[];
 }
 
 export interface CfsPackage {
@@ -139,18 +140,16 @@ export interface CfsPackageManagerProvider {
 	/**
 	 * Install a package, including all its dependencies.
 	 *
-	 * @param reference - Reference of a package in the form name/version.
+	 * @param reference - Reference of a package in the form name/version or an array of references. Semver is supported for version.
 	 * @param options - Optional installation options. See CfsPackageInstallOptions for details.
 	 * @returns A list of package references of all the packages that where installed during this operation
 	 */
 	// TODO:
 	//  - Support a path to a manifest file instead of a reference
-	//  - Support an array of references to install
-	//  - Support version ranges
 	//  - Support version omission (with a potential "update" argument that decides
 	//    whether to go with latest available version or do nothing if already installed)
 	install(
-		reference: CfsPackageReference,
+		reference: CfsPackageReference | CfsPackageReference[],
 		options?: CfsPackageInstallOptions
 	): Promise<CfsPackageReference[]>;
 

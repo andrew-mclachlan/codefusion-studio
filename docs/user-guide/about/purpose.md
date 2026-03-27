@@ -6,9 +6,9 @@ date: 2025-10-21
 
 # Purpose
 
-Embedded software engineering is becoming an increasingly complex challenge. As the industry shifts toward heterogeneous multi-core systems and AI-enabled workloads, engineers must configure and debug multiple processing architectures while maintaining efficiency. At the same time, shrinking development resources and tighter time-to-market pressures exacerbate these challenges.
+Embedded software engineering is becoming increasingly complex. As the industry shifts toward heterogeneous multi-core systems and AI-enabled workloads, engineers must configure and debug multiple processing architectures while maintaining efficiency. At the same time, shrinking development resources and tighter time-to-market pressures exacerbate these challenges.
 
-Engineers are expected to deal with this complexity with tools, middleware, and SDKs designed for a single-core, single-architecture world. Those tools are often proprietary, single-vendor solutions that may become obsolete. Code generated from these tools is typically inflexible, with limited usefulness in the real world.
+Engineers are expected to manage this complexity with tools, middleware, and SDKs designed for a single-core, single-architecture world. Those tools are often proprietary, single-vendor solutions that may become obsolete. Code generated from these tools is typically inflexible, with limited usefulness in the real world.
 
 ## Why CodeFusion Studio
 
@@ -18,52 +18,57 @@ Designed for Analog Devices microcontrollers and digital signal processors, CFS 
 
 ### Open source
 
-CFS provides these capabilities without the restrictions of activation servers, licensing fees, or vendor lock-in.
+Analog Devices’ CodeFusion Studio adheres to an open-source-first design principle. It provides embedded engineers with robust, extensible tools that they own, designed for long-term use, customization, and integration into existing workflows.
 
-It adheres to an Open Source First design principle and provides embedded engineers with robust, extensible tools that they own, designed for long-term use and customization.
+- Apache-licensed tooling and open-source toolchains that you own, modify, and integrate into your own workflows
 
-- Apache-licensed tooling for full ownership of the software development pipeline
+- Built-in support for Zephyr, an open-source real-time operating system
 
-- Permissively-licensed tools for customization
+### AI for embedded development
 
-- Open-source toolchains and critical software components
+CFS integrates AI across the development lifecycle — from model deployment to real-time debugging.
 
-- Integration with Zephyr, an open-source operating system
+- **AI Debug Assistant**: Investigate faults, inspect hardware state, and coordinate across multiple cores during live debug sessions using natural language, with support for GitHub Copilot and other AI clients via the Model Context Protocol (MCP).
 
-### System visibility
-
-CFS provides better system visibility into complex systems.
-
-- **System Planner dashboard**: Use the intuitive graphical interface to allocate memory partitions, peripherals, clocks, and pins per core, reducing conflicts in multi-core SoCs.
-
-- **Embedded AI Tools**: Import and configure AI models, assign them to cores, and run compatibility or profiling checks directly in the System Planner.
-
-- **Heterogenous multi-core debugging**:  Debug multiple cores in a single unified environment, eliminating the need for multiple IDEs. One IDE, one debug session, one hardware debugger.
-
-- **Debugging Tools**:  Use the Core Dump Analysis Tool to inspect captured dumps and identify crash causes, and the GDB Toolbox to automate inspection and debugging with JSON-based GDB or Python scripts.
+- **Embedded AI Tools**: Import and configure AI models, assign them to cores, and run compatibility or profiling checks directly in the System Planner. Generate deployment-ready source code, or use the `cfsai` command-line utility for automated workflows.
 
 - **Zephelin profiler**: Capture runtime and AI inference-level performance data on supported processors and visualize traces in the Zephelin Trace Viewer for deeper insight into system behavior.
 
-- **ELF File Explorer**: Quickly parse and analyze compiled binaries, minimizing time spent on debugging and memory profiling.
+### Security
 
-- **Integrated register viewer**: Eliminates the need for repetitive datasheet lookups by providing a graphical representation of configuration registers used in the system configuration.
+CFS integrates Analog Devices' Trusted Edge Security Architecture (TESA), providing foundational security services for supported processors.
+
+- **Root-of-trust services**: Secure Boot, Secure Channel, Lifecycle Management, Secure Storage, and Attestation through the Unified Security Software (USS) framework.
+
+- **Cryptographic flexibility**: Choose from industry-standard libraries including mbedTLS, wolfSSL, and PSA Crypto API, with hardware acceleration on supported devices.
+
+- **Arm® TrustZone® support**: Configure secure and non-secure environments through templates or manual setup in the Workspace Creation Wizard, with Trusted Firmware-M (TF-M) integration for PSA Certified guidelines.
+
+### System visibility
+
+CFS provides deep system visibility across complex, multi-core systems.
+
+- **System Planner dashboard**: Use the intuitive graphical interface to allocate memory partitions, peripherals, clocks, and pins per core, reducing conflicts in multi-core SoCs.
+
+- **Heterogeneous multi-core debugging**: Debug multiple cores in a single unified environment, eliminating the need for multiple IDEs. One IDE, one debug session, one hardware debugger.
+
+- **Debugging tools**: Built-in tools for core dump analysis, GDB scripting automation, ELF binary analysis, and graphical register inspection — all integrated directly in the IDE.
 
 ### Flexibility
 
-CFS also provides flexibility by consolidating technical information in a single data source, for easy integration into custom tooling and modern automated workflows.
+CFS provides flexibility by consolidating technical information into a single, structured data source, for easy integration into custom tooling and modern automated workflows.
 
 - **Package Manager**: Download SDKs, toolchains, plugins, and SoC data models on demand to keep your development environment modular and up to date.
 
 - **Command-Line First**: Ensures critical actions run from the command line, enabling compatibility with modern CI/CD pipelines and automated build, test, and deployment processes. Both `cfsutil` and `cfsai` provide broad feature parity with graphical workflows.
 
-- **Graphical Resource Allocation**: Provides the flexibility to allocate and configure memory and peripherals across cores using the System Planner Configuration Tools dashboard, managing SoC resource constraints in one place.
-
-- **SoC (System on Chip) Data Model**: Provides detailed technical information, including the relationships between config choices and registers, memory layouts, and pin multiplexing. SoC data models are distributed through the [Package Manager](../installation/package-manager/index.md), ensuring engineers always have access to the latest hardware data.
-
 - **Plugin-Based Project Creation**: A flexible, plugin-driven system that supports multiple RTOS and firmware platforms. Developers can add custom plugins to generate configuration and project files tailored to specific development standards.
-
-- **Open Interfaces for Code Generation**: Plugins capture GUI-defined settings at various stages of the development process, generating project and configuration files that fit internal HALs, middleware, and coding standards.
 
 ## Goals
 
 CFS aims to bring embedded software into the modern, heterogeneous world. It enables repeatable, testable, and maintainable development pipelines that customers fully own — whether they are building traditional firmware or AI-capable embedded systems. It creates visibility into complex multi-core designs, offering a clearer view of resource allocation, performance, and system behavior. Above all, it provides engineers with the long-term flexibility and adaptability needed to develop solutions that last as long as the hardware they support.
+
+## Next steps
+
+- [Features](features.md) — explore all CodeFusion Studio features in detail
+- [Installation](../installation/index.md) — get started with CodeFusion Studio

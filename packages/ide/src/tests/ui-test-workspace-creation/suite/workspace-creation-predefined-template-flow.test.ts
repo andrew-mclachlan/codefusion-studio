@@ -195,7 +195,7 @@ describe("Workspace MAX32690 creation", () => {
 
     // Assert that the workspace is created successfully
     const userHome = os.homedir();
-    const location = `${userHome}/cfs/${TextData.cfsidevesrion}`;
+    const location = `${userHome}/cfs/${TextData.cfsideversion}`;
     console.log(`location is ${location}`);
     const workspacePath = `${location}/${workspaceName}`;
     await UIUtils.sleep(5000);

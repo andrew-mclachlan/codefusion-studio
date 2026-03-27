@@ -19,14 +19,12 @@ import {getPackageManager} from '../../utils/package-manager.js';
 export default class CfsPackageAddRemote extends Command {
   static args = {
     remoteName: Args.string({
-      name: 'remoteName',
       description: 'Name of the remote package server.',
       multiple: false,
       required: true
     }),
     url: Args.string({
-      name: 'url',
-      description: 'Url of the remote package server.',
+      description: 'URL of the remote package server.',
       multiple: false,
       required: true
     })

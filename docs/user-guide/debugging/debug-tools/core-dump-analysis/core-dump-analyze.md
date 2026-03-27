@@ -46,7 +46,7 @@ To capture UART output, set up a serial terminal such as:
 - [:octicons-link-external-24: Tera Term](https://github.com/TeraTermProject/teraterm/releases)  
 - [:octicons-link-external-24: PuTTY](https://www.putty.org/)  
 
-See [Debug an application](../../debug-an-application.md#serial-output) for setup instructions.
+See [Debugging interface](../../debug-interface.md#serial-output) for setup instructions.
 
 Save the captured output (containing `#CD:` records) to a file such as `coredump.log`. When analyzed in CodeFusion Studio using **Analyze Existing Core Dump**, the tool automatically decodes the log and converts it to a binary `.bin` file for inspection.
 

@@ -37,6 +37,7 @@ interface PlatformOptions {
       };
     }
   >;
+  command?: string;
 }
 
 interface TaskDefinitionJson {
@@ -197,6 +198,16 @@ export class CfsIDETaskProvider implements vscode.TaskProvider {
         platform,
         cwd,
       );
+
+      if (platform === "win32" && taskDefinition.windows?.command) {
+        taskDefinition.command = taskDefinition.windows.command;
+      }
+      if (platform === "darwin" && taskDefinition.osx?.command) {
+        taskDefinition.command = taskDefinition.osx.command;
+      }
+      if (platform === "linux" && taskDefinition.linux?.command) {
+        taskDefinition.command = taskDefinition.linux.command;
+      }
 
       // Create shell execution with merged options
       const shellExecution = new vscode.ShellExecution(

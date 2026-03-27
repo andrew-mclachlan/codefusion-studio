@@ -1,7 +1,7 @@
 ---
 description: Supported workspace templates in CodeFusion Studio
 author: Analog Devices
-date: 2025-12-1
+date: 2026-01-12
 ---
 
 # Supported workspace templates
@@ -53,7 +53,7 @@ The tables below list all templates available in the [Workspace Creation wizard]
 | **Single Core Blinky**                | LED blink example.                   | All supported MAX devices                                         |
 | **Single Core Counter Alarm**         | Counter alarm example.               | MAX32655 (EVKIT, FTHR), MAX32672 (EVKIT), MAX32690 (EVKIT, APARD, FTHR) |
 | **Single Core Dining Philosophers**   | Classic concurrency demo.            | MAX32655 (EVKIT, FTHR), MAX32672 (EVKIT), MAX32690 (EVKIT, APARD, FTHR) |
-| **Single Core Hello C++**             | C++ Hello World.                     | MAX32655 (EVKIT, FTHR), MAX32672 (EVKIT), MAX32690 (EVKIT, APARD, FTHR) |
+| **Single Core Hello World C++**             | C++ Hello World.                     | MAX32655 (EVKIT, FTHR), MAX32672 (EVKIT), MAX32690 (EVKIT, APARD, FTHR) |
 | **Single Core I2C Custom Target**     | Custom I²C target interface.         | MAX32655 (EVKIT, FTHR), MAX32672 (EVKIT), MAX32690 (EVKIT, APARD, FTHR) |
 | **Single Core LittleFS**              | LittleFS filesystem example.         | MAX32655 (EVKIT, FTHR), MAX32672 (EVKIT), MAX32690 (EVKIT, APARD, FTHR) |
 | **Single Core Synchronization C++**   | C++ synchronization demo.            | MAX32655 (EVKIT, FTHR), MAX32672 (EVKIT), MAX32690 (EVKIT, APARD, FTHR) |

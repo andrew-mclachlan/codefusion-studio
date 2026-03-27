@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2023-2025 Analog Devices, Inc.
+ * Copyright (c) 2023-2026 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -796,5 +796,39 @@ export class Utils {
       workspaceFolder,
     );
     return configuration.get<string>(`${PROJECT}.${FIRMWARE_PLATFORM}`) ?? "";
+  }
+
+  /**
+   * Checks for a custom tasks JSON file in the .vscode directory of the workspace and returns its parsed content if it exists.
+   * @param cwd - The current working directory of the workspace.
+   * @returns The parsed tasks from the custom tasks JSON file, or undefined if not found or an error occurs.
+   */
+  static getTasksFromCustomTasksJson(cwd: string) {
+    const workspaceTasksPath = path.join(cwd, ".vscode", "cfs.tasks.json");
+
+    if (fs.existsSync(workspaceTasksPath)) {
+      try {
+        const workspaceTasksContent = fs.readFileSync(
+          workspaceTasksPath,
+          "utf-8",
+        );
+        const parsed = JSON.parse(workspaceTasksContent);
+        if (
+          parsed &&
+          typeof parsed === "object" &&
+          Array.isArray(parsed.tasks)
+        ) {
+          return parsed;
+        } else {
+          console.error(
+            `Invalid cfs.tasks.json structure: expected object with 'tasks' array, got ${typeof parsed}`,
+          );
+        }
+      } catch (error) {
+        console.error(
+          `Error reading or parsing workspace cfs.tasks.json: ${error}`,
+        );
+      }
+    }
   }
 }

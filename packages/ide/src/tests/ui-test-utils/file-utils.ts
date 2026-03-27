@@ -67,7 +67,7 @@ export async function closeFolder() {
  * Recursively delete the given folder
  * @param folder - the folder to delete
  */
-export async function deleteFolder(folder: PathLike) {
+export function deleteFolder(folder: PathLike) {
   rmSync(folder, { recursive: true, force: true });
 }
 
@@ -75,7 +75,7 @@ export async function deleteFolder(folder: PathLike) {
  * Recursively delete the given file
  * @param file - the file to delete
  */
-export async function deleteFile(file: PathLike) {
+export function deleteFile(file: PathLike) {
   unlinkSync(file);
 }
 

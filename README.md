@@ -4,14 +4,15 @@ CodeFusion Studio (CFS) is a modern embedded software development ecosystem that
 
 ## About CFS
 
-- **Easy Project Setup:** Start new single- or multi-core projects in seconds with just a few clicks using the Workspace Creation Wizard. Example applications help you get up and running fast, with secure partitioning using Arm® TrustZone® available for supported devices.  
-- **Broad Hardware Support:** Build for Arm® Cortex-M, RISC-V, and SHARC-FX architectures in supported ADI products.  
-- **Visual System Design:** Visually configure pins, clocks, peripherals, memory, AI models, and data flows—all with the System Planner.  
-- **AI at the Edge:** Build, validate, and deploy AI models directly in System Planner or from the command line. Run compatibility and performance profiling on your target hardware and visualize inference behavior in real time with the integrated Zephelin profiler and trace viewer.  
+- **Easy Project Setup:** Start new single- or multi-core projects in seconds with just a few clicks using the Workspace Creation Wizard. Example applications help you get up and running fast, with secure partitioning using Arm® TrustZone® available for supported devices.
+- **Broad Hardware Support:** Build for Arm® Cortex-M, RISC-V, and SHARC-FX architectures in supported ADI products.
+- **Visual System Design:** Visually configure pins, clocks, peripherals, memory, AI models, and data flows—all with the System Planner.
+- **AI at the Edge:** Build, validate, and deploy AI models directly in System Planner or from the command line. Run compatibility and performance profiling on your target hardware and visualize inference behavior in real time with the integrated Zephelin profiler and trace viewer.
 - **Advanced Debugging:** Provides an extended debugging ecosystem for multi-core systems with breakpoints, disassembly, cross-core support, and RTOS thread awareness. Automate complex inspections with the GDB Toolbox or analyze captured crashes using Core Dump Analysis.
+- **AI Debug Assistant (Preview):** Connect any MCP-compatible AI client, such as GitHub Copilot or Claude Code, directly to your live debug sessions. The AI Debug Assistant can autonomously perform tasks such as investigating hard faults, decoding fault registers, inspecting hardware state across multiple cores, and tracing memory corruption — all in real time.
 - **Flexible Architecture:** An extensible plugin architecture and a platform-agnostic design let you customize your workflow and conceptually separate configuration and design decisions from code generation, giving you the freedom to choose RTOS, middleware, and firmware platforms.
-- **On-Demand Updates:** Download SDKs, toolchains, and plugins as needed with the integrated Package Manager so your environment is always up to date.  
-- **Personalized Homepage:** Quickly access recent projects, documentation, and learning resources from your CFS homepage.  
+- **On-Demand Updates:** Download SDKs, toolchains, and plugins as needed with the integrated Package Manager so your environment is always up to date.
+- **Personalized Homepage:** Quickly access recent projects, documentation, and learning resources from your CFS homepage.
 
 ## Supported Processors
 
@@ -39,8 +40,8 @@ CodeFusion Studio currently supports the following processors in the following c
 | [ADSP-SC834 / SC834W](https://www.analog.com/en/products/adsp-sc834.html) | Yes            | No     | Yes*         | Yes      | No   |
 | [ADSP-SC835 / SC835W](https://www.analog.com/en/products/adsp-sc835.html) | Yes            | No     | Yes*         | Yes      | No   |
 
-† **Trusted Edge Security Architecture (TESA)** – Analog Devices’ security framework for secure boot, cryptography, and firmware signing across supported devices.  
-\* Limited support available.  
+† **Trusted Edge Security Architecture (TESA)** – Analog Devices’ security framework for secure boot, cryptography, and firmware signing across supported devices.
+\* Limited support available.
 ‡ MAX32658 leverages MAX32657 TESA support in CodeFusion Studio.
 
 ## Install CFS
@@ -69,9 +70,9 @@ Tools VS Code extensions depend on:
 
 Download CodeFusion Studio from the [CodeFusion Studio Developer Resources](https://developer.analog.com/solutions/codefusionstudio) page or use the links below:
 
-- [Windows](https://download.analog.com/codefusion-studio/2.0.1/CodeFusionStudio_2.0.1.exe)
-- [Linux](https://download.analog.com/codefusion-studio/2.0.1/CodeFusionStudio_2.0.1.run)
-- [macOS](https://download.analog.com/codefusion-studio/2.0.1/CodeFusionStudio_2.0.1.dmg)
+- [Windows](https://download.analog.com/codefusion-studio/2.1.0/CodeFusionStudio_2.1.0.exe)
+- [Linux](https://download.analog.com/codefusion-studio/2.1.0/CodeFusionStudio_2.1.0.run)
+- [macOS](https://download.analog.com/codefusion-studio/2.1.0/CodeFusionStudio_2.1.0.dmg)
 
 #### Install
 
@@ -95,7 +96,7 @@ Set or update your SDK path when prompted, or configure it manually in user sett
 
 1. Open **Settings**: select **File > Preferences > Settings** (on macOS: **Code > Settings > Settings**), or open the Command Palette (`Ctrl+Shift+P` / `⇧⌘P`) and search for **Preferences: Open Settings (UI)**, or use the keyboard shortcut (`Ctrl+,`, on Windows/Linux, `⌘,` on macOS).
 2. Search for `cfs.sdk.path`.
-3. Set the path to your CodeFusion Studio SDK installation directory, making sure it points to the correct version. For example, `C:\analog\cfs\2.0.1` on Windows.
+3. Set the path to your CodeFusion Studio SDK installation directory, making sure it points to the correct version. For example, `C:\analog\cfs\2.1.0` on Windows.
 
 > **Note:**
 > You may need to restart VS Code after setting the path.

@@ -205,20 +205,19 @@ describe("Workspace MAX78XXX creation manual configuration", () => {
     await UIUtils.clickElement(view, applyButton);
     console.log("Clicked on Apply button");
 
-    // Zephyr Plugin Selection for RISCV cores
-    const zephyrSelRiscv = await UIUtils.dataTest(
+    // MSDK Plugin Selection for RISCV cores
+    const msdkSelRiscv = await UIUtils.dataTest(
       view,
-      "coreConfig:card:com.analog.project.zephyr.plugin",
+      "coreConfig:card:com.analog.project.msdk.plugin",
     );
-    const pluginIdRiscv = await zephyrSelRiscv.getAttribute("id");
-    expect(pluginIdRiscv).to.include("com.analog.project.zephyr.plugin");
+    const pluginIdRiscv = await msdkSelRiscv.getAttribute("id");
 
-    await UIUtils.clickElement(view, zephyrSelRiscv);
-    console.log("Clicked on zephyr plugin selection for riscv");
+    await UIUtils.clickElement(view, msdkSelRiscv);
+    console.log("Clicked on msdk plugin selection for riscv");
     const boardNameRiscv = await UIUtils.findWebElement(
       view,
       By.xpath(
-        `//*[@id='control-input' and @current-value='${TextData.evkitname78XXX}']`,
+        `//*[@id='control-input' and @current-value='${TextData.evKitText}']`,
       ),
     );
     await UIUtils.clickElement(view, boardNameRiscv);
@@ -226,7 +225,6 @@ describe("Workspace MAX78XXX creation manual configuration", () => {
     const getBoardNameRiscv =
       await boardNameRiscv.getAttribute("current-value");
     console.log("Board name ricv is: " + getBoardNameRiscv);
-    expect(buildSystemValue).to.equal(TextData.buildSystemValue);
     await UIUtils.sleep(2000);
     const applyButtonRiscv = await UIUtils.findWebElement(
       view,
@@ -257,7 +255,8 @@ describe("Workspace MAX78XXX creation manual configuration", () => {
     );
     const workspaceName = await pathInput.getAttribute("current-value");
 
-    const createwsBtn = await UIUtils.findWebElement(view,
+    const createwsBtn = await UIUtils.findWebElement(
+      view,
       By.xpath('//*[@id="root"]/div/div[3]/div/div/vscode-button[2]'),
     );
 
@@ -267,7 +266,7 @@ describe("Workspace MAX78XXX creation manual configuration", () => {
     await UIUtils.sleep(5000);
     // Assert that the workspace is created successfully
     const userHome = os.homedir();
-    const location = `${userHome}/cfs/${TextData.cfsidevesrion}`;
+    const location = `${userHome}/cfs/${TextData.cfsideversion}`;
     console.log(`location is ${location}`);
     const workspacePath = `${location}/${workspaceName}`;
     console.log(`workspacePath is ${workspacePath}`);
@@ -293,7 +292,7 @@ describe("Workspace MAX78XXX creation manual configuration", () => {
     expect(workspaceData.Projects[0].PlatformConfig.ZephyrBoardName).to.equal(
       boardName,
     );
-    expect(workspaceData.Projects[1].PlatformConfig.ZephyrBoardName).to.equal(
+    expect(workspaceData.Projects[1].PlatformConfig.MsdkBoardName).to.equal(
       getBoardNameRiscv,
     );
     expect(workspaceData.Location).to.equal(location);

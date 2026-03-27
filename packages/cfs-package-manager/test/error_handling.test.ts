@@ -106,7 +106,7 @@ describe("ErrorHandling", () => {
 		it("should throw an error when installing a non-existent package", async () => {
 			await expect(
 				api.install({ name: "non_existent_pkg", version: "1.0" })
-			).to.be.rejectedWith(/(Couldn't find the following packages)/i);
+			).to.be.rejectedWith(/(Couldn't find the following packages|No versions found matching)/i);
 		});
 
 		it("should succeed when installing an existent package", async () => {
@@ -184,7 +184,7 @@ describe("ErrorHandling", () => {
 		it("should throw an error when requesting dependencies of a non-existent package", async () => {
 			await expect(
 				api.dependencies({ name: "non_existent_pkg", version: "1.0" })
-			).to.be.rejectedWith(/(Couldn't find the following packages)/i);
+			).to.be.rejectedWith(/(Couldn't find the following packages|No versions found matching)/i);
 		});
 
 		it("should succeed when installing an existent package", async () => {

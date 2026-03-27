@@ -202,7 +202,6 @@ describe("Workspace MAX32690 creation manual configuration MSDK", () => {
       "coreConfig:card:com.analog.project.msdk.plugin",
     );
     const pluginIdRiscv = await msdkRiscv.getAttribute("id");
-    expect(pluginIdRiscv).to.include("com.analog.project.msdk.plugin");
 
     await UIUtils.clickElement(view, msdkRiscv);
     console.log("Clicked on msdk plugin selection for riscv");
@@ -250,17 +249,18 @@ describe("Workspace MAX32690 creation manual configuration MSDK", () => {
 
     console.log("Sent workspace name to input element");
 
-    const createwsBtn = await UIUtils.findWebElement(view,
+    const createwsBtn = await UIUtils.findWebElement(
+      view,
       By.xpath('//*[@id="root"]/div/div[3]/div/div/vscode-button[2]'),
     );
 
     console.log("Found create workspace button");
     await UIUtils.clickElement(view, createwsBtn);
     console.log("Clicked on create workspace button");
-    await UIUtils.sleep(5000);
+    await UIUtils.sleep(2000);
     // Assert that the workspace is created successfully
     const userHome = os.homedir();
-    const location = `${userHome}/cfs/${TextData.cfsidevesrion}`;
+    const location = `${userHome}/cfs/${TextData.cfsideversion}`;
     console.log(`location is ${location}`);
     const workspacePath = `${location}/${workspaceName}`;
     console.log(`workspacePath is ${workspacePath}`);

@@ -13,9 +13,9 @@
     "name": "Analog Devices Inc"
   },
   "license": "See LICENSE",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "engines": {
-    "vscode": "^1.90.0",
+    "vscode": "^1.96.0",
     "node": "^20.x"
   },
   "keywords": [
@@ -43,12 +43,26 @@
     "onLanguage:cpp",
     "onDebugResolve:cppdbg",
     "workspaceContains:project.mk",
-    "workspaceContains:**/*.[c|cpp]",
-    "onView: cfs.quickAccess"
+    "workspaceContains:{**/*.c,**/*.cpp}",
+    "onView:cfs.quickAccess"
   ],
   "main": "./out/extension.js",
   "l10n": "./l10n",
   "contributes": {
+    "chatParticipants": [
+      {
+        "id": "cfs.debugAssistant",
+        "name": "cfs-debug",
+        "description": "AI assistant for debugging Analog Devices embedded applications",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "help",
+            "description": "Get help with debugging commands"
+          }
+        ]
+      }
+    ],
     "customEditors": [
       {
         "viewType": "cfs.workspaceCreation",
@@ -211,6 +225,21 @@
         "title": "(CFS) Select the CodeFusion Studio path from the discovered installations."
       },
       {
+        "command": "cfs.mcp.startServer",
+        "title": "(CFS) MCP: Start Debug Server",
+        "category": "CodeFusion Studio"
+      },
+      {
+        "command": "cfs.mcp.stopServer",
+        "title": "(CFS) MCP: Stop Debug Server",
+        "category": "CodeFusion Studio"
+      },
+      {
+        "command": "cfs.mcp.status",
+        "title": "(CFS) MCP: Server Status",
+        "category": "CodeFusion Studio"
+      },
+      {
         "command": "cfs.openSettings",
         "title": "(CFS) Open CodeFusion Studio settings"
       },
@@ -350,12 +379,8 @@
         "title": "(CFS) Remove Custom Package Remote"
       },
       {
-        "command": "cfs.logoutRemote",
-        "title": "(CFS) Logout Custom Package Remote"
-      },
-      {
-        "command": "cfs.loginRemote",
-        "title": "(CFS) Login Custom Package Remote"
+        "command": "cfs.authRemote",
+        "title": "(CFS) Set Custom Package Remote Authentication"
       },
       {
         "command": "cfs.zephelin.captureProfilerTrace",
@@ -643,6 +668,20 @@
             "default": "Workspace",
             "description": "The selected context for the CodeFusion Studio activity bar",
             "scope": "resource"
+          },
+          "cfs.mcp.port": {
+            "type": "number",
+            "default": 0,
+            "description": "Port number for the MCP (Model Context Protocol) server. Use 0 to let the OS assign an available port automatically.",
+            "scope": "machine-overridable",
+            "minimum": 0,
+            "maximum": 65535
+          },
+          "cfs.mcp.runOnActivation": {
+            "type": "boolean",
+            "default": false,
+            "description": "Automatically run the MCP debug server on extension activation. **This is an experimental feature.**",
+            "scope": "machine-overridable"
           }
         }
       },
@@ -660,7 +699,7 @@
           "cfs.catalogManager.catalogLocation": {
             "type": "string",
             "order": 2,
-            "default": "${userHome}/cfs/2.0.2/.catalog",
+            "default": "${userHome}/cfs/2.1.0/.catalog",
             "description": "Path to the directory where the catalog will be stored.",
             "scope": "machine-overridable"
           }
@@ -838,6 +877,12 @@
           "cfs.project.toolchain.id": {
             "type": "string",
             "description": "Toolchain ID for the project. Used to resolve toolchain paths dynamically",
+            "scope": "resource"
+          },
+          "cfs.project.sdk.id": {
+            "type": "string",
+            "default": null,
+            "description": "SDK ID for the project. Used to resolve project SDK-specific paths.",
             "scope": "resource"
           }
         }
@@ -1284,6 +1329,12 @@
         "linux": "ctrl+shift+z",
         "when": "resourceExtname == .cfsconfig"
       }
+    ],
+    "mcpServerDefinitionProviders": [
+      {
+        "id": "cfs-mcp",
+        "label": "CFS MCP Server Provider"
+      }
     ]
   },
   "extensionDependencies": [
@@ -1349,7 +1400,7 @@
     "@types/react": "^18.2.62",
     "@types/react-dom": "^18.2.19",
     "@types/styled-components": "^5.1.29",
-    "@types/vscode": "^1.90.0",
+    "@types/vscode": "^1.96.0",
     "@types/vscode-webview": "^1.57.3",
     "@typescript-eslint/eslint-plugin": "^6.18.0",
     "@typescript-eslint/parser": "^6.19.1",
@@ -1406,10 +1457,12 @@
     "vite": "^5.2.11",
     "vite-plugin-node-polyfills": "^0.19.0",
     "vite-tsconfig-paths": "^4.3.2",
-    "vscode-extension-tester": "^8.19.0"
+    "vscode-extension-tester": "^8.21.0"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.2",
     "@reduxjs/toolkit": "^2.0.1",
+    "@types/express": "^5.0.3",
     "@vscode/webview-ui-toolkit": "^1.4.0",
     "cfs-ccm-lib": "workspace:*",
     "cfs-lib": "workspace:*",
@@ -1429,7 +1482,8 @@
     "react-router-dom": "^6.21.1",
     "recharts": "^2.12.6",
     "semver": "^7.7.2",
-    "swiper": "^11.0.5"
+    "swiper": "^11.0.5",
+    "zod": "^3.25.76"
   },
   "resolutions": {
     "@types/react": "^18.2.62"

@@ -96,8 +96,9 @@ export class PackageRepository {
                         return undefined;
                     case 400:
                         if (
-                            response.error?.message ===
-                            'Invalid token'
+                            response.error?.message
+                                ?.toLowerCase()
+                                ?.includes('invalid token')
                         ) {
                             throw new PackageRepositoryError({
                                 type: 'BAD_TOKEN',
@@ -107,9 +108,9 @@ export class PackageRepository {
                             });
                         }
                         if (
-                            response.error?.message?.includes(
-                                'Unsupported repository',
-                            )
+                            response.error?.message
+                                ?.toLowerCase()
+                                ?.includes('unsupported repository')
                         ) {
                             throw new PackageRepositoryError({
                                 type: 'UNSUPPORTED_REPOSITORY',

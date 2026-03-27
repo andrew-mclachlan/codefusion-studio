@@ -26,7 +26,11 @@ export default class CfsPackageLogin extends Command {
     })
   };
 
-  static description = 'Login to a package server.';
+  static deprecationOptions = {
+    message: `This command is deprecated and will be removed in a future release. Please use 'pkg auth-remote' instead.`
+  };
+
+  static description = 'Log in to a package server.';
 
   static flags = {
     user: Flags.string({
@@ -50,6 +54,9 @@ export default class CfsPackageLogin extends Command {
     })
   };
 
+  static hidden = true;
+  static state = 'deprecated';
+
   async run(): Promise<void> {
     const {args, flags} = await this.parse(CfsPackageLogin);
     const {remoteName} = args;
@@ -70,6 +77,6 @@ export default class CfsPackageLogin extends Command {
       await packman.login(remoteName, username, password);
     }
 
-    this.log(`Login successful!`);
+    this.log(`Log in successful!`);
   }
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2025 Analog Devices, Inc.
+ * Copyright (c) 2025-2026 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,17 +167,21 @@ export class CfsToolManager {
 	private installedTools: Record<string, Record<string, Tool>>;
 	/** Custom search paths or a provider function returning them */
 	private customSearchPaths?: string[] | (() => string[]);
+	/** Target SoC for the tool manager */
+	private targetSoc?: string;
 
 	/**
 	 * Constructor
 	 */
 	constructor(
 		pkgManager?: CfsPackageManagerProvider,
-		customSearchPaths?: string[] | (() => string[])
+		customSearchPaths?: string[] | (() => string[]),
+		targetSoc?: string
 	) {
 		this.installedTools = {};
 		this.packageManager = pkgManager;
 		this.customSearchPaths = customSearchPaths;
+		this.targetSoc = targetSoc;
 	}
 
 	/**
@@ -256,6 +260,16 @@ export class CfsToolManager {
 
 			for (const pkgInfo of packageInfos) {
 				if (!pkgInfo.path) {
+					continue;
+				}
+
+				if (
+				  pkgInfo.type !== "toolchain" &&
+				  Array.isArray(pkgInfo.cfsSoc) &&
+				  pkgInfo.cfsSoc.length > 0 &&
+				  this.targetSoc &&
+				  !pkgInfo.cfsSoc.includes(this.targetSoc)
+				) {
 					continue;
 				}
 

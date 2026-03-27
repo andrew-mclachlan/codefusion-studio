@@ -50,7 +50,7 @@
 //       | RISCV_SRAM | 0x20100000   | 131072  | R      | SRAM          |
 
 import { expect } from "chai";
-import { exec } from "child_process";
+
 import {
   By,
   EditorView,
@@ -71,6 +71,7 @@ import {
   partitionDetailsDropdowns,
 } from "../../page-objects/memory-allocation-section/memory-allocation-screen";
 import { UIUtils } from "../../../ui-test-utils/ui-utils";
+import { asyncExecFile } from "../../../ui-test-utils/exec-utils";
 
 describe("Memory Allocation", () => {
   let workbench: Workbench;
@@ -80,15 +81,23 @@ describe("Memory Allocation", () => {
   let editor: EditorView;
   browser = VSBrowser.instance;
 
+  let configPath: string | undefined;
+
   before(async function () {
     this.timeout(10000);
     browser = VSBrowser.instance;
   });
 
+  afterEach(async () => {
+    // Teardown - reset cfsconfig files
+    if (configPath) {
+      await asyncExecFile("git", "checkout", configPath);
+      configPath = undefined;
+    }
+  });
+
   it("Renders existing partitions from the config file", async () => {
-    const configPath = getConfigPathForFile(
-      "max32690-wlp-core-config.cfsconfig",
-    );
+    configPath = getConfigPathForFile("max32690-wlp-core-config.cfsconfig");
     await browser.openResources(configPath);
     await UIUtils.sleep(5000);
     console.log("Waiting for the element to be located in the DOM");
@@ -127,9 +136,6 @@ describe("Memory Allocation", () => {
     await view.switchBack();
     const ev = new EditorView();
     await ev.closeAllEditors();
-
-    // Teardown - reset cfsconfig files
-    exec(`git checkout ${configPath}`);
   }).timeout(60000);
 
   it("Deletes the existing partition and verifies the schema", async () => {
@@ -137,7 +143,7 @@ describe("Memory Allocation", () => {
     await editor.closeAllEditors();
     await UIUtils.sleep(3000);
 
-    const configPath = getConfigPathForFile(
+    configPath = getConfigPathForFile(
       "max32690-wlp-dual-core-blinky.cfsconfig",
     );
     await browser.openResources(configPath);
@@ -274,8 +280,5 @@ describe("Memory Allocation", () => {
       "RV Partition is empty or not matching your config",
     );
     console.log("RV Partition config OK");
-
-    // Teardown - reset cfsconfig files
-    exec(`git checkout ${configPath}`);
   }).timeout(150000);
 });

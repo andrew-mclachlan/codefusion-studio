@@ -1,7 +1,7 @@
 ---
 description: Uninstall CodeFusion Studio
 author: Analog Devices
-date: 2025-10-23
+date: 2026-12-01
 ---
 
 # Uninstall CodeFusion Studio
@@ -9,15 +9,20 @@ date: 2025-10-23
 ## Uninstall the extension from VS Code
 
 1. Select the **Extensions** icon from the activity bar.
+
+    !!! note
+        You can also open Extensions using the keyboard shortcut **Ctrl + Shift + X** (Windows/Linux) or **Cmd + Shift + X** (macOS).
+
 2. Find the **CodeFusion Studio** extension in the **INSTALLED** list.
 3. Click on the **Manage** (cog) icon on the right hand side.
 4. Select **Uninstall**.
+5. Restart VS Code for the changes to take effect. Alternatively, reload the VS Code window by opening the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`) and running **Developer: Reload Window**.
 
 ![CodeFusion Extension Uninstall](images/uninstall-extension-dark.png#only-dark)
 ![CodeFusion Extension Uninstall](images/uninstall-extension-light.png#only-light)
 
-!!! note
-    Keyboard shortcut to extensions is **Control** + **SHIFT** + **X** (Windows/Linux) or **Command** + **SHIFT** + **X** (Mac).
+!!! warning
+    Uninstalling CodeFusion Studio does not remove its dependent extensions. These extensions (including Microsoft C/C++ and Cortex-Debug) will remain installed in VS Code. If you no longer need them, uninstall each one separately using the same uninstall process. To view the complete list of dependent extensions, open the **Dependencies** tab in the CodeFusion Studio extension details before uninstalling.
 
 ## Uninstall from file system
 

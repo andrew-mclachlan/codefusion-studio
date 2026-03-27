@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2025 Analog Devices, Inc.
+ * Copyright (c) 2025-2026 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ describe("ConanPkgManager", function () {
 	const testCacheDir = path.join(process.cwd(), "test_cache");
 	const testConfigDir = path.join(process.cwd(), "test_config");
 	const testConanHome = path.join(testCacheDir, "conan");
+	const testManifestDir = path.join(process.cwd(), "test_manifests"); // Separate dir for manifest test files
 
 	async function cleanCache() {
 		await fs.rm(testCacheDir, {
@@ -32,6 +33,10 @@ describe("ConanPkgManager", function () {
 			force: true
 		});
 		await fs.rm(testConfigDir, {
+			recursive: true,
+			force: true
+		});
+		await fs.rm(testManifestDir, {
 			recursive: true,
 			force: true
 		});
@@ -58,6 +63,9 @@ describe("ConanPkgManager", function () {
 		await fs.rm(path.join(testConfigDir, ".conanignore"), {
 			force: true
 		});
+
+		// Ensure test manifest directory exists
+		await fs.mkdir(testManifestDir, { recursive: true });
 	}
 
 	const api = new ConanPkgManager({
@@ -65,6 +73,19 @@ describe("ConanPkgManager", function () {
 		indexDir: testCacheDir,
 		conanConfigPath: testConfigDir
 	});
+
+	// Helper to create a manifest file for testing with proper typing
+	async function createManifestFile(
+		tempManifestPath: string,
+		packages: CfsPackageReference[]
+	): Promise<string> {
+		const manifest = {
+			version: 1,
+			packages
+		};
+		await fs.writeFile(tempManifestPath, JSON.stringify(manifest));
+		return tempManifestPath;
+	}
 
 	before(cleanCache);
 	after(cleanCache);
@@ -238,6 +259,237 @@ describe("ConanPkgManager", function () {
 					});
 				});
 			});
+		});
+	});
+
+	describe("Dependency version conflict", function () {
+		// Scenario: test_pkg_consumer1/1.0 depends on test_pkg_dep1/1.0
+		//           test_pkg_consumer1/2.0 depends on test_pkg_dep1/2.0
+		// Installing consumer1/1.0 first (bringing in dep1/1.0), then trying
+		// to install consumer1/2.0 should fail because dep1 would need to be
+		// upgraded to 2.0, which conflicts with the already-installed dep1/1.0.
+
+		before(async function () {
+			this.timeout(20000);
+			// Step 1: Install test_pkg_consumer1/1.0 which pulls in test_pkg_dep1/1.0
+			const result = await api.install({
+				name: "test_pkg_consumer1",
+				version: "1.0"
+			});
+			expect(result).to.be.an("array").that.deep.includes({
+				name: "test_pkg_consumer1",
+				version: "1.0"
+			});
+			expect(result).to.deep.include({
+				name: "test_pkg_dep1",
+				version: "1.0"
+			});
+		});
+
+		after(async function () {
+			// Clean up installed packages
+			const pkgs = [
+				"test_pkg_consumer1",
+				"test_pkg_dep1",
+				"test_pkg_dep1dep"
+			];
+			for (const pkg of pkgs) {
+				try {
+					await api.uninstall(pkg);
+				} catch {
+					// Ignore if not installed
+				}
+			}
+		});
+
+		it("should have test_pkg_consumer1/1.0 and test_pkg_dep1/1.0 installed", async function () {
+			const installedPackages = await api.list();
+			expect(
+				installedPackages.some(
+					(p) =>
+						p.name === "test_pkg_consumer1" && p.version === "1.0"
+				)
+			).to.be.true;
+			expect(
+				installedPackages.some(
+					(p) => p.name === "test_pkg_dep1" && p.version === "1.0"
+				)
+			).to.be.true;
+		});
+
+		it("should fail to install test_pkg_consumer1/2.0 due to dependency conflict with test_pkg_dep1", async function () {
+			// Step 2: Try to install test_pkg_consumer1/2.0 which requires test_pkg_dep1/2.0
+			// This should fail because test_pkg_dep1/1.0 is already installed as a dependency
+			// of test_pkg_consumer1/1.0, and upgrading it would break the existing consumer
+			return api
+				.install({
+					name: "test_pkg_consumer1",
+					version: "2.0"
+				})
+				.then(
+					() => {
+						expect.fail(
+							"Should have failed due to dependency version conflict"
+						);
+					},
+					(error) => {
+						expect(error).to.be.an("Error");
+					}
+				);
+		});
+
+		it("should still have the original packages installed after failed upgrade", async function () {
+			// Verify the original installation is still intact
+			const installedPackages = await api.list();
+			expect(
+				installedPackages.some(
+					(p) =>
+						p.name === "test_pkg_consumer1" && p.version === "1.0"
+				)
+			).to.be.true;
+			expect(
+				installedPackages.some(
+					(p) => p.name === "test_pkg_dep1" && p.version === "1.0"
+				)
+			).to.be.true;
+		});
+	});
+
+	describe("Version range handling", function () {
+		// Clean up test packages before each test to ensure consistent state
+		beforeEach(async function () {
+			const pkgs = ["test_pkg1", "test_pkg2"];
+			for (const pkg of pkgs) {
+				try {
+					await api.uninstall(pkg);
+				} catch (error) {
+					// Ignore errors if package is not installed
+				}
+				try {
+					await api.delete(`${pkg}/*`);
+				} catch (error) {
+					// Ignore errors if package doesn't exist in cache
+				}
+			}
+		});
+
+		it("should install package with exact version 1.0", async function () {
+			const result = await api.install({
+				name: "test_pkg1",
+				version: "1.0"
+			});
+			expect(result)
+				.to.be.an("array")
+				.that.deep.includes({ name: "test_pkg1", version: "1.0" });
+		});
+
+		it("should install package with caret version ^1.0 (latest minor in 1.x)", async function () {
+			const result = await api.install({
+				name: "test_pkg2",
+				version: "^1.0"
+			});
+			expect(result).to.be.an("array").that.is.not.empty;
+			expect(result).to.deep.include({
+				name: "test_pkg2",
+				version: "1.3.4"
+			});
+		});
+
+		it("should install package with tilde version ~1.2 (latest patch in 1.2.x)", async function () {
+			const result = await api.install({
+				name: "test_pkg2",
+				version: "~1.2"
+			});
+			expect(result).to.be.an("array").that.is.not.empty;
+			expect(result).to.deep.include({
+				name: "test_pkg2",
+				version: "1.2.3"
+			});
+		});
+
+		it("should install package with version range '>=1.2.0 <1.3.0' (latest in range)", async function () {
+			const result = await api.install({
+				name: "test_pkg2",
+				version: ">=1.2.0 <1.3.0"
+			});
+			expect(result).to.be.an("array").that.is.not.empty;
+			expect(result).to.deep.include({
+				name: "test_pkg2",
+				version: "1.2.3"
+			});
+		});
+
+		it("should install multiple packages at once", async function () {
+			const result = await api.install([
+				{ name: "test_pkg1", version: "1.0" },
+				{ name: "test_pkg2", version: "1.0" }
+			]);
+			expect(result).to.be.an("array").that.is.not.empty;
+			expect(result).to.deep.include({
+				name: "test_pkg1",
+				version: "1.0"
+			});
+			expect(result).to.deep.include({
+				name: "test_pkg2",
+				version: "1.0"
+			});
+
+			// Verify both packages are now installed
+			const installedPackages = await api.list();
+			expect(installedPackages).to.deep.include({
+				name: "test_pkg1",
+				version: "1.0"
+			});
+			expect(installedPackages).to.deep.include({
+				name: "test_pkg2",
+				version: "1.0"
+			});
+		});
+
+		it("should install multiple packages with version ranges at once", async function () {
+			const result = await api.install([
+				{ name: "test_pkg1", version: "^1.0" },
+				{ name: "test_pkg2", version: "~1.2" }
+			]);
+			expect(result).to.be.an("array").that.is.not.empty;
+			expect(result).to.deep.include({
+				name: "test_pkg1",
+				version: "1.0"
+			});
+			expect(result).to.deep.include({
+				name: "test_pkg2",
+				version: "1.2.3"
+			});
+		});
+
+		it("should fail when installing multiple packages with one invalid package", async function () {
+			try {
+				await api.install([
+					{ name: "test_pkg1", version: "1.0" },
+					{ name: "nonexistent_pkg", version: "1.0" }
+				]);
+				expect.fail("Should have thrown an error");
+			} catch (error) {
+				expect(error).to.be.an("Error");
+				expect((error as Error).message).to.include("nonexistent_pkg");
+			}
+		});
+
+		it("should fail when installing multiple nonexistent packages", async function () {
+			try {
+				await api.install([
+					{ name: "nonexistent_pkg1", version: "1.0" },
+					{ name: "nonexistent_pkg2", version: "2.0" }
+				]);
+				expect.fail("Should have thrown an error");
+			} catch (error) {
+				expect(error).to.be.an("Error");
+			}
+		});
+
+		it("should return empty array when installing empty package list", async function () {
+			const result = await api.install([]);
+			expect(result).to.be.an("array").that.is.empty;
 		});
 	});
 
@@ -464,9 +716,8 @@ describe("ConanPkgManager", function () {
 	});
 
 	describe("Manifest handling", function () {
-		const testCacheDir = path.join(process.cwd(), "test_cache");
 		const tempManifestPath = path.join(
-			testCacheDir,
+			testManifestDir,
 			"test-manifest.json"
 		);
 
@@ -480,21 +731,17 @@ describe("ConanPkgManager", function () {
 		});
 
 		after(async function () {
-			await api.uninstall("test_pkg1");
-			await api.uninstall("test_pkg2");
+			try {
+				await api.uninstall("test_pkg1");
+			} catch (error) {
+				// Ignore errors if package is not installed
+			}
+			try {
+				await api.uninstall("test_pkg2");
+			} catch (error) {
+				// Ignore errors if package is not installed
+			}
 		});
-
-		// Helper to create a manifest file for testing with proper typing
-		async function createManifestFile(
-			packages: CfsPackageReference[]
-		): Promise<string> {
-			const manifest = {
-				version: 1,
-				packages
-			};
-			await fs.writeFile(tempManifestPath, JSON.stringify(manifest));
-			return tempManifestPath;
-		}
 
 		afterEach(function (done) {
 			// Clean up the manifest file after each test
@@ -510,19 +757,25 @@ describe("ConanPkgManager", function () {
 		describe("checkManifest", function () {
 			it("should return empty array when all packages are installed", async function () {
 				// Create a manifest with packages that are already installed
-				const manifestPath = await createManifestFile([
-					{ name: "test_pkg1", version: "1.0" },
-					{ name: "test_pkg2", version: "1.0" }
-				]);
+				const manifestPath = await createManifestFile(
+					tempManifestPath,
+					[
+						{ name: "test_pkg1", version: "1.0" },
+						{ name: "test_pkg2", version: "1.0" }
+					]
+				);
 				const result = await api.checkManifest(manifestPath);
 				expect(result).to.be.an("array").that.is.empty;
 			});
 			it("should return missing packages when some packages are not installed", async function () {
 				// Create a manifest with one installed and one not installed package
-				const manifestPath = await createManifestFile([
-					{ name: "test_pkg1", version: "1.0" }, // installed
-					{ name: "test_pkg_consumer1", version: "1.0" } // not installed
-				]);
+				const manifestPath = await createManifestFile(
+					tempManifestPath,
+					[
+						{ name: "test_pkg1", version: "1.0" }, // installed
+						{ name: "test_pkg_consumer1", version: "1.0" } // not installed
+					]
+				);
 				const result = await api.checkManifest(manifestPath);
 				expect(result).to.be.an("array").with.lengthOf(1);
 				expect(result[0]).to.deep.equal({
@@ -534,10 +787,9 @@ describe("ConanPkgManager", function () {
 			it("should handle manifest files with invalid format", async function () {
 				// Create an invalid manifest file
 				const invalidManifestPath = path.join(
-					testCacheDir,
+					testManifestDir,
 					"invalid-manifest.json"
 				);
-
 				await fs.writeFile(
 					invalidManifestPath,
 					JSON.stringify({ version: 1 })
@@ -568,19 +820,25 @@ describe("ConanPkgManager", function () {
 		describe("installFromManifest", function () {
 			it("should not install anything when all packages are already installed", async function () {
 				// Create a manifest with packages that are already installed
-				const manifestPath = await createManifestFile([
-					{ name: "test_pkg1", version: "1.0" },
-					{ name: "test_pkg2", version: "1.0" }
-				]);
+				const manifestPath = await createManifestFile(
+					tempManifestPath,
+					[
+						{ name: "test_pkg1", version: "1.0" },
+						{ name: "test_pkg2", version: "1.0" }
+					]
+				);
 				const result = await api.installFromManifest(manifestPath);
 				expect(result).to.be.an("array").that.is.empty;
 			});
 			it("should install only packages that are not already installed", async function () {
 				// Create a manifest with one installed and one not installed packages
-				const manifestPath = await createManifestFile([
-					{ name: "test_pkg1", version: "1.0" }, // installed
-					{ name: "test_pkg_consumer1", version: "1.0" } // not installed
-				]);
+				const manifestPath = await createManifestFile(
+					tempManifestPath,
+					[
+						{ name: "test_pkg1", version: "1.0" }, // installed
+						{ name: "test_pkg_consumer1", version: "1.0" } // not installed
+					]
+				);
 
 				try {
 					const result = await api.installFromManifest(manifestPath);
@@ -624,6 +882,494 @@ describe("ConanPkgManager", function () {
 						}
 					);
 			});
+		});
+
+		describe("Version test handling", function () {
+			beforeEach(async function () {
+				// Clear any installed packages to ensure installFromManifest actually installs them
+				// Using test_pkg1 and test_pkg2 as they have no dependencies
+				try {
+					await api.uninstall("test_pkg1");
+				} catch (error) {
+					// Ignore errors if package is not installed
+				}
+				try {
+					await api.uninstall("test_pkg2");
+				} catch (error) {
+					// Ignore errors if package is not installed
+				}
+
+				try {
+					await api.delete("test_pkg*");
+				} catch (error) {
+					// Ignore errors if package doesn't exist in cache
+				}
+			});
+
+			it("should handle manifest with version ranges", async function () {
+				// Create a manifest with various version range formats
+				const manifestPath = await createManifestFile(
+					tempManifestPath,
+					[
+						{ name: "test_pkg1", version: "~1.0" }, // tilde range (1.0.x patch range)
+						{ name: "test_pkg2", version: "^1.0" } // caret range (should get 1.3.4)
+					]
+				);
+
+				try {
+					const result = await api.installFromManifest(manifestPath);
+					expect(result).to.be.an("array").with.length.greaterThan(0);
+
+					// Verify the packages are now installed
+					const installedPackages = await api.list();
+
+					// Verify both packages were installed
+					expect(result).to.deep.include({
+						name: "test_pkg1",
+						version: "1.0"
+					});
+					expect(result).to.deep.include({
+						name: "test_pkg2",
+						version: "1.3.4"
+					});
+
+					expect(
+						installedPackages.some(
+							(p) => p.name === "test_pkg1" && p.version === "1.0"
+						)
+					).to.be.true;
+					expect(
+						installedPackages.some(
+							(p) => p.name === "test_pkg2" && p.version === "1.3.4"
+						)
+					).to.be.true;
+				} finally {
+					// Clean up - uninstall the packages we just installed
+					try {
+						await api.uninstall("test_pkg1");
+						await api.uninstall("test_pkg2");
+					} catch (error) {
+						// Ignore errors during cleanup
+					}
+				}
+			});
+
+			it("should handle manifest with explicit version range syntax", async function () {
+				// Create a manifest with explicit range syntax using test_pkg2
+				// >=1.2.0 <1.3.0 should match 1.2.0-1.2.3 and select 1.2.3
+				const manifestPath = await createManifestFile(
+					tempManifestPath,
+					[{ name: "test_pkg2", version: ">=1.2.0 <1.3.0" }]
+				);
+
+				const result = await api.installFromManifest(manifestPath);
+				expect(result).to.be.an("array").with.length.greaterThan(0);
+
+				// Verify package was installed with version 1.2.3 (latest in range)
+				expect(result).to.deep.include({
+					name: "test_pkg2",
+					version: "1.2.3"
+				});
+
+				// Verify the package is now installed
+				const installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.2.3"
+					)
+				).to.be.true;
+			});
+
+			it("should not re-install package via manifest when installed version satisfies the range", async function () {
+				// Step 1: Install test_pkg2 with explicit version 1.3.1
+				await api.install({ name: "test_pkg2", version: "1.3.1" });
+
+				let installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.3.1"
+					)
+				).to.be.true;
+
+				// Step 2: Apply a manifest with ~1.3 (meaning >=1.3.0 <1.4.0)
+				// The installed version 1.3.1 satisfies this range, so the manifest
+				// should not trigger a re-install.
+				const manifestPath = await createManifestFile(
+					tempManifestPath,
+					[{ name: "test_pkg2", version: "~1.3" }]
+				);
+
+				const result = await api.installFromManifest(manifestPath);
+
+				// No packages should be installed since 1.3.1 satisfies ~1.3
+				expect(result).to.be.an("array").with.lengthOf(0);
+
+				// The version should remain 1.3.1
+				installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.3.1"
+					)
+				).to.be.true;
+			});
+
+			it("should downgrade explicitly installed package when manifest specifies a non-overlapping range", async function () {
+				// Known behavior: if a user explicitly installs a version (e.g. 1.3.4)
+				// and then applies a manifest with a range that excludes it (e.g. >=1.2 <1.3),
+				// the manifest will downgrade the package to the latest version in the range.
+				// The manifest always overrides the explicitly installed version.
+
+				// Step 1: Explicitly install the latest version
+				await api.install({ name: "test_pkg2", version: "1.3.4" });
+
+				let installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.3.4"
+					)
+				).to.be.true;
+
+				// Step 2: Apply a manifest with range >=1.2 <1.3 which excludes the installed 1.3.4
+				const manifestPath = await createManifestFile(
+					tempManifestPath,
+					[{ name: "test_pkg2", version: ">=1.2 <1.3" }]
+				);
+
+				const result = await api.installFromManifest(manifestPath);
+
+				// The manifest overrides the explicitly installed version
+				expect(result).to.be.an("array").with.length.greaterThan(0);
+
+				// Package is downgraded to 1.2.3 (latest matching >=1.2 <1.3)
+				installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.2.3"
+					)
+				).to.be.true;
+
+				// The previously installed 1.3.4 is no longer installed
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.3.4"
+					)
+				).to.be.false;
+			});
+
+			it("should update to latest version when explicitly installing with a version range", async function () {
+				// Scenario: User installs specific versions, then explicitly installs with a range
+				// Unlike installFromManifest, explicit install with a range should resolve to the latest matching version
+
+				// Step 1: Install test_pkg2 with version 1.2.0
+				await api.install({ name: "test_pkg2", version: "1.2.0" });
+
+				let installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.2.0"
+					)
+				).to.be.true;
+
+				// Step 2: Install test_pkg2 with version 1.1.0 (downgrade)
+				await api.install({ name: "test_pkg2", version: "1.1.0" });
+
+				installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.1.0"
+					)
+				).to.be.true;
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.2.0"
+					)
+				).to.be.false;
+
+				// Step 3: Install with a tilde range ~1.0 which should resolve to the latest 1.0.x patch
+				// This is an explicit install (not manifest), so it should update to the latest matching version
+				const result = await api.install({
+					name: "test_pkg2",
+					version: "~1.0"
+				});
+
+				expect(result).to.be.an("array").that.is.not.empty;
+
+				// Verify the latest version matching ~1.0 is now installed
+				installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.0"
+					)
+				).to.be.true;
+
+				// The previous version should no longer be installed
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.1.0"
+					)
+				).to.be.false;
+			});
+
+			it("should resolve version range from local cache when localOnly flag is used", async function () {
+				// Scenario: User installs specific versions (populating cache), uninstalls them,
+				// then installs with a range using localOnly flag - should resolve from cached versions
+
+				// Step 1: Install test_pkg2 with version 1.2.0 to populate cache
+				await api.install({ name: "test_pkg2", version: "1.2.0" });
+
+				let installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.2.0"
+					)
+				).to.be.true;
+
+				// Step 2: Install test_pkg2 with version 1.1.0 to also add it to cache
+				await api.install({ name: "test_pkg2", version: "1.1.0" });
+
+				installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.1.0"
+					)
+				).to.be.true;
+
+				// Step 3: Uninstall to clear installed state (but versions remain in cache)
+				await api.uninstall("test_pkg2");
+
+				installedPackages = await api.list();
+				expect(installedPackages.some((p) => p.name === "test_pkg2"))
+					.to.be.false;
+
+				// Step 4: Install with a version range using localOnly flag
+				// ^1.0 means >=1.0.0 <2.0.0, so it should resolve from cached versions
+				// Since 1.1.0 and 1.2.0 are cached, it should pick 1.2.0 (latest matching ^1.0)
+				const result = await api.install(
+					{ name: "test_pkg2", version: "^1.0" },
+					{ localOnly: true }
+				);
+
+				expect(result).to.be.an("array").that.is.not.empty;
+
+				// Verify the best cached version matching ^1.0 is installed
+				installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.2.0"
+					)
+				).to.be.true;
+			});
+
+			it("should resolve manifest version range from local cache when localOnly flag is used", async function () {
+				// Scenario: User installs specific versions (populating cache), uninstalls them,
+				// then uses installFromManifest with localOnly flag - should resolve from cached versions
+
+				// Step 1: Install test_pkg2 with version 1.2.0 to populate cache
+				await api.install({ name: "test_pkg2", version: "1.2.0" });
+
+				let installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.2.0"
+					)
+				).to.be.true;
+
+				// Step 2: Install test_pkg2 with version 1.1.0 to also add it to cache
+				await api.install({ name: "test_pkg2", version: "1.1.0" });
+
+				installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.1.0"
+					)
+				).to.be.true;
+
+				// Step 3: Uninstall to clear installed state (but versions remain in cache)
+				await api.uninstall("test_pkg2");
+
+				installedPackages = await api.list();
+				expect(installedPackages.some((p) => p.name === "test_pkg2"))
+					.to.be.false;
+
+				// Step 4: Install from manifest with localOnly flag using a version range
+				// ^1.0 means >=1.0.0 <2.0.0, so it should resolve from cached versions
+				const manifestPath = await createManifestFile(
+					tempManifestPath,
+					[{ name: "test_pkg2", version: "^1.0" }]
+				);
+
+				const result = await api.installFromManifest(manifestPath, {
+					localOnly: true
+				});
+
+				expect(result).to.be.an("array").that.is.not.empty;
+
+				// Verify the best cached version matching ^1.0 is installed
+				installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.2.0"
+					)
+				).to.be.true;
+			});
+
+			it("should fail when manifest references uncached package with localOnly flag", async function () {
+				// Scenario: installFromManifest with localOnly should fail if the package
+				// is not available in the local cache
+
+				// Create a manifest referencing a version range that has no cached versions
+				// We use an impossible version to ensure nothing is in cache
+				const manifestPath = await createManifestFile(
+					tempManifestPath,
+					[{ name: "test_pkg2", version: "^99.0" }]
+				);
+
+				return api
+					.installFromManifest(manifestPath, {
+						localOnly: true
+					})
+					.then(
+						() => {
+							expect.fail(
+								"Should have failed when package is not in cache with localOnly flag"
+							);
+						},
+						(error) => {
+							expect(error).to.be.an("Error");
+							expect((error as Error).message).to.match(
+								/not resolved: No remote defined|No versions found matching/
+							);
+						}
+					);
+			});
+
+			it("should resolve version with | in version range", async function () {
+				// Create a manifest with a version range that includes an OR condition
+				const manifestPath = await createManifestFile(
+					tempManifestPath,
+					[
+						{
+							name: "test_pkg2",
+							version: ">=1.2.0 <1.3.0 || >=1.3.4 <1.4.0"
+						}
+					]
+				);
+
+				const result = await api.installFromManifest(manifestPath);
+				expect(result).to.be.an("array").with.length.greaterThan(0);
+
+				// Verify the version installed is 1.3.4 (latest matching the first range)
+				const installedPackages = await api.list();
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.3.4"
+					)
+				).to.be.true;
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.2.3"
+					)
+				).to.be.false;
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.3.0"
+					)
+				).to.be.false;
+				expect(
+					installedPackages.some(
+						(p) => p.name === "test_pkg2" && p.version === "1.4.0"
+					)
+				).to.be.false;
+			});
+		});
+	});
+
+	describe("Pre-release version handling", function () {
+		afterEach(async function () {
+			try {
+				await api.uninstall("test_pkg_prerelease");
+			} catch {
+				// Ignore if not installed
+			}
+		});
+
+		after(async function () {
+			await fs
+				.unlink(
+					path.join(testManifestDir, "test-prerelease-manifest.json")
+				)
+				.catch(() => undefined);
+		});
+
+		it("should install a package with a pre-release version via install", async function () {
+			const result = await api.install({
+				name: "test_pkg_prerelease",
+				version: "1.0.0-beta.1+1"
+			});
+			expect(result).to.be.an("array").that.deep.includes({
+				name: "test_pkg_prerelease",
+				version: "1.0.0-beta.1+1"
+			});
+
+			// Verify the package is listed as installed
+			const installedPackages = await api.list();
+			expect(
+				installedPackages.some(
+					(p) =>
+						p.name === "test_pkg_prerelease" &&
+						p.version === "1.0.0-beta.1+1"
+				)
+			).to.be.true;
+		});
+
+		it("should install a package with a pre-release version via installFromManifest", async function () {
+			const tempManifestPath = path.join(
+				testManifestDir,
+				"test-prerelease-manifest.json"
+			);
+			const manifestPath = await createManifestFile(
+				tempManifestPath,
+				[
+					{
+						name: "test_pkg_prerelease",
+						version: "1.0.0-beta.1+1"
+					}
+				]
+			);
+
+			const result = await api.installFromManifest(manifestPath);
+			expect(result).to.be.an("array").that.deep.includes({
+				name: "test_pkg_prerelease",
+				version: "1.0.0-beta.1+1"
+			});
+
+			// Verify the package is listed as installed
+			const installedPackages = await api.list();
+			expect(
+				installedPackages.some(
+					(p) =>
+						p.name === "test_pkg_prerelease" &&
+						p.version === "1.0.0-beta.1+1"
+				)
+			).to.be.true;
+		});
+
+		it("should fail to install a pre-release package when explicit version is not defined", async function () {
+			return api
+				.install({
+					name: "test_pkg_prerelease",
+					version: "~1.0.0"
+				})
+				.then(
+					() => {
+						expect.fail(
+							"Should not succeed without explicit pre-release version"
+						);
+					},
+					(error) => {
+						expect(error).to.be.an("Error");
+					}
+				);
 		});
 	});
 

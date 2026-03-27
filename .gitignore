@@ -31,3 +31,6 @@ packages/ide/cypress/screenshots
 
 # environment files
 .env
+
+# personal copilot prompts
+.github/prompts

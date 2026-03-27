@@ -54,15 +54,8 @@ export function registerPackageManagerCommands(
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand(
-      PACKAGE_MANAGER_COMMANDS.LOGOUT_REMOTE,
-      () => logoutRemote(pkgManager),
-    ),
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(PACKAGE_MANAGER_COMMANDS.LOGIN_REMOTE, () =>
-      loginRemote(pkgManager),
+    vscode.commands.registerCommand(PACKAGE_MANAGER_COMMANDS.AUTH_REMOTE, () =>
+      authRemote(pkgManager),
     ),
   );
 
@@ -85,14 +78,16 @@ async function installPackages(pkgManager?: CfsPackageManagerProvider) {
 
   //Instantiate Quick Pick
   const searchResultQuickPick = vscode.window.createQuickPick();
-  const packageMap = new Map<string, CfsPackageReference>();
 
   // Initialize QuickPick UI
+  searchResultQuickPick.title = "CFS: Install Package";
   searchResultQuickPick.placeholder = "Searching for packages...";
   searchResultQuickPick.busy = true;
+  searchResultQuickPick.ignoreFocusOut = true;
   searchResultQuickPick.show();
 
   //Search for packages available for installation
+  let selectedPackageRef: CfsPackageReference | undefined = undefined;
   try {
     // Fetch packages
     const [allPackages, installedPackages] = await Promise.all([
@@ -101,99 +96,103 @@ async function installPackages(pkgManager?: CfsPackageManagerProvider) {
     ]);
 
     // Filter out already installed packages
-    const installedPackageNames = new Set(
-      installedPackages.map((pkg) => `${pkg.name}/${pkg.version.trim()}`),
-    );
-    const filteredPackages = allPackages.filter(
-      (pkg) => !installedPackageNames.has(`${pkg.name}/${pkg.version.trim()}`),
+    const availablePackages = allPackages.filter(
+      (pkg) =>
+        !installedPackages.some(
+          (installed) =>
+            installed.name === pkg.name && installed.version === pkg.version,
+        ),
     );
 
+    searchResultQuickPick.busy = false;
+    searchResultQuickPick.ignoreFocusOut = false;
+
     // Handle case where no packages are available for installation
-    if (filteredPackages.length === 0) {
-      vscode.window.showInformationMessage(
-        "CFS: No new packages available for installation.",
-      );
-      searchResultQuickPick.dispose();
+    if (availablePackages.length === 0) {
+      searchResultQuickPick.placeholder = "";
+      searchResultQuickPick.items = [{ label: "No new packages available" }];
+      await new Promise<void>((resolve) => {
+        searchResultQuickPick.onDidHide(() => resolve());
+        searchResultQuickPick.onDidAccept(() => resolve());
+      });
+
       return;
     }
 
-    // Map packages for QuickPick
-    filteredPackages.forEach((pkg) => {
-      const key = `${pkg.name}/${pkg.version.trim()}`;
-      packageMap.set(key, pkg);
-    });
-
     // Populate QuickPick items
     searchResultQuickPick.placeholder = "Select the package to install.";
-    searchResultQuickPick.items = Array.from(packageMap.keys()).map((ref) => ({
-      label: ref,
-    }));
-    searchResultQuickPick.busy = false;
+    searchResultQuickPick.items = availablePackages
+      .map((pkg) => ({
+        label: pkg.name,
+        description: pkg.version,
+      }))
+      // Sort alphabetically by name then in descending order by version
+      .sort((a, b) => {
+        const nameCompare = a.label.localeCompare(b.label);
+        return nameCompare !== 0
+          ? nameCompare
+          : -1 * a.description!.localeCompare(b.description!);
+      });
+
+    // Handle package selection
+    selectedPackageRef = await new Promise<CfsPackageReference | undefined>(
+      (resolve) => {
+        searchResultQuickPick.onDidAccept(() => {
+          resolve({
+            name: searchResultQuickPick.selectedItems[0].label,
+            version: searchResultQuickPick.selectedItems[0].description!,
+          });
+        });
+        searchResultQuickPick.onDidHide(() => {
+          resolve(undefined);
+        });
+      },
+    );
+    if (!selectedPackageRef) {
+      return; // User cancelled
+    }
   } catch (err) {
-    let errorMessage = "CFS: Package installation failed.";
+    let errorMessage = "CFS: Failed to find available packages.";
     if (err instanceof Error && err.message) {
       errorMessage += ` ${err.message}`;
     }
     console.error(err);
     vscode.window.showErrorMessage(errorMessage);
+    return;
+  } finally {
     searchResultQuickPick.dispose();
   }
 
-  // Handle package selection
+  // Handle package installation
   try {
-    //Defining on selected listener
-    searchResultQuickPick.onDidAccept(async () => {
-      const selectedItem = searchResultQuickPick.selectedItems[0];
+    // Show installation progress
+    const progressOptions: vscode.ProgressOptions = {
+      location: vscode.ProgressLocation.Notification,
+      title: `CFS: Installing package ${selectedPackageRef.name}/${selectedPackageRef.version}...`,
+      cancellable: false,
+    };
 
-      const selectedPackageRef = packageMap.get(selectedItem.label);
+    await vscode.window.withProgress(progressOptions, async () => {
+      const installedPackageRefs = await pkgManager.install(selectedPackageRef);
 
-      //We know this won't be undefined, adding the check for the linter
-      if (!selectedPackageRef) {
-        vscode.window.showErrorMessage(
-          "CFS: Package not found for installation.",
+      //Check if any packages were installed.
+      if (installedPackageRefs.length > 0) {
+        const installedPackageRefsStr = installedPackageRefs
+          .map((ref) => `${ref.name}`)
+          .join(", ");
+
+        vscode.window.showInformationMessage(
+          `CFS: Successfully installed ${installedPackageRefsStr}.`,
         );
-        searchResultQuickPick.dispose();
-        return;
+      } else {
+        vscode.window.showErrorMessage(
+          `CFS: Failed to install package ${selectedPackageRef.name}/${selectedPackageRef.version}.`,
+        );
       }
-
-      // Update QuickPick UI for installation
-      searchResultQuickPick.placeholder = `Installing package ${selectedPackageRef.name}/${selectedPackageRef.version}...`;
-      searchResultQuickPick.busy = true;
-      searchResultQuickPick.enabled = false;
-      searchResultQuickPick.items = [];
-
-      // Show installation progress
-      const progressOptions: vscode.ProgressOptions = {
-        location: vscode.ProgressLocation.Window,
-        title: `Installing package ${selectedPackageRef.name}/${selectedPackageRef.version}...`,
-        cancellable: false,
-      };
-
-      await vscode.window.withProgress(progressOptions, async () => {
-        const installedPackageRefs =
-          await pkgManager.install(selectedPackageRef);
-
-        //Checking if any packages are installed.
-        if (installedPackageRefs.length > 0) {
-          const installedPackageRefsStr = installedPackageRefs
-            .map((ref) => `${ref.name}`)
-            .join(", ");
-
-          vscode.window.showInformationMessage(
-            `CFS: Successfully installed ${installedPackageRefsStr}.`,
-          );
-        } else {
-          vscode.window.showErrorMessage(
-            `CFS: Failed to install package ${selectedPackageRef.name}/${selectedPackageRef.version}.`,
-          );
-        }
-      });
-      searchResultQuickPick.dispose();
     });
   } catch (err) {
     console.error(err);
     vscode.window.showErrorMessage("CFS: Failed to install package.");
-    searchResultQuickPick.dispose();
   }
 }
 
@@ -210,76 +209,89 @@ async function uninstallPackage(pkgManager?: CfsPackageManagerProvider) {
   const installedPackagesQuickPick = vscode.window.createQuickPick();
 
   // Initialize QuickPick UI
+  installedPackagesQuickPick.title = "CFS: Uninstall Package";
   installedPackagesQuickPick.placeholder = "Fetching installed packages...";
   installedPackagesQuickPick.busy = true;
+  installedPackagesQuickPick.ignoreFocusOut = true;
   installedPackagesQuickPick.show();
 
+  //Search for installed packages
+  let selectedPackageRef: CfsPackageReference | undefined = undefined;
   try {
     // Fetch installed packages
     const installedPackages = await pkgManager.list();
+    installedPackagesQuickPick.busy = false;
+    installedPackagesQuickPick.ignoreFocusOut = false;
 
     if (installedPackages.length === 0) {
-      vscode.window.showInformationMessage("CFS: No installed packages found.");
-      installedPackagesQuickPick.dispose();
+      installedPackagesQuickPick.placeholder = "";
+      installedPackagesQuickPick.items = [{ label: "No packages installed" }];
+      await new Promise<void>((resolve) => {
+        installedPackagesQuickPick.onDidHide(() => resolve());
+        installedPackagesQuickPick.onDidAccept(() => resolve());
+      });
+
       return;
     }
 
-    // Map installed packages for QuickPick
-    const packageMap = new Map<string, CfsPackageReference>();
-    installedPackages.forEach((pkg) => {
-      const key = `${pkg.name}/${pkg.version.trim()}`;
-      packageMap.set(key, pkg);
-    });
-
     // Populate QuickPick items
     installedPackagesQuickPick.placeholder = "Select the package to uninstall.";
-    installedPackagesQuickPick.items = Array.from(packageMap.keys()).map(
-      (ref) => ({
-        label: ref,
-      }),
-    );
-    installedPackagesQuickPick.busy = false;
+    installedPackagesQuickPick.items = installedPackages
+      .map((pkg) => ({
+        label: pkg.name,
+        description: pkg.version,
+      }))
+      // Sort alphabetically by name then in descending order by version
+      .sort((a, b) => {
+        const nameCompare = a.label.localeCompare(b.label);
+        return nameCompare !== 0
+          ? nameCompare
+          : -1 * a.description!.localeCompare(b.description!);
+      });
 
     // Handle package selection
-    installedPackagesQuickPick.onDidAccept(async () => {
-      const selectedItem = installedPackagesQuickPick.selectedItems[0];
+    selectedPackageRef = await new Promise<CfsPackageReference | undefined>(
+      (resolve) => {
+        installedPackagesQuickPick.onDidAccept(() => {
+          resolve({
+            name: installedPackagesQuickPick.selectedItems[0].label,
+            version: installedPackagesQuickPick.selectedItems[0].description!,
+          });
+        });
+        installedPackagesQuickPick.onDidHide(() => {
+          resolve(undefined);
+        });
+      },
+    );
+    if (!selectedPackageRef) {
+      return; // User cancelled
+    }
+  } catch (err) {
+    console.error(err);
+    vscode.window.showErrorMessage(`CFS: Failed to find installed packages.`);
+    return;
+  } finally {
+    installedPackagesQuickPick.dispose();
+  }
 
-      const selectedPackageRef = packageMap.get(selectedItem.label);
+  // Handle package uninstallation
+  try {
+    // Show uninstallation progress
+    const progressOptions: vscode.ProgressOptions = {
+      location: vscode.ProgressLocation.Notification,
+      title: `CFS: Uninstalling package ${selectedPackageRef.name}/${selectedPackageRef.version}...`,
+      cancellable: false,
+    };
 
-      //We know this won't be undefined, adding the check for the linter
-      if (!selectedPackageRef) {
-        vscode.window.showWarningMessage(
-          "CFS: Package not selected for uninstallation",
-        );
-        return;
-      }
-
-      // Update QuickPick UI for uninstallation
-      installedPackagesQuickPick.placeholder = `Uninstalling package ${selectedPackageRef.name}/${selectedPackageRef.version}...`;
-      installedPackagesQuickPick.busy = true;
-      installedPackagesQuickPick.enabled = false;
-      installedPackagesQuickPick.items = [];
-
-      // Show uninstallation progress
-      const progressOptions: vscode.ProgressOptions = {
-        location: vscode.ProgressLocation.Window,
-        title: `Uninstalling package ${selectedPackageRef.name}/${selectedPackageRef.version}...`,
-        cancellable: false,
-      };
-
-      await vscode.window.withProgress(progressOptions, async () => {
-        await pkgManager.uninstall(selectedPackageRef.name);
-        vscode.window.showInformationMessage(
-          `CFS: Package "${selectedPackageRef.name}/${selectedPackageRef.version}" uninstalled successfully.`,
-        );
-      });
-      installedPackagesQuickPick.dispose();
+    await vscode.window.withProgress(progressOptions, async () => {
+      await pkgManager.uninstall(selectedPackageRef.name);
+      vscode.window.showInformationMessage(
+        `CFS: Package "${selectedPackageRef.name}/${selectedPackageRef.version}" uninstalled successfully.`,
+      );
     });
   } catch (err) {
     console.error(err);
     vscode.window.showErrorMessage(`CFS: Failed to uninstall package.`);
-    installedPackagesQuickPick.busy = false;
-    installedPackagesQuickPick.dispose();
   }
 }
 
@@ -295,6 +307,7 @@ async function manageRemotes(pkgManager?: CfsPackageManagerProvider) {
   const manageRemotesQuickPick = vscode.window.createQuickPick();
   manageRemotesQuickPick.title = "CFS: Manage Package Remotes";
   manageRemotesQuickPick.placeholder = "Finding remotes...";
+  manageRemotesQuickPick.ignoreFocusOut = true;
   manageRemotesQuickPick.busy = true;
   manageRemotesQuickPick.show();
 
@@ -303,7 +316,6 @@ async function manageRemotes(pkgManager?: CfsPackageManagerProvider) {
   // Display the list of remotes with action buttons
   try {
     remotes = await pkgManager.listRemotes();
-
     if (remotes.length === 0) {
       manageRemotesQuickPick.placeholder = "";
       manageRemotesQuickPick.busy = false;
@@ -318,61 +330,40 @@ async function manageRemotes(pkgManager?: CfsPackageManagerProvider) {
       return;
     }
 
-    const mapRemoteButtons = (
+    const mapCustomRemote = (
       remote: CfsPackageRemote,
     ): vscode.QuickPickItem => ({
       ...mapRemote(remote),
-      // Conditionally show buttons based on remote properties
       buttons: [
         // Custom remotes can be removed
-        ...(remote.custom
-          ? [
-              {
-                iconPath: new vscode.ThemeIcon("trash"),
-                tooltip: "Remove",
-              },
-            ]
-          : []),
-        // Custom remotes can be logged out of (if already logged in)
-        ...(remote.custom && remote.auth
-          ? [
-              {
-                iconPath: new vscode.ThemeIcon("account"),
-                tooltip: "Logout",
-              },
-            ]
-          : []),
-        // Custom remotes can be logged in to (if not already logged in)
-        ...(remote.custom && !remote.auth
-          ? [
-              {
-                iconPath: new vscode.ThemeIcon("account"),
-                tooltip: "Login",
-              },
-            ]
-          : []),
+        {
+          iconPath: new vscode.ThemeIcon("trash"),
+          tooltip: "Remove",
+        },
+        // Custom remotes can have their auth set
+        {
+          iconPath: new vscode.ThemeIcon("account"),
+          tooltip: "Set Auth",
+        },
       ],
     });
 
-    const displayRemotes = remotes
-      .filter((remote) => !remote.custom)
-      .map(mapRemoteButtons);
-    const customRemotes = remotes.filter((remote) => remote.custom);
-    displayRemotes.push({
-      kind: vscode.QuickPickItemKind.Separator,
-      label: "custom",
-    });
-    displayRemotes.push(...customRemotes.map(mapRemoteButtons));
-    displayRemotes.push({
-      alwaysShow: true,
-      label: "$(add) Add Custom Remote",
-    });
-
+    const displayRemotes: vscode.QuickPickItem[] = [
+      { kind: vscode.QuickPickItemKind.Separator, label: "default" },
+      ...remotes.filter((remote) => !remote.custom).map(mapRemote),
+      { kind: vscode.QuickPickItemKind.Separator, label: "custom" },
+      ...remotes.filter((remote) => remote.custom).map(mapCustomRemote),
+      {
+        alwaysShow: true,
+        label: "$(add) Add Custom Remote",
+      },
+    ];
     // prompt the user if there are any myAnalog remotes and they are not logged in
     void promptMyAnalogLogin(remotes);
 
-    manageRemotesQuickPick.placeholder = "Highlight a remote to view actions.";
+    manageRemotesQuickPick.placeholder = "Highlight a remote to view actions";
     manageRemotesQuickPick.items = displayRemotes;
+    manageRemotesQuickPick.ignoreFocusOut = false;
     manageRemotesQuickPick.busy = false;
   } catch (err) {
     let errorMessage = "CFS: Failed to retrieve remotes.";
@@ -403,11 +394,8 @@ async function manageRemotes(pkgManager?: CfsPackageManagerProvider) {
               case "Remove":
                 resolve(["remove", e.item.label]);
                 break;
-              case "Logout":
-                resolve(["logout", e.item.label]);
-                break;
-              case "Login":
-                resolve(["login", e.item.label]);
+              case "Set Auth":
+                resolve(["auth", e.item.label]);
                 break;
               default:
                 throw new Error(
@@ -442,11 +430,12 @@ async function manageRemotes(pkgManager?: CfsPackageManagerProvider) {
         case "remove":
           await removeRemoteAction(pkgManager, remote);
           break;
-        case "logout":
-          await logoutRemoteAction(pkgManager, remote);
-          break;
-        case "login":
-          await loginRemoteAction(pkgManager, remote, false);
+        case "auth":
+          const authSelection = await promptAuthMethod(remote.name);
+          if (!authSelection) {
+            return; // User cancelled
+          }
+          await authRemoteAction(pkgManager, remote, authSelection);
           break;
         default:
           throw new Error(`Unknown action "${action}" selected.`);
@@ -504,6 +493,7 @@ async function addRemote(pkgManager?: CfsPackageManagerProvider) {
       title: "CFS: Add Custom Package Remote",
       prompt: "Enter remote name",
       placeHolder: "e.g., my-remote",
+      ignoreFocusOut: true,
       validateInput: (value) => {
         if (!value || value.trim().length === 0) {
           return "Remote name is required";
@@ -524,6 +514,7 @@ async function addRemote(pkgManager?: CfsPackageManagerProvider) {
       title: "CFS: Add Custom Package Remote",
       prompt: "Enter remote URL",
       placeHolder: "e.g., https://my-server.com/packages",
+      ignoreFocusOut: true,
       validateInput: (value) => {
         if (!value || value.trim().length === 0) {
           return "Remote URL is required";
@@ -541,10 +532,16 @@ async function addRemote(pkgManager?: CfsPackageManagerProvider) {
       return; // User cancelled
     }
 
+    // Prompt user for authentication method
+    const authSelection = await promptAuthMethod(remoteName);
+    if (!authSelection) {
+      return; // User cancelled
+    }
+
     // Show progress while adding remote
     const progressOptions: vscode.ProgressOptions = {
       location: vscode.ProgressLocation.Window,
-      title: `Adding remote "${remoteName}"...`,
+      title: `CFS: Adding remote "${remoteName}"...`,
       cancellable: false,
     };
 
@@ -559,12 +556,12 @@ async function addRemote(pkgManager?: CfsPackageManagerProvider) {
       }
     });
 
+    // Set authentication method for remote (prompts user to perform myAnalog login if needed)
+    await authRemoteAction(pkgManager, remote!, authSelection);
+
     void vscode.window.showInformationMessage(
       `CFS: Successfully added remote "${remoteName}" with URL "${remoteUrl}".`,
     );
-
-    // Prompt the user to choose authentication method and perform login if needed
-    await loginRemoteAction(pkgManager, remote!, true);
   } catch (err) {
     console.error(err);
     void vscode.window.showErrorMessage(
@@ -586,6 +583,7 @@ async function removeRemote(pkgManager?: CfsPackageManagerProvider) {
   customRemotesQuickPick.title = "CFS: Remove Custom Package Remote";
   customRemotesQuickPick.placeholder = "Finding custom remotes...";
   customRemotesQuickPick.busy = true;
+  customRemotesQuickPick.ignoreFocusOut = true;
   customRemotesQuickPick.show();
 
   // Let the user pick a remote to remove
@@ -612,7 +610,7 @@ async function removeRemoteAction(
     // Show progress while removing remote
     const progressOptions: vscode.ProgressOptions = {
       location: vscode.ProgressLocation.Window,
-      title: `Removing remote "${remote.name}"...`,
+      title: `CFS: Removing remote "${remote.name}"...`,
       cancellable: false,
     };
 
@@ -631,7 +629,7 @@ async function removeRemoteAction(
   }
 }
 
-async function logoutRemote(pkgManager?: CfsPackageManagerProvider) {
+async function authRemote(pkgManager?: CfsPackageManagerProvider) {
   if (!pkgManager) {
     void vscode.window.showErrorMessage(
       "CFS: Package Manager commands cannot be run because the package manager failed to initialize.",
@@ -640,139 +638,86 @@ async function logoutRemote(pkgManager?: CfsPackageManagerProvider) {
   }
 
   // Show UX
-  const loggedInRemotesQuickPick = vscode.window.createQuickPick();
-  loggedInRemotesQuickPick.title = "CFS: Logout Custom Package Remote";
-  loggedInRemotesQuickPick.placeholder = "Finding remotes for logout...";
-  loggedInRemotesQuickPick.busy = true;
-  loggedInRemotesQuickPick.show();
+  const customRemotesQuickPick = vscode.window.createQuickPick();
+  customRemotesQuickPick.title =
+    "CFS: Set Custom Package Remote Authentication";
+  customRemotesQuickPick.placeholder = "Finding remotes...";
+  customRemotesQuickPick.busy = true;
+  customRemotesQuickPick.ignoreFocusOut = true;
+  customRemotesQuickPick.show();
 
-  // Let the user pick a remote to logout of
+  // Let the user pick a remote to set auth on
   const remote = await pickRemote(
-    loggedInRemotesQuickPick,
-    pkgManager,
-    // Can sign out of a custom remote with any auth
-    (r) => r.custom && r.auth !== undefined,
-    // Don't show managed remotes
-    () => false,
-    "Select the remote to logout",
-    "No remotes available for logout.",
-  );
-
-  if (!remote) {
-    return; // User cancelled
-  }
-
-  // Logout of the selected remote
-  await logoutRemoteAction(pkgManager, remote);
-}
-
-async function logoutRemoteAction(
-  pkgManager: CfsPackageManagerProvider,
-  remote: CfsPackageRemote,
-) {
-  try {
-    // Show progress while logging out remote
-    const progressOptions: vscode.ProgressOptions = {
-      location: vscode.ProgressLocation.Window,
-      title: `Logging out of remote "${remote.name}"...`,
-      cancellable: false,
-    };
-
-    await vscode.window.withProgress(progressOptions, async () => {
-      await pkgManager.logout(remote.name);
-    });
-
-    void vscode.window.showInformationMessage(
-      `CFS: Successfully logged out of remote "${remote.name}".`,
-    );
-  } catch (err) {
-    console.error(err);
-    void vscode.window.showErrorMessage(
-      `CFS: Failed to log out of remote. ${err instanceof Error ? err.message : String(err)}`,
-    );
-  }
-}
-
-async function loginRemote(pkgManager?: CfsPackageManagerProvider) {
-  if (!pkgManager) {
-    void vscode.window.showErrorMessage(
-      "CFS: Package Manager commands cannot be run because the package manager failed to initialize.",
-    );
-    return;
-  }
-
-  // Show UX
-  const loggedInRemotesQuickPick = vscode.window.createQuickPick();
-  loggedInRemotesQuickPick.title = "CFS: Login Custom Package Remote";
-  loggedInRemotesQuickPick.placeholder = "Finding remotes for login...";
-  loggedInRemotesQuickPick.busy = true;
-  loggedInRemotesQuickPick.show();
-
-  // Let the user pick a remote to login to
-  const remote = await pickRemote(
-    loggedInRemotesQuickPick,
+    customRemotesQuickPick,
     pkgManager,
     // Can sign into any custom remote
     undefined,
     // Don't show managed remotes
     () => false,
-    "Select remote to log in to",
-    "No remotes available for login.",
+    "Choose a remote to set up authentication",
+    "No custom remotes available",
   );
 
   if (!remote) {
     return; // User cancelled
   }
 
-  // Login to the selected remote
-  await loginRemoteAction(pkgManager, remote, false);
+  // Choose the auth for the selected remote
+  const authSelection = await promptAuthMethod(remote.name);
+  if (!authSelection) {
+    return; // User cancelled
+  }
+  await authRemoteAction(pkgManager, remote, authSelection);
 }
 
-// Prompt user for authentication method and perform login
-async function loginRemoteAction(
-  pkgManager: CfsPackageManagerProvider,
-  remote: CfsPackageRemote,
-  includeNoAuth = false,
-) {
-  // Offer the user the choice of myAnalog or username/password
-  const loginChoices = [];
-  if (includeNoAuth) {
-    // Also offer no authentication option if adding a new remote
-    loginChoices.push({
+// Prompt user for authentication method
+async function promptAuthMethod(remoteName: string): Promise<
+  | {
+      authMethod: "No Authentication" | "myAnalog";
+    }
+  | {
+      authMethod: "Username/Password";
+      username: string;
+      password: string;
+    }
+  | undefined
+> {
+  // Offer the user the choice of no auth, myAnalog, or username/password
+  const authChoices: {
+    label: "No Authentication" | "myAnalog" | "Username/Password";
+    description: string;
+  }[] = [
+    {
       label: "No Authentication",
       description: "Do not use any authentication",
-    });
-  }
-  if (remote.custom) {
-    // Can only control myAnalog setting for custom remotes
-    loginChoices.push({
+    },
+    {
       label: "myAnalog",
-      description: "Login using your myAnalog account",
-    });
-  }
-  // Always offer username/password option
-  loginChoices.push({
-    label: "Username/Password",
-    description: "Login with a username and password",
+      description:
+        "Obtain credentials automatically using your myAnalog session",
+    },
+    {
+      label: "Username/Password",
+      description: "Specify a username and password",
+    },
+  ];
+
+  const authMethod = await vscode.window.showQuickPick(authChoices, {
+    title: "CFS: Custom Package Remote Authentication",
+    placeHolder: `Select authentication method for remote "${remoteName}"`,
+    ignoreFocusOut: true,
   });
 
-  const loginMethod = await vscode.window.showQuickPick(loginChoices, {
-    title: "CFS: Package Remote Authentication",
-    placeHolder: `Select authentication method for remote "${remote.name}"`,
-  });
-
-  if (!loginMethod || loginMethod.label === "No Authentication") {
-    return; // User cancelled or chose no authentication
+  if (!authMethod) {
+    return; // User cancelled
   }
 
-  let username: string | undefined;
-  let password: string | undefined;
-
-  if (loginMethod.label === "Username/Password") {
+  if (authMethod.label === "Username/Password") {
     // Prompt for username
-    username = await vscode.window.showInputBox({
-      title: "CFS: Package Remote Authentication",
-      placeHolder: `<username for remote ${remote.name}>`,
+    const username = await vscode.window.showInputBox({
+      title: "CFS: Custom Package Remote Authentication",
+      placeHolder: `<username for remote ${remoteName}>`,
+      ignoreFocusOut: true,
       prompt: "Enter username",
       validateInput: (value) => {
         if (!value || value.trim().length === 0) {
@@ -785,9 +730,10 @@ async function loginRemoteAction(
       return; // User cancelled
     }
     // Prompt for password
-    password = await vscode.window.showInputBox({
-      title: "CFS: Package Remote Authentication",
-      placeHolder: `<password for ${remote.name}>`,
+    const password = await vscode.window.showInputBox({
+      title: "CFS: Custom Package Remote Authentication",
+      placeHolder: `<password for ${remoteName}>`,
+      ignoreFocusOut: true,
       prompt: "Enter password",
       password: true,
       validateInput: (value) => {
@@ -801,23 +747,48 @@ async function loginRemoteAction(
     if (!password) {
       return; // User cancelled
     }
+    return { authMethod: "Username/Password", username, password };
   }
 
-  // Show progress while logging in remote
+  return { authMethod: authMethod.label };
+}
+
+// Set authentication for the remote based on the selected method
+async function authRemoteAction(
+  pkgManager: CfsPackageManagerProvider,
+  remote: CfsPackageRemote,
+  authSelection:
+    | { authMethod: "No Authentication" | "myAnalog" }
+    | {
+        authMethod: "Username/Password";
+        username: string;
+        password: string;
+      },
+) {
+  // Show progress while setting auth for remote
   const progressOptions: vscode.ProgressOptions = {
     location: vscode.ProgressLocation.Window,
-    title: `Logging in to remote "${remote.name}"...`,
+    title: `CFS: Setting authentication for remote "${remote.name}"...`,
     cancellable: false,
   };
+
   try {
     await vscode.window.withProgress(progressOptions, async () => {
-      switch (loginMethod.label) {
+      switch (authSelection.authMethod) {
+        case "No Authentication":
+          // Clear any existing authentication
+          await pkgManager.logout(remote.name);
+          break;
         case "Username/Password":
-          // Login with username and password
-          await pkgManager.login(remote.name, username!, password!);
+          // Use username and password
+          await pkgManager.login(
+            remote.name,
+            authSelection.username,
+            authSelection.password,
+          );
           break;
         case "myAnalog":
-          // Login with myAnalog
+          // Use myAnalog session
           await pkgManager.setRemoteCredentialProvider(
             remote.name,
             PACKAGE_MANAGER_CREDENTIAL_PROVIDER,
@@ -830,22 +801,22 @@ async function loginRemoteAction(
               `Failed to verify setting credential provider for remote "${remote.name}".`,
             );
           }
-          await promptMyAnalogLogin([updatedRemote]);
+          void promptMyAnalogLogin([updatedRemote]);
           break;
         default:
           throw new Error(
-            `Unknown login method "${loginMethod.label}" selected.`,
+            `Unknown auth method "${(authSelection as { authMethod: string }).authMethod}" selected.`,
           );
       }
     });
 
     void vscode.window.showInformationMessage(
-      `CFS: Successfully logged in to remote "${remote.name}".`,
+      `CFS: Successfully set authentication for remote "${remote.name}".`,
     );
   } catch (err) {
     console.error(err);
     void vscode.window.showErrorMessage(
-      `CFS: Failed to log in to remote. ${err instanceof Error ? err.message : String(err)}`,
+      `CFS: Failed to set authentication for remote. ${err instanceof Error ? err.message : String(err)}`,
     );
   }
 }
@@ -876,6 +847,7 @@ async function pickRemote(
       displayRemotes.push(...customRemotes.map(mapRemote));
     }
     quickPick.busy = false;
+    quickPick.ignoreFocusOut = false;
 
     if (displayRemotes.length === 0) {
       quickPick.placeholder = "";
@@ -927,9 +899,9 @@ const mapRemote = (remote: CfsPackageRemote): vscode.QuickPickItem => ({
   description: `${
     remote.auth
       ? remote.auth.username
-        ? "logged in as " + remote.auth.username
-        : "using " + remote.auth.credentialProvider + " session"
-      : ""
+        ? `authenticates using a password as user ${remote.auth.username}`
+        : `authenticates using your ${remote.auth.credentialProvider} session`
+      : "no authentication"
   }`,
   detail: remote.url.href,
 });

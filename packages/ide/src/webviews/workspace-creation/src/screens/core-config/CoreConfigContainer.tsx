@@ -62,12 +62,27 @@ function CoreConfigContainer({
 	const persistedPluginVersion = useCorePluginVersion(coreId ?? '');
 	const core = useConfiguredCore(coreId ?? '');
 
+	// Remove duplicates from plugins List
+	const uniquePluginsList = useMemo(() => {
+		const processedPluginIds = new Set<string>();
+
+		return pluginsList.filter(plugin => {
+			if (processedPluginIds.has(plugin.pluginId)) {
+				return false;
+			}
+
+			processedPluginIds.add(plugin.pluginId);
+
+			return true;
+		});
+	}, [pluginsList]);
+
 	const [selectedPluginInfo, setSelectedPluginInfo] = useState<
 		CfsPluginInfo | undefined
 	>(() => {
 		if (persistedPluginId) {
 			return findPluginInfo(
-				pluginsList,
+				uniquePluginsList,
 				persistedPluginId,
 				persistedPluginVersion
 			);
@@ -103,18 +118,20 @@ function CoreConfigContainer({
 							normalizedPackageId.toLowerCase() &&
 						(boardId === '' ||
 							(soc.board?.toLowerCase() ?? '') ===
-								boardId.toLowerCase())
+								boardId.toLowerCase()) &&
+						(!Array.isArray(soc.cores) ||
+							soc.cores?.includes(core?.coreId))
 				) ??
 					false)
 			);
 		};
 
-		return pluginsList.filter(filter);
-	}, [selectedSocId, packageId, boardId, pluginsList]);
+		return uniquePluginsList.filter(filter);
+	}, [selectedSocId, packageId, boardId, uniquePluginsList, core]);
 
 	const handlePluginChange = useCallback(
 		(id: string, version: string) => {
-			const targetPluginInfo = pluginsList.find(
+			const targetPluginInfo = uniquePluginsList.find(
 				p => p.pluginId === id && p.pluginVersion === version
 			);
 
@@ -139,7 +156,7 @@ function CoreConfigContainer({
 			}
 		},
 		[
-			pluginsList,
+			uniquePluginsList,
 			configErrors.notifications,
 			dispatch,
 			coreId,
@@ -151,7 +168,7 @@ function CoreConfigContainer({
 		if (persistedPluginId) {
 			setSelectedPluginInfo(
 				findPluginInfo(
-					pluginsList,
+					uniquePluginsList,
 					persistedPluginId,
 					persistedPluginVersion
 				)
@@ -163,7 +180,7 @@ function CoreConfigContainer({
 		coreId,
 		persistedPluginId,
 		persistedPluginVersion,
-		pluginsList
+		uniquePluginsList
 	]);
 
 	return (

@@ -1,7 +1,7 @@
 ---
 description: Use the CFS command-line utility (cfsutil) to install, view, or remove packages in CodeFusion Studio.
 author: Analog Devices
-date: 2025-12-15
+date: 2026-02-26
 ---
 
 # Manage packages from the command line (`cfsutil`)
@@ -47,13 +47,13 @@ You can also view details about a package, whether or not it’s installed:
 
 ## Install a package
 
-To install a package, run the following command with the package reference. The package reference is written in the format `<name>/<version>`.
+To install a package, run the following command with either a package reference or a path to a manifest file. The package reference is written in the format `<name>/<version>`.
 
 ```sh
-cfsutil pkg install <package-reference>
+cfsutil pkg install <reference>
 ```
 
-Only one version of a package can be installed at a time. Installing a new version replaces the one currently installed.
+Only one version of a package can be active at a time. Previously installed versions remain in the local cache and can be reinstalled if needed.
 
 See the following examples:
 
@@ -82,6 +82,90 @@ See the following examples:
 
     ```sh
     cfsutil pkg install msdk/<version>
+    ```
+
+!!! example "Install packages from a workspace manifest file"
+    ```sh
+    cfsutil pkg install /path/to/workspace/.cfs/.cfsdependencies
+    ```
+
+!!! note
+    For more information about manifest files, see the [cfsutil reference](../../developer-tools/cfsutil.md#manifest-files).
+
+### Install cached packages or packages with version ranges
+
+The `cfsutil pkg install` command supports semantic versioning, allowing you to specify version ranges instead of exact versions. This allows compatible updates to be installed automatically.
+
+Version ranges use the `MAJOR.MINOR.PATCH` format (for example, 2.1.0).
+
+!!! note "Version range syntax limitations"
+    The `<packageName>/<version>` format supports a single version token only. This can be:
+
+    - An exact version (for example, `2.1.0`)
+    - A caret range (`^2.0.0`)
+    - A tilde range (`~2.0.0`)
+    - A single comparison operator (`>=2.0.0`)
+
+    Compound constraints (for example, `>=2.0.0 <3.0.0`), logical OR (`||`), and wildcard patterns (`2.1.*`) are only supported when installing packages from a [manifest file](../../developer-tools/cfsutil.md#manifest-files).
+
+#### Caret ranges (^)
+
+Use the caret (^) to allow minor and patch updates within the same major version.
+
+!!! example "Install the latest compatible CFS plugins (2.x.x)"
+    ```sh
+    cfsutil pkg install "cfs_base_plugins/^2.0.0"
+    ```
+
+This installs the newest available 2.x.x version, such as 2.1.0.
+
+#### Tilde ranges (~)
+
+Use the tilde (`~`) to allow patch updates within the same minor version.
+
+!!! example "Install latest Zephyr 4.2.x patch version"
+
+    ```sh
+    cfsutil pkg install "zephyr/~4.2.0"
+    ```
+This installs the newest available 4.2.x version, but not 4.3.0.
+
+#### Comparison operators
+
+Use comparison operators to define explicit version constraints.
+
+!!! example "Install latest available CFS plugins"
+
+    ```sh
+    cfsutil pkg install "cfs_base_plugins/>=2.0.0"
+    ```
+
+!!! example "Install any Zephyr version below 4.3.0"
+
+    ```sh
+    cfsutil pkg install "zephyr/<4.3.0"
+    ```
+
+!!! example "Install the Zephyr 4.3.0 beta explicitly"
+
+    ```sh
+    cfsutil pkg install "zephyr/4.3.0-b.1"
+    ```
+
+!!! info "Default behavior"
+    Package versions follow [:octicons-link-external-24: semantic versioning](https://semver.org/){:target="_blank"} in the form `MAJOR.MINOR.PATCH` with optional pre-release identifiers (for example, `-b.1`). When a version range is specified (for example, using caret `^`, tilde `~`, or comparison operators), Package Manager installs the newest available stable (non–pre-release) version that satisfies the constraint. For example, `cfsutil pkg install "cfs_base_data_models/~2.0.0"` installs the newest available `2.0.x` version. Pre-release package versions, such as Zephyr pre-release builds, are installed only when you explicitly specify the pre-release tag (for example, `zephyr/4.3.0-b.1`).
+
+!!! important
+    Always wrap version specifications containing special characters in quotes to prevent shell interpretation issues.
+
+#### Use locally cached packages only
+
+Use the `-l` or `--local` flag to use only packages already cached locally.
+
+!!! example "Install a specific package from local cache only (offline mode)"
+
+    ```sh
+    cfsutil pkg install cfs_base_data_models/2.2.0 --local
     ```
 
 ## Verify installation
@@ -139,7 +223,7 @@ cfsutil pkg uninstall <name>
 2. Run the following command to view the remaining installed packages.
 
     ```sh
-    cfsutil pkg list <name>
+    cfsutil pkg list
     ```
 
 3. You can then uninstall any additional packages using the following command:

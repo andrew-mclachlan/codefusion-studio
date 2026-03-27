@@ -1,7 +1,7 @@
 ---
 description: Install the CodeFusion Studio VS Code extension
 author: Analog Devices
-date: 2025-12-15
+date: 2026-01-12
 ---
 
 # Install the CodeFusion Studio VS Code extension
@@ -75,6 +75,20 @@ This allows you to keep using the extension version bundled with a specific CFS 
 
 !!! tip
     If the CFS extension updated unexpectedly, disable automatic extension updates and revert to a previous version. To revert to a previous version, open the **Extensions** panel, click the gear icon next to the CodeFusion Studio extension, and choose **Install Specific Version…**. You can also install a specific version using **Install from VSIX…**, as documented above.
+
+### Optional: Review dependent extensions
+
+The CodeFusion Studio extension depends on other VS Code extensions (including Microsoft C/C++ and Cortex-Debug) to provide debugging and development features.
+
+In most cases, no additional action is required.
+
+- **First install of the CFS extension:** Dependent extensions are installed automatically if missing.
+- **Dependencies already installed:** Existing versions are kept unchanged.
+- **Upgrading the CFS extension:** Dependent extension versions are not automatically updated.
+
+To view all dependent extensions, open the **Extensions** panel, select **CodeFusion Studio**, and open the **Dependencies** tab.
+
+If you encounter issues, you can update dependent extensions manually from the VS Code Extensions view.
 
 ## Next steps
 

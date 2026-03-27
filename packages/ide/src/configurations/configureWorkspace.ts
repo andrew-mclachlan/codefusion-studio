@@ -30,6 +30,8 @@ import {
 } from "../commands/constants";
 import {
   ADI_CONFIGURE_WORKSPACE_SETTING,
+  CFS_PROJECT_SDK_ID,
+  CFS_PROJECT_SDK_PATH,
   CMSIS,
   DEBUG_PATH,
   EXTENSION_ID,
@@ -349,6 +351,20 @@ export const updateCppProperties = async (toolManager: CfsToolManager) => {
             if (msdkPath) {
               jsonContents["env"]["cfs.msdk.path"] = msdkPath;
               updated = true;
+            }
+          }
+
+          // Resolve project SDK path
+          if (CFS_PROJECT_SDK_PATH in jsonContents["env"]) {
+            const projectSdk = config.get<string>(CFS_PROJECT_SDK_ID);
+
+            if (projectSdk) {
+              const sdkPath = await toolManager.getToolPath(projectSdk);
+              
+              if (sdkPath) {
+                jsonContents["env"][CFS_PROJECT_SDK_PATH] = sdkPath;
+                updated = true;
+              }
             }
           }
 

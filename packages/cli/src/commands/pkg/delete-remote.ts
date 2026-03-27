@@ -19,15 +19,14 @@ import {getPackageManager} from '../../utils/package-manager.js';
 export default class CfsPackageDeleteRemote extends Command {
   static args = {
     remoteName: Args.string({
-      name: 'remoteName',
-      description: 'Remote name.',
+      description: 'Name of the remote package server.',
       multiple: false,
       required: true
     })
   };
 
   static description =
-    'Unregister a package server so it is no longer considered for package retrieval';
+    'Unregister a package server so it is no longer considered for package retrieval.';
 
   async run(): Promise<void> {
     const packman = await getPackageManager({

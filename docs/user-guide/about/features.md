@@ -1,20 +1,12 @@
 ---
 description: Features included with CodeFusion Studio
 author: Analog Devices
-date: 2025-10-21
+date: 2026-03-26
 ---
 
 # Features
 
 Explore all the features CodeFusion Studio has to offer.
-
-## System Planner Configuration Tools
-
-Use the System Planner to visually configure every aspect of your system — from memory and peripheral allocation to pin and clock behavior — and generate ready-to-build source code in one step.
-
-[Learn more →](../tools/index.md)
-
-![System Planner Walkthrough](../about/images/ide-system-planner.gif)
 
 ## Embedded AI Tools
 
@@ -22,17 +14,33 @@ Build and optimize AI models directly inside your embedded workflow. Use the Emb
 
 [Learn more →](../tools/manage-ai-models.md)
 
-![Embedded AI Tools Walkthrough](../about/images/ide-ai-tools.gif)
+![Embedded AI Tools Walkthrough](https://raw.githubusercontent.com/analogdevicesinc/codefusion-studio/V2.1.0/packages/ide/gifs/ide-ai-tools.gif)
 
-## Workspace Creation Wizard
+## AI Debug Assistant (Preview)
 
-Start new single- or multi-core projects in seconds with guided setup, example templates, and optional TrustZone® configurations.
+Investigate faults, inspect hardware state, decode fault registers, and coordinate across multiple cores during live debug sessions using natural language, with support for GitHub Copilot and other AI clients via the Model Context Protocol (MCP).
 
-[Learn more →](../workspaces/create-new-workspace.md)
+[Learn more →](../debugging/debug-tools/ai-debug-assistant/index.md)
 
-![Workspace Creation Wizard Walkthrough](../about/images/ide-workspace.gif)
+![AI Debug Assistant](https://raw.githubusercontent.com/analogdevicesinc/codefusion-studio/V2.1.0/packages/ide/gifs/ide-ai-debug-assistant.gif)
 
-## Heterogeneous multi-core debugging
+## System Planner
+
+Use the System Planner to visually configure every aspect of your system — from memory and peripheral allocation to pin and clock behavior — and generate ready-to-build source code in one step.
+
+[Learn more →](../tools/index.md)
+
+![System Planner Walkthrough](https://raw.githubusercontent.com/analogdevicesinc/codefusion-studio/V2.1.0/packages/ide/gifs/ide-system-planner.gif)
+
+## Debugging and Analysis
+
+Inspect, automate, and analyze your system behavior with built-in debugging and analysis utilities — including multi-core debugging, the Core Dump Analysis Tool, the GDB Toolbox, and the [Zephelin profiler](../tools/profiling.md).
+
+[Learn more →](../debugging/debug-tools/index.md)
+
+![GDB Toolbox](./images/ide-gdb-toolbox.gif)
+
+## Multi-core Debugging
 
 CodeFusion Studio provides an extended debugging ecosystem for multi-core systems with breakpoints, disassembly, cross-core support, and RTOS thread awareness.
 
@@ -41,15 +49,23 @@ CodeFusion Studio provides an extended debugging ecosystem for multi-core system
 ![Multi-core debugging](./images/multi-core-debugging-light.png#only-light)
 ![Multi-core debugging](./images/multi-core-debugging-dark.png#only-dark)
 
-## Debugging and analysis tools
+## Package Manager
 
-Inspect, automate, and analyze your system behavior with built-in debugging and analysis utilities — including multi-core debugging, the Core Dump Analysis Tool, the GDB Toolbox, and the [Zephelin profiler](../tools/profiling.md).
+Download SDKs, toolchains, and plugins on demand with the integrated Package Manager to keep your environment modular, current, and compatible across supported architectures.
 
-[Learn more →](../debugging/debug-tools/index.md)
+[Learn more →](../installation/package-manager/index.md)
 
-![GDB Toolbox](./images/ide-gdb-toolbox.gif)
+![Package Manager install Walkthrough](./images/ide-package-manager.gif)
 
-## Platform agnostic architecture
+## Workspace Creation Wizard
+
+Start new single- or multi-core projects in seconds with guided setup, example templates, and optional TrustZone® configurations.
+
+[Learn more →](../workspaces/create-new-workspace.md)
+
+![Workspace Creation Wizard Walkthrough](https://raw.githubusercontent.com/analogdevicesinc/codefusion-studio/V2.1.0/packages/ide/gifs/ide-workspace.gif)
+
+## Plugin-Based Architecture
 
 CodeFusion Studio uses an extensible plugin architecture that separates configuration and design capture from code generation, allowing you to choose RTOS, middleware, and firmware platforms.
 
@@ -65,15 +81,7 @@ These settings are stored in structured JSON files and converted into buildable 
 
 [Learn more →](../plugins/index.md)
 
-## Package and plugin management
-
-Download SDKs, toolchains, and plugins on demand with the integrated Package Manager to keep your environment modular, current, and compatible across supported architectures.
-
-[Learn more →](../installation/package-manager/index.md)
-
-![Package Manager install Walkthrough](../about/images/ide-package-manager.gif)
-
-## ELF file explorer
+## ELF File Explorer
 
 [ELF File Explorer](../developer-tools/elf-file-explorer.md) provides a graphical interface to help understand and analyze the contents of ELF files.
 

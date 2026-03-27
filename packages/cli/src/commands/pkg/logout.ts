@@ -26,7 +26,14 @@ export default class CfsPackageLogout extends Command {
     })
   };
 
-  static description = 'Logout from a package server.';
+  static deprecationOptions = {
+    message: `This command is deprecated and will be removed in a future release. Please use 'pkg auth-remote' instead.`
+  };
+
+  static description = 'Log out from a package server.';
+
+  static hidden = true;
+  static state = 'deprecated';
 
   async run(): Promise<void> {
     const packman = await getPackageManager({
@@ -35,6 +42,6 @@ export default class CfsPackageLogout extends Command {
     const {args} = await this.parse(CfsPackageLogout);
     await packman.logout(args.remoteName);
 
-    this.log(`Logout successful!`);
+    this.log(`Log out successful!`);
   }
 }

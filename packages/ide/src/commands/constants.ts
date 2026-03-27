@@ -72,6 +72,11 @@ export const SHOW_SYSTEM_PLANNER_AT_STARTUP_COMMAND_ID =
 export const OPEN_DISASSEMBLY_COMMAND_ID = "cfs.openDisassemblyView";
 export const OPEN_WITH_SSPLUS_COMMAND_ID = "cfs.explorer.openWithSSPlus";
 
+// MCP Server Commands
+export const START_MCP_SERVER_COMMAND_ID = "cfs.mcp.startServer";
+export const STOP_MCP_SERVER_COMMAND_ID = "cfs.mcp.stopServer";
+export const MCP_SERVER_STATUS_COMMAND_ID = "cfs.mcp.status";
+
 // ADI SDK commands
 export const SELECT_SDK_PATH_COMMAND_ID = "cfs.SDK.selectSdkPath";
 
@@ -128,8 +133,7 @@ export const PACKAGE_MANAGER_COMMANDS = {
   MANAGE_REMOTES: "cfs.manageRemotes",
   ADD_REMOTE: "cfs.addRemote",
   REMOVE_REMOTE: "cfs.removeRemote",
-  LOGOUT_REMOTE: "cfs.logoutRemote",
-  LOGIN_REMOTE: "cfs.loginRemote",
+  AUTH_REMOTE: "cfs.authRemote",
 };
 
 // Zephelin Commands

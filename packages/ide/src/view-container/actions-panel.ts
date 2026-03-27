@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2024-2025 Analog Devices, Inc.
+ * Copyright (c) 2024-2026 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import {
   DEBUG_ALT,
   DEBUG_LAUNCH_CONTEXT,
   DEBUG_TASK_CONTEXT,
+  DOCUMENTATION_ACTION,
   ERASE_ACTION,
   EXTENSION_ID,
   FIRMWARE_PLATFORM,
@@ -184,6 +185,22 @@ export class ActionsViewProvider
       );
     }
 
+    // Adding documentation action section if a documentation task exists
+    if (
+      !this.actionItems.some(
+        (item) =>
+          item instanceof ActionTree && item.label === DOCUMENTATION_ACTION,
+      ) &&
+      this.hasDocumentationTasks(this.allTasks)
+    ) {
+      this.actionItems.push(
+        new ActionTree(
+          DOCUMENTATION_ACTION,
+          vscode.TreeItemCollapsibleState.Expanded,
+        ),
+      );
+    }
+
     this.hasInitialized = true;
 
     // New content is available, so refresh the view.
@@ -201,6 +218,16 @@ export class ActionsViewProvider
           .toLocaleLowerCase()
           .includes(SECURITY_TASKS_SEARCH_STRING.generateEnvelopedPackage) &&
           (task.source === "CFS" || task.source === "Workspace"))
+      );
+    });
+  }
+
+  // Checks if the tasks contain a documentation task
+  hasDocumentationTasks(allTasks: vscode.Task[]) {
+    return allTasks.some((task) => {
+      return (
+        task.name.toLowerCase().includes(DOCUMENTATION_ACTION.toLowerCase()) &&
+        (task.source === "CFS" || task.source === "Workspace")
       );
     });
   }
@@ -287,12 +314,15 @@ export class ActionsViewProvider
         return await this.getActionItemsForTasks("flash");
       case DEBUG_ACTION:
         return await this.getDebugActions(workspaceFolders);
+      case DOCUMENTATION_ACTION:
+        return this.getActionItemsForTasks("documentation", TOOLS, false);
       case PROFILING_ACTION:
         return await this.getActionItemsForTasks("(zephelin)", GRAPH);
       case SECURITY_ACTION:
-        return this.getActionItemsForSecurityTasks(
-          [SECURITY_TASKS_SEARCH_STRING.generateKey, SECURITY_TASKS_SEARCH_STRING.generateEnvelopedPackage],
-        );
+        return this.getActionItemsForSecurityTasks([
+          SECURITY_TASKS_SEARCH_STRING.generateKey,
+          SECURITY_TASKS_SEARCH_STRING.generateEnvelopedPackage,
+        ]);
       default:
         return [];
     }
@@ -475,9 +505,13 @@ export class ActionsViewProvider
         displayName = `${displayName} (Workspace)`;
       }
 
-      let contextValue = COPY_AND_EDIT_TASK_CONTEXT;
+      let contextValue: string | undefined = COPY_AND_EDIT_TASK_CONTEXT;
       if (this.isTaskSourceJson(task.name)) {
         contextValue = DEBUG_TASK_CONTEXT;
+      }
+      // Hide the plus icon for documentation tasks
+      if (task.name.toLowerCase().includes(DOCUMENTATION_ACTION.toLowerCase()) && task.source === "CFS") {
+        contextValue = undefined;
       }
 
       actionItems.push(

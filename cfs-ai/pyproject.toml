@@ -1,6 +1,6 @@
 [project]
 name = "cfsai"
-version = "2.0.1"
+version = "2.1.0"
 description = "A tool to help you put your AI model on hardware"
 readme = "README.md"
 authors = [

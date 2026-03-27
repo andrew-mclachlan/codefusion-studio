@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2025 Analog Devices, Inc.
+ * Copyright (c) 2025-2026 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -132,24 +132,7 @@ export class MsdkTaskProvider implements vscode.TaskProvider {
         shellArgs: Utils.getShellArgs(platform),
       };
 
-      const workspaceTasksPath = path.join(cwd, ".vscode", "cfs.tasks.json");
-
-      // Additional tasks that are specific to the workspace
-      let workspaceTasks;
-
-      if (fs.existsSync(workspaceTasksPath)) {
-        try {
-          const workspaceTasksContent = fs.readFileSync(
-            workspaceTasksPath,
-            "utf-8",
-          );
-          workspaceTasks = JSON.parse(workspaceTasksContent);
-        } catch (error) {
-          console.error(
-            `Error reading or parsing workspace cfs.tasks.json: ${error}`,
-          );
-        }
-      }
+      const workspaceTasks = Utils.getTasksFromCustomTasksJson(cwd);
 
       // Iterate across the resources/tasks.json file to load definitions.
       // This reduces maintenance overhead and enables easy testing of tasks.json files.

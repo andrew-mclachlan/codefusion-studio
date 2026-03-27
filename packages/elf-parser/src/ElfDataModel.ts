@@ -262,7 +262,7 @@ export class ElfDataModel {
 					`, localstack INT` +
 					`, stack INT` +
 					`, bind STRING, visibility STRING` +
-					`, recursive INT` +
+					`, [recursive] INT` +
 					`, path STRING` +
 					`, stackdepth INT` +
 					`)`,
@@ -340,7 +340,7 @@ export class ElfDataModel {
 							", visibility" +
 							", localstack" +
 							", stack" +
-							", recursive" +
+							", [recursive]" +
 							", path" +
 							", stackdepth" +
 							") " +

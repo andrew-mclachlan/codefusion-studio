@@ -187,7 +187,8 @@ describe("Workspace MAX78XXX creation using predefined template", () => {
     );
     const workspaceName = await pathInput.getAttribute("current-value");
 
-    const createwsBtn = await UIUtils.findWebElement(view,
+    const createwsBtn = await UIUtils.findWebElement(
+      view,
       By.xpath('//*[@id="root"]/div/div[3]/div/div/vscode-button[2]'),
     );
 
@@ -197,10 +198,10 @@ describe("Workspace MAX78XXX creation using predefined template", () => {
 
     // Assert that the workspace is created successfully
     const userHome = os.homedir();
-    const location = `${userHome}/cfs/${TextData.cfsidevesrion}`;
+    const location = `${userHome}/cfs/${TextData.cfsideversion}`;
     console.log(`location is ${location}`);
     const workspacePath = `${location}/${workspaceName}`;
-    await UIUtils.sleep(5000);
+    await UIUtils.sleep(2000);
     console.log(`workspacePath is ${workspacePath}`);
     expect(existsSync(workspacePath)).to.be.true;
     console.log(`Workspace created at: ${workspacePath}`);

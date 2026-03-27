@@ -35,8 +35,8 @@ We recommend using NVM to install and manage NodeJS on your machine.
 
 2. Install NodeJS.
 
-    - `nvm install 18.15`
-    - `nvm use 18.15`
+    - `nvm install`
+    - `nvm use`
 
 3. Install the dependencies.
 

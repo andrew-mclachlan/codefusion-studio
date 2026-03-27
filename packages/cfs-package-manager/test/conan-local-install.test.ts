@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2025 Analog Devices, Inc.
+ * Copyright (c) 2025-2026 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ describe("Local install", function () {
 		await expect(
 			api.install(testPkgRef, { localOnly: true })
 		).to.be.rejectedWith(
-			/Package (.*) not resolved: No remote defined/
+			/Couldn't find the following packages:|not resolved: No remote defined|No versions found matching/
 		);
 	});
 
@@ -108,7 +108,7 @@ describe("Local install", function () {
 		await expect(
 			api.install(testPkgRef, { localOnly: true })
 		).to.be.rejectedWith(
-			/Package (.*) not resolved: No remote defined/
+			/Couldn't find the following packages:|not resolved: No remote defined|No versions found matching/
 		);
 	});
 });

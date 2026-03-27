@@ -66,6 +66,19 @@ export class ConanRunner {
 			};
 			if (execError.stderr !== undefined) {
 				const stderr = execError.stderr.trim().replace(/\r/g, "");
+				if (stderr.includes("ERROR: Wrong user or password")) {
+					const remoteNameMatches = Array.from(
+						stderr.matchAll(/\[Remote: ([^\]]+)\]/g)
+					);
+					const remoteNames = remoteNameMatches.map(
+						(match) => match[1]
+					);
+
+					throw new ConanError("AUTH_ERROR", stderr, {
+						remotes: remoteNames.length > 0 ? remoteNames : undefined,
+						cause: error
+					});
+				}
 				if (stderr.includes("ERROR: Authentication error")) {
 					const remoteNameMatches = Array.from(
 						stderr.matchAll(

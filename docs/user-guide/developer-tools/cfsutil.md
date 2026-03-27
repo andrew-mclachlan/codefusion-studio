@@ -1,7 +1,7 @@
 ---
 description: The CFSUtil Command Line Utility
 author: Analog Devices
-date: 2025-10-30
+date: 2026-02-26
 ---
 
 <!-- markdownlint-disable MD024 -->
@@ -152,7 +152,7 @@ Some examples of queries are as follows:
 | Specific columns               | `SELECT name,address FROM symbols`                                      |
 | Symbols larger than 100 bytes | `SELECT * FROM symbols WHERE size > 100`                                |
 | Largest symbols               | `SELECT * FROM symbols ORDER BY size DESC LIMIT 10`                     |
-| Symbols between addresses     | `SELECT * from symbols WHERE address BETWEEN 0x10000000 AND 0x20000000` |
+| Symbols between addresses     | `SELECT * FROM symbols WHERE address BETWEEN 0x10000000 AND 0x20000000` |
 
 The output can be modified with the following switches.
 
@@ -526,13 +526,13 @@ Retrieves metadata for a given package. The package does not need to be installe
 
 ### Install
 
-`cfsutil pkg install <package-reference>`
+`cfsutil pkg install <reference> [-l|--local]`
 
 Install a CFS package, including all its dependencies.
 
 | Argument             | Description                                         |
 |----------------------|-----------------------------------------------------|
-| `<package-reference>` | Package reference in the format `pkg_name/version`. |
+| `<reference>` | Package reference (`pkg_name/version`) or path to a manifest file (for example, `C:\Users\<username>\cfs\2.1.0\my-sample-workspace\.cfs\.cfsdependencies`). |
 
 | Flag          | Description                            |
 |---------------|----------------------------------------|
@@ -542,6 +542,173 @@ Install a CFS package, including all its dependencies.
     ```sh
     cfsutil pkg install zephyr/4.2.0
     ```
+
+!!! example "Install packages from a workspace manifest file"
+    ```sh
+    cfsutil pkg install /path/to/workspace/.cfs/.cfsdependencies
+    ```
+
+#### Version range syntax
+
+The `cfsutil pkg install` command supports semantic versioning (SemVer) range expressions. Version ranges allow you to specify acceptable versions rather than a single fixed version.
+
+CFS packages use the semantic version format: `MAJOR.MINOR.PATCH`.
+
+!!! note "Version range syntax limitations"
+    The `<packageName>/<version>` format supports a single version token only. This can be:
+
+    - An exact version (for example, `2.1.0`)
+    - A caret range (`^2.0.0`)
+    - A tilde range (`~2.0.0`)
+    - A single comparison operator (`>=2.0.0`)
+
+    Compound constraints (for example, `>=2.0.0 <3.0.0`), logical OR (`||`), and wildcard patterns (`2.1.*`) are only supported when installing packages from a manifest file.
+
+##### Caret ranges (`^`)
+
+Allows updates that do not change the major version (minor and patch updates are permitted). Package Manager installs the newest available version that satisfies the range.
+
+!!! example "Install plugins with ^2.0.0 - allows 2.0.1 through 2.x.x"
+    ```sh
+    cfsutil pkg install "cfs_base_plugins/^2.0.0"
+    ```
+
+**Result:** Installs `cfs_base_plugins/2.1.0` (highest available version within major version 2).
+
+##### Tilde ranges (`~`)
+
+Allows only patch-level updates within the specified minor version.
+
+!!! example "Install latest patch version only"
+    ```sh
+    cfsutil pkg install "cfs_base_data_models/~2.0.0"
+    ```
+
+**Result:** Installs `cfs_base_data_models/2.0.1` (highest 2.0.x version, does not include 2.1.0 or 2.2.0)
+
+##### Comparison operators (`>=`, `<=`, `>`, `<`, `=`)
+
+Allows explicit version constraints using comparison operators.
+
+!!! example "Greater than or equal to (>=)"
+    ```sh
+    cfsutil pkg install "cfs_base_plugins/>=2.0.0"
+    ```
+**Result:** Installs `cfs_base_plugins/2.1.0` (highest available version greater than or equal to 2.0.0).
+
+!!! example "Less than (<)"
+    ```sh
+    cfsutil pkg install "cfs_base_plugins/<2.1.0"
+    ```
+
+**Result:** Installs `cfs_base_plugins/2.0.1` (highest available version lower than 2.1.0).
+
+!!! example "Greater than (>)"
+    ```sh
+    cfsutil pkg install "cfs_base_data_models/>2.0.1"
+    ```
+
+**Result:** Installs `cfs_base_data_models/2.1.0` (highest available version greater than 2.0.1).
+
+!!! note
+    Version ranges must be enclosed in quotes to prevent shell interpretation of special characters.
+
+!!! info "Default behavior"
+    Package versions follow [:octicons-link-external-24: semantic versioning](https://semver.org/){:target="_blank"} in the form `MAJOR.MINOR.PATCH` with optional pre-release identifiers (for example, `-b.1`). When a version range is specified (for example, using caret `^`, tilde `~`, or comparison operators), Package Manager installs the newest available stable version that satisfies the constraint. For example, `cfsutil pkg install "cfs_base_data_models/~2.0.0"` installs the newest available `2.0.x` version.
+
+!!! info "Pre-release versions"
+    Pre-release versions, such as Zephyr pre-release builds, follow the semantic versioning pre-release syntax and are not selected by default when resolving version ranges. They must be specified explicitly, so `zephyr/4.3.0-b.1` installs exactly `zephyr/4.3.0-b.1`.
+
+##### Manifest files
+
+In addition to installing individual packages, you can install multiple packages using a manifest file. Manifest files also support more advanced version expressions, such as compound constraints, which are not supported in the `<packageName>/<version>` format.
+
+In CodeFusion Studio, you can find an example manifest file (called `.cfsdependencies`) in the workspace `.cfs` directory. For example: `C:\Users\<username>\cfs\2.1.0\my-sample-workspace\.cfs\.cfsdependencies`. The `.cfsdependencies` file is the standard workspace manifest used by CodeFusion Studio. You can also install packages from any manifest file that follows the same JSON format by providing its path to `cfsutil pkg install`.
+
+This file specifies the packages and versions required by the workspace.
+
+Example manifest file:
+
+```json
+{
+  "version": 1,
+  "packages": [
+    {
+      "name": "msdk",
+      "version": "2.0.1"
+    },
+    {
+      "name": "cfs_base_data_models",
+      "version": "2.0.1"
+    },
+    {
+      "name": "cfs_base_plugins",
+      "version": "2.0.1"
+    }
+  ]
+}
+```
+
+The `version` field in a manifest file supports semantic version range syntax, including compound constraints.
+
+Example:
+
+```json
+{
+  "version": 1,
+  "packages": [
+    {
+      "name": "cfs_base_plugins",
+      "version": ">=2.0.0 <3.0.0"
+    }
+  ]
+}
+```
+
+!!! example "Install the manifest file"
+    ```sh
+    cfsutil pkg install /path/to/workspace/.cfs/.cfsdependencies
+    ```
+
+**Result:** Installs the newest available version that satisfies the version constraint specified in the manifest file (for example, `cfs_base_plugins/2.1.0`).
+
+#### Install from local cache
+
+Use the `-l` or `--local` flag to install packages only from the local cache, without accessing remote repositories.
+
+Scenario: You have previously installed the following plugin versions, which are now available in the local cache:
+
+- `cfs_base_plugins/2.0.0`
+- `cfs_base_plugins/2.1.0`
+
+You want to install a version from the local cache without checking for newer versions remotely.
+
+!!! example "Install a specific cached version"
+
+    ```sh
+    cfsutil pkg install cfs_base_plugins/2.0.0 --local
+    ```
+
+This installs exactly version `2.0.0` from the local cache.
+
+!!! example "Install the newest compatible cached version using a range"
+
+    ```sh
+    cfsutil pkg install "cfs_base_plugins/^2.0.0" --local
+    ```
+
+This installs the newest cached version that satisfies the range (for example, `2.1.0`), without accessing remote repositories.
+
+!!! example "Install workspace dependencies from a manifest file using local cache only"
+
+    ```sh
+    cfsutil pkg install /path/to/workspace/.cfs/.cfsdependencies --local
+    ```
+
+This installs all required workspace packages from the local cache.
+
+!!! note
+    The `--local` flag restricts installation to packages available in the local cache only. If no cached version satisfies the specified version or range, the installation fails.
 
 ### List
 
@@ -671,6 +838,22 @@ Registers a new package server to retrieve packages.
 
 Lists all remote servers that have been registered for package retrieval.
 
+!!! example
+    ```sh
+    Name           URL                                 Authentication  Default
+    ────────────── ─────────────────────────────────── ─────────────── ───────
+    my-remote      https://packages.example.com        None            Yes
+    ```
+
+#### Output fields
+
+| Column             | Description                                                    |
+|--------------------|----------------------------------------------------------------|
+| **Name**           | The name of the remote. |
+| **URL**            | The URL of the package server.             |
+| **Authentication** | Shows the authentication method configured for the remote. This may be `None`, `myAnalog session` (or `myAnalog session (inactive)` if not logged in), or a username-based authentication method. |
+| **Default**        | Indicates whether the remote is a pre-configured remote (not user-added).           |
+
 ### Delete remote
 
 `cfsutil pkg delete-remote <remote-name>`
@@ -686,15 +869,44 @@ Unregisters a package server so it is no longer considered for package retrieval
     cfsutil pkg delete-remote myserver
     ```
 
-## Auth
+### Authenticate remote
 
-The `auth` commands allow you to authenticate with the CFS Package Manager in order to retrieve, install, and manage SDKs, plugins, and toolchains.
+`cfsutil pkg auth-remote <remote-name>`
+
+Configures authentication for a remote package server.
+
+This command defines how `cfsutil` authenticates when accessing the specified remote, using either credentials, a myAnalog session, or no authentication.
+
+| Argument        | Description                                                                                |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| `<remote-name>` | The name of the remote to authenticate. This must match a remote added using `add-remote`. |
+
+| Flag                    | Description                                                            |
+| ----------------------- | ---------------------------------------------------------------------- |
+| `--user <username>`     | Authenticate using a username. Prompts for a password if not provided. |
+| `--password <password>` | Password, API key, or token for authentication.                        |
+| `--myanalog`            | Authenticate automatically using your active myAnalog session.         |
+| `--none`                | Disable authentication for the remote.                                 |
+
+!!! example
+    ```sh
+    cfsutil pkg auth-remote myserver --user USERNAME --password PASSWORD
+    cfsutil pkg auth-remote myserver --myanalog
+    cfsutil pkg auth-remote myserver --none
+    ```
+
+!!! note
+    `--myanalog` uses your current myAnalog session. If you are not logged in, run `cfsutil myanalog status` to check your session and `cfsutil myanalog login` to sign in, then run the command again.
+
+## myanalog authentication
+
+The `myanalog` commands allow you to authenticate with a myAnalog account in order to retrieve, install, and manage SDKs, plugins, and toolchains distributed using the Package Manager.
 
 These commands are the command-line equivalents of the authentication options available in the Command Palette, documented in [Access restricted packages](../installation/package-manager/auth.md).
 
 ### Login
 
-`cfsutil auth login [--verbose]`
+`cfsutil myanalog login [--verbose]`
 
 Login with a myAnalog account. A dialog will prompt you to open an external website where you can log in with your myAnalog credentials.
 Once authenticated, VS Code will confirm that you can now proceed to install packages.
@@ -705,26 +917,26 @@ Once authenticated, VS Code will confirm that you can now proceed to install pac
 
 !!! example
     ```sh
-    cfsutil auth login
-    cfsutil auth login --verbose
+    cfsutil myanalog login
+    cfsutil myanalog login --verbose
     ```
 
 ### Logout
 
-`cfsutil auth logout`
+`cfsutil myanalog logout`
 
-Logout of the current session.
+Logout of the current myAnalog session.
 
 !!! example
     ```sh
-    cfsutil auth logout
+    cfsutil myanalog logout
     ```
 
 ### Status
 
-`cfsutil auth status [--verbose]`
+`cfsutil myanalog status [--verbose]`
 
-Show authentication status.
+Show myAnalog authentication status.
 
 | Flag              | Description                  |
 | ----------------- | ---------------------------- |
@@ -732,6 +944,6 @@ Show authentication status.
 
 !!! example
     ```sh
-    cfsutil auth status
-    cfsutil auth status --verbose
+    cfsutil myanalog status
+    cfsutil myanalog status --verbose
     ```

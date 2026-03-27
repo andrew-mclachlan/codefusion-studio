@@ -89,10 +89,17 @@ nav:
       - Install Segger J-Link drivers: user-guide/debugging/install-jlink-drivers.md
       - Install ICE drivers (Windows only): user-guide/debugging/install-ice-drivers.md
       - Debug an application: user-guide/debugging/debug-an-application.md
+      - Debugging interface:  user-guide/debugging/debug-interface.md
       - Debug a multicore MSDK application: user-guide/debugging/debug-multi-core-application.md
       - Debug a SHARC-FX application: user-guide/debugging/debug-sharc-fx.md
       - Debug tools:
           - user-guide/debugging/debug-tools/index.md
+          - AI Debug Assistant:
+              - user-guide/debugging/debug-tools/ai-debug-assistant/index.md
+              - Getting started: user-guide/debugging/debug-tools/ai-debug-assistant/getting-started.md
+              - Using the AI Debug Assistant: user-guide/debugging/debug-tools/ai-debug-assistant/using-ai-debug-assistant.md
+              - Tools and workflows reference: user-guide/debugging/debug-tools/ai-debug-assistant/reference.md
+              - Troubleshooting: user-guide/debugging/debug-tools/ai-debug-assistant/troubleshooting.md
           - GDB Toolbox:
               - user-guide/debugging/debug-tools/gdb-toolbox/index.md
               - About the GDB Toolbox: user-guide/debugging/debug-tools/gdb-toolbox/gdb-toolbox-about.md
@@ -142,6 +149,7 @@ nav:
     - Third-party: user-guide/resources/third-party-resources.md
   - Release Notes:
     - release-notes/index.md
+    - 2.1.0: release-notes/2.1.0.md
     - 2.0.2: release-notes/2.0.2.md
     - 2.0.1: release-notes/2.0.1.md
     - 2.0.0: release-notes/2.0.0.md

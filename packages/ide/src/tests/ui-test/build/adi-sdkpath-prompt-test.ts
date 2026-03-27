@@ -32,7 +32,7 @@ import {
   openFolder,
 } from "../../ui-test-utils/file-utils";
 import { selectQuickPick } from "../../ui-test-utils/settings-utils";
-import {SELECT_SDK_PATH_COMMAND_ID} from "../../../commands/constants";
+import { SELECT_SDK_PATH_COMMAND_ID } from "../../../commands/constants";
 import { CFS_SDK_VERSION } from "../../ui-test-utils/settings-utils";
 
 // Test user setting prompt for missing sdk path
@@ -57,8 +57,10 @@ describe("SDK Path User Setting Prompt Test", () => {
   it("Prompt User to Select SDK Path", async () => {
     await workbench.getDriver().sleep(10000);
     await workbench.executeCommand(SELECT_SDK_PATH_COMMAND_ID);
-    await selectQuickPick(".*"+ CFS_SDK_VERSION).then(async (sdkPath: string) => {
-      expect(sdkPath).not.equal("");
-    });
+    await selectQuickPick(".*" + CFS_SDK_VERSION).then(
+      async (sdkPath: string) => {
+        expect(sdkPath).not.equal("");
+      },
+    );
   });
 });

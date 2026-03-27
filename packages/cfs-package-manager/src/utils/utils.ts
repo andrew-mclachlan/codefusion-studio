@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2025 Analog Devices, Inc.
+ * Copyright (c) 2025-2026 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,6 +81,37 @@ const PackmanUtils = {
 
 		const pkgMgrAppDataPath = path.join(cfsAppDataPath, "packages");
 		return pkgMgrAppDataPath;
+	},
+
+	/**
+	 * Formats the cfs_soc attribute. Some packages have this attribute as a single index array with comma-separated values,
+	 * while others have it as an array of strings. This function ensures consistency in the output of an array of SoCs.
+	 * @param socs - The cfs_soc attribute
+	 * @returns An array of SoCs, regardless of the input format
+	 */
+	formatCfsSocAttribute(socs: string | string[]): string[] {
+			if (!socs) {
+				return [];
+			}
+			const inputArray = Array.isArray(socs) ? socs : [socs];
+			const result: string[] = [];
+
+			for (const entry of inputArray) {
+				if (!entry) {
+					continue;
+				}
+				const parts = entry.split(",");
+
+				for (const part of parts) {
+
+					const trimmed = part.trim();
+
+					if (trimmed) {
+						result.push(trimmed);
+					}
+				}
+			}
+			return result;
 	}
 };
 

@@ -14,6 +14,8 @@
 
 *[ARM]: Advanced RISC machine. A number of related instruction set architectures (ISAs) maintained and licensed by Arm Holdings. In CodeFusion Studio, ARM refers to an ARM Cortex-M core, such as the Cortex-M4 used in MAX32xxx and MAX78xxx microcontrollers.
 
+*[BFAR]: BusFault Address Register. An ARM Cortex-M register that contains the memory address that caused a BusFault. Valid only when the BFARVALID bit in the CFSR is set.
+
 *[BSP]: Board Support Package. The layer of software containing hardware-specific boot firmware and device drivers.
 
 *[CMSIS]: Common Microcontroller Software Interface Standard. A set of APIs, software components, tools and workflows to simplify software development.
@@ -21,6 +23,8 @@
 *[command palette]: Searchable access to commands within VS Code, accessed via Control+Shift+P (Windows/Linux) or Command+Shift+P (Mac).
 
 *[CFS]: CodeFusion Studio
+
+*[CFSR]: Configurable Fault Status Register. An ARM Cortex-M register that provides detailed information about the cause of a fault, covering MemManage, BusFault, and UsageFault fault types.
 
 *[CNN]: Convolutional Neural Network. A type of deep learning model designed to process and classify visual data by applying convolutional layers that automatically extract spatial features.
 
@@ -54,11 +58,15 @@
 
 *[HALs]: Hardware Abstraction Layers. A conceptual interface between software and hardware that simplifies hardware access and improves portability.
 
+*[HFSR]: HardFault Status Register. An ARM Cortex-M register that indicates why a fault escalated to a HardFault exception, such as a disabled configurable fault or a debug event.
+
 *[I²C2]: Inter-Integrated Circuit peripheral instance (the “2” indicates the third I²C controller on the device).
 
 *[IDE]: Integrated Development Environment. A software application that helps developers write and debug code.
 
 *[IRQ]: Interrupt Request
+
+*[MCP]: Model Context Protocol. An open standard created by Anthropic that enables AI models to securely connect to external tools and data sources.
 
 *[MCU]: Microcontroller Unit
 
@@ -67,6 +75,8 @@
 *[ML]: Machine Learning
 
 *[MMR]: Memory Mapped Register. A configuration register that is accessed as memory.
+
+*[MMFAR]: MemManage Fault Address Register. An ARM Cortex-M register that contains the memory address that caused a MemManage fault, such as an MPU violation. Valid only when the MMARVALID bit in the CFSR is set.
 
 *[MSDK]: Microcontroller Software Development Kit. A collection of software and tools used to develop firmware for Analog Devices' MAX32xxx and MAX78xxx microcontrollers.
 

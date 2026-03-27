@@ -66,13 +66,13 @@ import {
   Workbench,
 } from "vscode-extension-tester";
 
-import { exec } from "child_process";
 import {
   getConfigPathForFile,
   getPartitionsByCoreId,
   parseJSONFile,
 } from "../../config-tools-utility/cfsconfig-utils";
 import { UIUtils } from "../../../ui-test-utils/ui-utils";
+import { asyncExecFile } from "../../../ui-test-utils/exec-utils";
 import { memoryAllocationTab } from "../../page-objects/main-menu";
 import {
   assignCores,
@@ -100,7 +100,7 @@ describe("Partition creation and validation", () => {
   let browser: VSBrowser;
   let view: WebView;
   let editor: EditorView;
-  let configPath: string;
+  let configPath: string | undefined;
   browser = VSBrowser.instance;
 
   before(async function () {
@@ -112,7 +112,11 @@ describe("Partition creation and validation", () => {
   });
 
   afterEach(async () => {
-    exec(`git checkout ${configPath}`);
+    // Teardown - reset cfsconfig files
+    if (configPath) {
+      await asyncExecFile("git", "checkout", configPath);
+      configPath = undefined;
+    }
   });
 
   it("Partition creation and validation", async () => {

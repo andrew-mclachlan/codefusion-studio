@@ -1,6 +1,6 @@
 """
 
-Copyright (c) 2024 Analog Devices, Inc.
+Copyright (c) 2024-2026 Analog Devices, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,6 +31,31 @@ else:
 from conan.errors import ConanException
 from conan.api.model import RecipeReference
 from conan.internal.conan_app import ConanApp
+from conan.internal.model.version_range import VersionRange
+from conan.internal.model.version import Version
+
+# Characters that indicate a version range expression (rather than a literal version)
+VERSION_RANGE_CHARS = "*^~><|"
+
+
+def version_satisfies(installed_version: str, required_range: str) -> bool:
+    """
+    Check if an installed version satisfies a version range requirement.
+
+    Args:
+        installed_version: The currently installed version (e.g., "2.3.0")
+        required_range: The required version range (e.g., "^2.1.0", "~1.2", ">=1.0.0 <2.0.0")
+
+    Returns:
+        True if the installed version satisfies the range, False otherwise
+    """
+    try:
+        version_range = VersionRange(required_range)
+        version = Version(installed_version)
+        return version_range.contains(version, None)
+    except Exception:
+        # If parsing fails, assume it doesn't satisfy (safer to re-install)
+        return False
 
 
 class PackagesJson(MutableMapping):
@@ -130,6 +155,37 @@ def handle_and_raise_conan_exception(e):
             f"Couldn't find the following packages: {', '.join(unresolved_errors)}"
         )
 
+    # Check for version range resolution errors (no available version satisfies the requested range)
+    version_range_error_pattern = re.compile(r"Package '([^']+)' not resolved: Version range")
+    version_range_errors = version_range_error_pattern.findall(error_msg)
+    if version_range_errors:
+        # Strip brackets from version for cleaner output
+        cleaned_refs = [re.sub(r'\[([^\]]+)\]', r'\1', ref) for ref in version_range_errors]
+        raise ConanException(
+            f"No versions found matching the specified range for: {', '.join(cleaned_refs)}"
+        )
+
+    # Check for package not found with bracket syntax (e.g., "Package 'pkg/[1.0]' not found")
+    package_not_found_pattern = re.compile(r"Package '([^']+)' not found")
+    package_not_found_errors = package_not_found_pattern.findall(error_msg)
+    if package_not_found_errors:
+        # Strip brackets from version for cleaner output
+        cleaned_refs = [re.sub(r'\[([^\]]+)\]', r'\1', ref) for ref in package_not_found_errors]
+        raise ConanException(
+            f"Couldn't find the following packages: {', '.join(cleaned_refs)}"
+        )
+
+    # Check for package not resolved with no remote (local install failure)
+    no_remote_pattern = re.compile(r"Package '([^']+)' not resolved.*No remote")
+    no_remote_errors = no_remote_pattern.findall(error_msg)
+    if no_remote_errors:
+        # Strip brackets from version for cleaner output
+        pkg_ref = no_remote_errors[0]
+        pkg_ref = re.sub(r'\[([^\]]+)\]', r'\1', pkg_ref)
+        raise ConanException(
+            f"Package {pkg_ref} not resolved: No remote defined"
+        )
+
     # Unexpected error, re-throw it
     raise ConanException(error_msg)
 
@@ -179,18 +235,32 @@ def get_required_packages_from_manifest(manifest_packages: Sequence[dict[str, st
     """
     packages = PackagesJson()
 
-    # Create a set of installed package references in the format "name/version"
-    installed_packages = {x["full_ref"].split("#")[0] for x in packages.values()}
+    # Create a mapping of package names to their installed versions (name -> version)
+    installed_packages = {}
+    for pkg_data in packages.values():
+        full_ref = pkg_data["full_ref"].split("#")[0]  # Remove revision hash
+        name, version = full_ref.split("/")
+        installed_packages[name] = version
 
-    # Filter out packages that are already installed
     packages_to_install = []
     for pkg in manifest_packages:
         pkg_name = pkg["name"]
         pkg_version = pkg["version"]
-        pkg_ref = f"{pkg_name}/{pkg_version}"
+        installed_version = installed_packages.get(pkg_name)
 
-        # Add to installation list if not already installed
-        if pkg_ref not in installed_packages:
+        # Not installed - needs installation
+        if installed_version is None:
+            packages_to_install.append({"name": pkg_name, "version": pkg_version})
+            continue
+
+        # Check if version requirement is satisfied
+        is_version_range = any(char in pkg_version for char in VERSION_RANGE_CHARS)
+        version_matches = (
+            version_satisfies(installed_version, pkg_version) if is_version_range
+            else installed_version == pkg_version
+        )
+
+        if not version_matches:
             packages_to_install.append({"name": pkg_name, "version": pkg_version})
 
     return packages_to_install
@@ -207,6 +277,9 @@ def install_packages(pkg_refs_to_install: Sequence[str], no_remote: bool = False
         A list of package references that were newly installed
     """
 
+    # Ensure packages dependencies installed are not inadvertently upgraded or downgraded.
+    # The .cfsPackages file maintains a list of explicitly installed packages with their exact versions,
+    # allowing us to preserve user-selected versions during subsequent operations.
     packages = PackagesJson()
 
     # Used to compute newly installed packages
@@ -224,9 +297,11 @@ def install_packages(pkg_refs_to_install: Sequence[str], no_remote: bool = False
         current_pkg_refs[package_name] = pkg_ref
 
     # Build the install command with all required packages
-    requires = " ".join(f"--requires={ref}" for ref in current_pkg_refs.values())
+    # Use double quotes to properly escape references for shell execution on all platforms
+    requires = " ".join([f'--requires="{ref}"' for ref in current_pkg_refs.values()])
+
     try:
-        cmd = f"conan install {requires} -g CfsInstall --envs-generation=false --output-folder={Path()}"
+        cmd = f"conan install {requires} -g CfsInstall -u --envs-generation=false --output-folder={Path()}"
         if no_remote:
             cmd += " --no-remote"
         check_output_runner(cmd)
@@ -338,10 +413,10 @@ def cfs_search(conan_api: ConanAPI, parser, subparser, *args):
 @conan_subcommand()
 def cfs_install(conan_api: ConanAPI, parser, subparser, *args):
     """
-    Installs a CFS package and all its dependencies
+    Installs one or more CFS packages and all their dependencies
     """
 
-    subparser.add_argument("reference", help="CFS package reference")
+    subparser.add_argument("references", nargs="+", help="CFS package reference(s)")
     subparser.add_argument(
         "-nr",
         "--no-remote",
@@ -351,8 +426,18 @@ def cfs_install(conan_api: ConanAPI, parser, subparser, *args):
     )
     args = parser.parse_args(*args)
 
-    # Use the reusable install_packages function with a single reference
-    installed_packages = install_packages([args.reference], args.no_remote)
+    pkgs_to_install = []
+    for reference in args.references:
+        pkg_name, pkg_version = reference.split("/", 1)
+        # Remove surrounding quotes from pkg_version if they exist
+        if pkg_version.startswith('"') and pkg_version.endswith('"'):
+            pkg_version = pkg_version[1:-1]
+
+        # If the version contains any of the version range characters, we need to use the bracket syntax for conan to recognize it as a version range instead of a literal version
+        pkg_ref = f"{pkg_name}/[{pkg_version}]" if any(x in pkg_version for x in VERSION_RANGE_CHARS) else f"{pkg_name}/{pkg_version}"
+        pkgs_to_install.append(pkg_ref)
+
+    installed_packages = install_packages(pkgs_to_install, args.no_remote)
 
     if installed_packages:
         cli_out_write("\n".join(installed_packages))
@@ -508,11 +593,20 @@ def cfs_install_manifest(conan_api: ConanAPI, parser, subparser, *args):
         "version": 1,
         "packages": [
             {"name": "package1", "version": "1.0.0"},
-            {"name": "package2", "version": "2.0.0"}
+            {"name": "package2", "version": "^2.0.0"},
+            {"name": "package3", "version": "~2.0"},
+            {"name": "package4", "version": ">=1.0.0 <1.3.0"}
         ]
     }
     """
     subparser.add_argument("manifest_path", help="Path to the manifest file containing packages to install")
+    subparser.add_argument(
+        "-nr",
+        "--no-remote",
+        action="store_true",
+        required=False,
+        help="Do not use remote, resolve exclusively in the cache",
+    )
     args = parser.parse_args(*args)
 
     try:
@@ -531,11 +625,15 @@ def cfs_install_manifest(conan_api: ConanAPI, parser, subparser, *args):
             # No packages need to be installed
             return
 
-        # Convert packages to install to reference format
-        package_references = [f"{pkg['name']}/{pkg['version']}" for pkg in packages_to_install]
+        # Convert packages to install to reference format with brackets for version ranges
+        # If the version contains any of the version range characters, we need to use the bracket syntax for conan to recognize it as a version range instead of a literal version
+        package_references = [
+            f"{pkg['name']}/[{pkg['version']}]" if any(x in pkg['version'] for x in VERSION_RANGE_CHARS) else f"{pkg['name']}/{pkg['version']}"
+            for pkg in packages_to_install
+        ]
 
         # Install all packages at once and get the installed packages
-        installed_packages = install_packages(package_references)
+        installed_packages = install_packages(package_references, args.no_remote)
 
         # Return the list of installed packages
         if installed_packages:

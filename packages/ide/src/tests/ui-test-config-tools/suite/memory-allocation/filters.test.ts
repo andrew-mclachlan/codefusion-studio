@@ -30,7 +30,6 @@
 //     Then all memory types should be visible again
 
 import { expect } from "chai";
-import { exec } from "child_process";
 import {
   By,
   VSBrowser,
@@ -48,6 +47,7 @@ import {
   memoryTypeFilterOptionRAM,
 } from "../../page-objects/memory-allocation-section/memory-allocation-screen";
 import { UIUtils } from "../../../ui-test-utils/ui-utils";
+import { asyncExecFile } from "../../../ui-test-utils/exec-utils";
 
 describe("Memory Allocation Filters", () => {
   let workbench: Workbench;
@@ -56,6 +56,8 @@ describe("Memory Allocation Filters", () => {
   let editor: EditorView;
   browser = VSBrowser.instance;
 
+  let configPath: string | undefined;
+
   before(async function () {
     this.timeout(10000);
     browser = VSBrowser.instance;
@@ -63,8 +65,17 @@ describe("Memory Allocation Filters", () => {
     await editor.closeAllEditors();
     await UIUtils.sleep(3000);
   });
+
+  after(async () => {
+    // Teardown - reset cfsconfig file
+    if (configPath) {
+      await asyncExecFile("git", "checkout", configPath);
+      configPath = undefined;
+    }
+  });
+
   it("Resets filter on re-entry", async () => {
-    const configPath = getConfigPathForFile(
+    configPath = getConfigPathForFile(
       "max32690-wlp-dual-core-blinky.cfsconfig",
     );
     await browser.openResources(configPath);
@@ -140,8 +151,5 @@ describe("Memory Allocation Filters", () => {
 
     await view.switchBack();
     await workbench.executeCommand("view: close all editors");
-
-    // Teardown - reset cfsconfig files
-    exec(`git checkout ${configPath}`);
   }).timeout(60000);
 });

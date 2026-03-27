@@ -73,8 +73,8 @@
       "pkg": {
         "description": "CFS Package Manager."
       },
-      "auth": {
-        "description": "CFS backend authentication."
+      "myanalog": {
+        "description": "Manage myAnalog session."
       }
     }
   },
@@ -94,7 +94,7 @@
     "test-gen": "CFS_INSTALL_DIR=\"test/fixtures\" mocha --forbid-only \"test/commands/generate.test.ts\"",
     "version": "oclif readme && git add README.md"
   },
-  "version": "2.0.1",
+  "version": "2.1.0",
   "bugs": "https://github.com/analogdevicesinc/codefusion-studio/issues",
   "keywords": [
     "oclif"

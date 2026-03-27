@@ -16,6 +16,7 @@ Before debugging applications on hardware, install the drivers relevant to your 
 Then refer to the following guides for debugging and troubleshooting information:
 
 - [Debug an application](debug-an-application.md)  
+- [Debug interface](debug-interface.md)  
 - [Debug a multicore MSDK application](debug-multi-core-application.md)  
 - [Debug a SHARC-FX application](debug-sharc-fx.md)  
 - [Troubleshooting](troubleshooting.md)  

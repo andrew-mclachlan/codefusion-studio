@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2023-2025 Analog Devices, Inc.
+ * Copyright (c) 2023-2026 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,6 +116,8 @@ export const ACTIVE_CONTEXT = "activeContext";
 export const CFS_TELEMETRY_ENABLE = "telemetry.enable";
 export const CFS_TELEMETRY_USER_ID = "telemetry.userId";
 export const ENVIRONMENT = "environment";
+export const CFS_PROJECT_SDK_ID = "project.sdk.id";
+export const CFS_PROJECT_SDK_PATH = "cfs.project.sdk.path";
 
 // Catalog Manager
 export const CATALOG_MANAGER = "catalogManager";
@@ -135,6 +137,7 @@ export const ERASE_ACTION = "Erase";
 export const FLASH_ACTION = "Flash";
 export const DEBUG_ACTION = "Debug";
 export const SECURITY_ACTION = "Security";
+export const DOCUMENTATION_ACTION = "Documentation";
 export const PROFILING_ACTION = "Profiling";
 export const OZONE_DEBUG_ACTION = "Debug with Ozone";
 export const JLINK_ACTION = "(JLink)";

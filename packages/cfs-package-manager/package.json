@@ -3,7 +3,7 @@
 	"publisher": "adi",
 	"description": "Reusable utilities for CFS components",
 	"author": "Analog Devices",
-	"version": "2.0.1",
+	"version": "2.1.0",
 	"dependencies": {
 		"env-paths": "^3"
 	},

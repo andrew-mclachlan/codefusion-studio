@@ -385,6 +385,7 @@ export class CfsPluginManager {
 				const augmentedProject: CfsProject = project as CfsProject;
 				augmentedProject.soc = cfsWorkspace.soc;
 				augmentedProject.package = cfsWorkspace.package;
+				augmentedProject.board = cfsWorkspace.board;
 
 				const projectPlugin = await this.getPlugin<
 					CfsProjectConfigService & CfsProjectGenerationService

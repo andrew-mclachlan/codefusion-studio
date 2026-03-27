@@ -2,6 +2,21 @@
 
 # Release Notes
 
+## 2.1.0
+
+### ✨ New Features
+
+- Introduced the **AI Debug Assistant**, a preview agentic debugging tool that connects compatible AI clients, such as GitHub Copilot and Claude Code, directly to your live debug sessions. Built on the Model Context Protocol (MCP), it enables AI models to autonomously investigate faults, inspect hardware state, and coordinate across multiple cores in real time.
+- `cfsutil pkg install` now supports semantic version range expressions, including caret (`^`), tilde (`~`), and comparison operators (`>=`, `<=`, `>`, `<`).
+
+### 🐞 Bug fixes, Minor Improvements
+- Package Manager authentication handling has been improved. Authentication is now managed using `cfsutil myanalog` and `cfsutil pkg auth-remote`; the commands `cfsutil pkg login`, `cfsutil pkg logout`, and `cfsutil auth` are deprecated.
+- Plugin options are now filtered by core during manual workspace creation. Users can no longer select unsupported plugins for a given architecture — for example, the Zephyr plugin is hidden for RISC-V cores such as MAX32690.
+- Cores in the workspace creation wizard are now ordered with the primary core listed first.
+- Fixed an issue where adding a myAnalog remote with an incorrect URL caused Package Manager to fail when attempting to obtain credentials.
+- Fixed an issue where adding a package remote could be accidentally cancelled by clicking outside the prompt in the Command Palette.
+- Updated installer UI with a refreshed look and feel.
+
 ## 2.0.2
 
 ### 🐞 Bug fixes, Minor Improvements

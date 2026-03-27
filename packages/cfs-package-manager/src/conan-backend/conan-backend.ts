@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2025 Analog Devices, Inc.
+ * Copyright (c) 2025-2026 Analog Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ interface PackageIndexEntry {
 	description: string;
 	license: string;
 	cfsVersion: string;
-	soc: string[];
+	soc?: string[];
 	type: string;
 }
 
@@ -106,6 +106,31 @@ export class ConanPkgManager implements CfsPackageManagerProvider {
 
 	private _refToString(ref: CfsPackageReference): string {
 		return `${ref.name}/${ref.version}`;
+	}
+
+	private _parsePackageReferences(
+		refStr: string
+	): CfsPackageReference[] {
+		return refStr
+			.split("\n")
+			.filter(Boolean)
+			.map((x) => {
+				const [name, v] = x.split("/");
+				let version = v;
+
+				// Remove bracket notation from version if present (e.g., "[1.0]" -> "1.0")
+				if (version.startsWith("[") && version.endsWith("]")) {
+					version = version.slice(1, -1);
+				}
+
+				// Also handle revision suffix (e.g., "1.0#abc123" -> "1.0")
+				const hashIndex = version.indexOf("#");
+				if (hashIndex !== -1) {
+					version = version.substring(0, hashIndex);
+				}
+
+				return { name: name, version: version };
+			});
 	}
 
 	// Executes a conan command with error handling and retries
@@ -414,13 +439,7 @@ export class ConanPkgManager implements CfsPackageManagerProvider {
 
 		const out = await this._conanCommand(["cfs", "search", pattern]);
 
-		return out
-			.split("\n")
-			.filter(Boolean)
-			.map((x) => {
-				const [n, v] = x.split("/");
-				return { name: n, version: v };
-			});
+		return this._parsePackageReferences(out);
 	}
 
 	public getIndexFilePath(): string {
@@ -471,11 +490,15 @@ export class ConanPkgManager implements CfsPackageManagerProvider {
 
 			const fullVersion = pkgEntry.full_ref.split("/")[1];
 			const version = fullVersion.split("#")[0];
+			const cfsSoc = pkgEntry.soc
+				? PackmanUtils.formatCfsSocAttribute(pkgEntry.soc)
+				: [];
 
 			packages.push({
 				name: pkgName,
 				version,
 				path: pkgEntry.path,
+				cfsSoc,
 				...(pkgEntry.type ? { type: pkgEntry.type } : {})
 			});
 		}
@@ -497,9 +520,17 @@ export class ConanPkgManager implements CfsPackageManagerProvider {
 	}
 
 	async install(
-		reference: CfsPackageReference,
+		reference: CfsPackageReference | CfsPackageReference[],
 		options?: CfsPackageInstallOptions
 	): Promise<CfsPackageReference[]> {
+		const references = Array.isArray(reference)
+			? reference
+			: [reference];
+
+		if (references.length === 0) {
+			return [];
+		}
+
 		const commandOptions: string[] = [];
 
 		if (options?.localOnly == true) {
@@ -511,17 +542,11 @@ export class ConanPkgManager implements CfsPackageManagerProvider {
 		const out = await this._conanCommand([
 			"cfs",
 			"install",
-			this._refToString(reference),
+			...references.map((ref) => this._refToString(ref)),
 			...commandOptions
 		]);
 
-		return out
-			.split("\n")
-			.filter(Boolean)
-			.map((x) => {
-				const [n, v] = x.split("/");
-				return { name: n, version: v };
-			});
+		return this._parsePackageReferences(out);
 	}
 
 	async uninstall(pkgName: string): Promise<void> {
@@ -531,13 +556,7 @@ export class ConanPkgManager implements CfsPackageManagerProvider {
 	async delete(pattern: string): Promise<CfsPackageReference[]> {
 		const out = await this._conanCommand(["cfs", "delete", pattern]);
 
-		return out
-			.split("\n")
-			.filter(Boolean)
-			.map((x) => {
-				const [n, v] = x.split("/");
-				return { name: n, version: v };
-			});
+		return this._parsePackageReferences(out);
 	}
 
 	async dependencies(
@@ -551,13 +570,7 @@ export class ConanPkgManager implements CfsPackageManagerProvider {
 			this._refToString(reference)
 		]);
 
-		return out
-			.split("\n")
-			.filter(Boolean)
-			.map((x) => {
-				const [n, v] = x.split("/");
-				return { name: n, version: v };
-			});
+		return this._parsePackageReferences(out);
 	}
 
 	async localConsumers(
@@ -569,13 +582,7 @@ export class ConanPkgManager implements CfsPackageManagerProvider {
 			pkgName
 		]);
 
-		return out
-			.split("\n")
-			.filter(Boolean)
-			.map((x) => {
-				const [n, v] = x.split("/");
-				return { name: n, version: v };
-			});
+		return this._parsePackageReferences(out);
 	}
 
 	async getPath(pkgName: string): Promise<string> {
@@ -685,13 +692,7 @@ export class ConanPkgManager implements CfsPackageManagerProvider {
 			...commandOptions
 		]);
 
-		return out
-			.split("\n")
-			.filter(Boolean)
-			.map((x) => {
-				const [n, v] = x.split("/");
-				return { name: n, version: v };
-			});
+		return this._parsePackageReferences(out);
 	}
 
 	async checkManifest(
@@ -703,7 +704,16 @@ export class ConanPkgManager implements CfsPackageManagerProvider {
 			manifestPath
 		]);
 
-		return JSON.parse(out) as CfsPackageReference[];
+		const packages = JSON.parse(out) as CfsPackageReference[];
+
+		// Remove bracket notation from versions if present as a matching pair (e.g., "[1.0]" -> "1.0")
+		return packages.map((pkg) => {
+			let version = pkg.version;
+			if (version.startsWith("[") && version.endsWith("]")) {
+				version = version.slice(1, -1);
+			}
+			return { name: pkg.name, version };
+		});
 	}
 
 	async registerCredentialProvider(

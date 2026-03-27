@@ -25,9 +25,10 @@ const mockedPlugins = [
 		supportedSocs: [
 			{
 				name: 'MAX32690',
-				dataModel: '',
-				board: '',
-				package: 'wlp'
+				dataModel: 'max32690-wlp.json',
+				board: 'AD-APARD32690-SL',
+				package: 'wlp',
+				cores: ['CM4']
 			}
 		],
 		firmwarePlatform: 'zephyr',
@@ -99,6 +100,30 @@ const mockedPlugins = [
 				dataModel: '',
 				board: '',
 				package: 'wlp'
+			}
+		],
+		firmwarePlatform: 'baremetal',
+		features: [],
+		properties: {project: []},
+		configOverrides: []
+	},
+	{
+		pluginId: 'MAX32690_MSDK.plugin',
+		pluginName: 'MAX32690_MSDK.plugin',
+		pluginPath: '',
+		pluginDescription: '',
+		pluginVersion: '1.0.0',
+		pluginApiVersion: 0,
+		minConfigSchema: 0,
+		maxConfigSchema: 0,
+		author: '',
+		supportedSocs: [
+			{
+				name: 'MAX32690',
+				dataModel: '',
+				board: '',
+				package: 'wlp',
+				cores: ['RV']
 			}
 		],
 		firmwarePlatform: 'baremetal',
@@ -321,8 +346,8 @@ describe('Core Configuration Screen', () => {
 		testStore.dispatch(
 			setSelectedBoardPackage({boardId: '', packageId: 'wlp'})
 		);
-		testStore.dispatch(setCoresInitialState(['CM4']));
-		testStore.dispatch(setCoreToConfigId('CM4'));
+		testStore.dispatch(setCoresInitialState(['Arm Cortex-M4F']));
+		testStore.dispatch(setCoreToConfigId('Arm Cortex-M4F'));
 
 		cy.mount(<TestComponent />, testStore).then(() => {
 			cy.wait(1000);
@@ -402,6 +427,51 @@ describe('Core Configuration Screen', () => {
 			cy.dataTest(
 				'core-config:dynamic-form:control-KConfigFlags'
 			).should('exist');
+		});
+	});
+
+	it('Should only show plugins that support the selected core', () => {
+		const testStore = {...store};
+		testStore.dispatch(setActiveScreen(navigationItems.coreConfig));
+		testStore.dispatch(setSelectedSoc('MAX32690'));
+		testStore.dispatch(
+			setSelectedBoardPackage({boardId: '', packageId: 'wlp'})
+		);
+		testStore.dispatch(setCoresInitialState(['Arm Cortex-M4F']));
+		testStore.dispatch(setCoreToConfigId('Arm Cortex-M4F'));
+		testStore.dispatch(
+			setCoreConfig({
+				id: 'Arm Cortex-M4F',
+				config: {
+					pluginId: mockedPlugins[0].pluginId,
+					pluginVersion: mockedPlugins[0].pluginVersion,
+					firmwarePlatform: mockedPlugins[0].firmwarePlatform,
+					platformConfig: {
+						ProjectName:
+							mockedPlugins[0].properties.project[0].default,
+						BuildSystem:
+							mockedPlugins[0].properties.project[1].default,
+						ZephyrBoardName:
+							mockedPlugins[0].properties.project[2].default,
+						KConfigFlags:
+							mockedPlugins[0].properties.project[3].default,
+						CMakeArgs: mockedPlugins[0].properties.project[4].default
+					}
+				}
+			})
+		);
+
+		cy.mount(<TestComponent />, testStore).then(() => {
+			cy.dataTest('coreConfig:card:MAX32690_zephyr.plugin').should(
+				'exist'
+			);
+			cy.dataTest('coreConfig:card:MAX32690_Baremetal.plugin').should(
+				'exist'
+			);
+
+			cy.dataTest('coreConfig:card:MAX32690_MSDK.plugin').should(
+				'not.exist'
+			);
 		});
 	});
 });

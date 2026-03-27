@@ -1,7 +1,7 @@
 ---
 description: Package Manager Troubleshooting
 author: Analog Devices
-date: 2025-12-15
+date: 2026-01-19
 ---
 
 # Package Manager Troubleshooting
@@ -31,7 +31,7 @@ If old or corrupted packages accumulate over time, they can cause Package Manage
 2. Run the following command to view the remaining installed packages.
 
     ```sh
-    cfsutil pkg list <name>
+    cfsutil pkg list
     ```
 
 3. Uninstall any packages you no longer need:
@@ -83,11 +83,11 @@ If you are logged out:
     ![Check your login status ](./images/cfs_my_analog_login-light.png#only-light)
 
 2. Click **Open** to launch the browser. If the browser does not open, use the **Copy link** button to copy the link and paste it in your browser.
-3. Log in to your myAnalog account.
+3. On the myAnalog login page, under **Or continue with your**, choose **Analog Devices Account** and, if prompted, enter your Analog Devices credentials to complete the login process.
 
     ![My Analog Login](./images/login_with-my-analog.png)
 
-4. When prompted, close the browser window and return to VS Code.
+4. When the **Sign-in Successful** page appears, close the browser and return to VS Code.
 5. A VS Code notification confirms you are logged in.
 
 ### Check login status (command line)
@@ -95,13 +95,13 @@ If you are logged out:
 1. Check your login status:
 
     ```bash
-    cfsutil auth status
+    cfsutil myanalog status
     ```
 
 2. If your session has expired, log in again:
 
     ```bash
-    cfsutil auth login
+    cfsutil myanalog login
     ```
 
 3. (Optional) View all configured remotes:

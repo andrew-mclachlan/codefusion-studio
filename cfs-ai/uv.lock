@@ -119,7 +119,7 @@ wheels = [
 
 [[package]]
 name = "cfsai"
-version = "2.0.1"
+version = "2.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "cfsai-backend-max7800x" },
@@ -175,7 +175,7 @@ dev = [
 
 [[package]]
 name = "cfsai-backend-max7800x"
-version = "2.0.1"
+version = "2.1.0"
 source = { editable = "platforms/max7800x/cfsai-backend-max7800x" }
 dependencies = [
     { name = "cfsai-types" },
@@ -204,7 +204,7 @@ requires-dist = [
 
 [[package]]
 name = "cfsai-compatibility-analyzer"
-version = "2.0.1"
+version = "2.1.0"
 source = { editable = "packages/cfsai-compatibility-analyzer" }
 dependencies = [
     { name = "cfsai-model-parser" },
@@ -215,7 +215,7 @@ requires-dist = [{ name = "cfsai-model-parser", editable = "packages/cfsai-model
 
 [[package]]
 name = "cfsai-model-parser"
-version = "2.0.1"
+version = "2.1.0"
 source = { editable = "packages/cfsai-model-parser" }
 dependencies = [
     { name = "cfsai-tflite" },
@@ -230,7 +230,7 @@ requires-dist = [
 
 [[package]]
 name = "cfsai-resource-profiler"
-version = "2.0.1"
+version = "2.1.0"
 source = { editable = "packages/cfsai-resource-profiler" }
 dependencies = [
     { name = "cfsai-model-parser" },
@@ -245,7 +245,7 @@ requires-dist = [
 
 [[package]]
 name = "cfsai-tflite"
-version = "2.0.1"
+version = "2.1.0"
 source = { editable = "packages/cfsai-tflite" }
 dependencies = [
     { name = "flatbuffers" },
@@ -264,7 +264,7 @@ dev = [{ name = "hatchling", specifier = ">=1.27.0" }]
 
 [[package]]
 name = "cfsai-types"
-version = "2.0.1"
+version = "2.1.0"
 source = { editable = "packages/cfsai-types" }
 dependencies = [
     { name = "pydantic" },

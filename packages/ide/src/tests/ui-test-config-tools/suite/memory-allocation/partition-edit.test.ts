@@ -68,9 +68,9 @@ import {
 } from "vscode-extension-tester";
 import { Locatorspaths } from "../../pageObjectsConfig/memory-page-objects";
 import { UIUtils } from "../../../ui-test-utils/ui-utils";
-import * as path from "node:path";
+import { asyncExecFile } from "../../../ui-test-utils/exec-utils";
+import { getConfigPathForFile } from "../../config-tools-utility/cfsconfig-utils";
 import * as fs from "node:fs";
-import { exec } from "child_process";
 import {
   memoryTypeDropdown,
   memoryTypeSelector,
@@ -78,12 +78,17 @@ import {
 
 describe("CFSIO-6338 Partition editing", () => {
   const locatorspath = new Locatorspaths();
+  const configPath = getConfigPathForFile(
+    "max32690-wlp-dual-core-blinky.cfsconfig",
+  );
+
   let workbench: Workbench;
   let browser: VSBrowser;
   let view: WebView;
 
   let driver: WebDriver;
   let editor: EditorView;
+
   browser = VSBrowser.instance;
   before(async function () {
     this.timeout(10000);
@@ -94,16 +99,14 @@ describe("CFSIO-6338 Partition editing", () => {
     await UIUtils.sleep(3000);
   });
 
+  after(async () => {
+    // Teardown - reset cfsconfig file
+    await asyncExecFile("git", "checkout", configPath);
+  });
+
   it("Partition editing", async () => {
-    await browser.openResources(
-      path.join(
-        "src",
-        "tests",
-        "ui-test-config-tools",
-        "fixtures",
-        "max32690-wlp-dual-core-blinky.cfsconfig",
-      ),
-    );
+    await browser.openResources(configPath);
+
     workbench = new Workbench();
     console.log("Opened the cfsconfig file");
 
@@ -165,13 +168,6 @@ describe("CFSIO-6338 Partition editing", () => {
     console.log("Saved the configuration file");
     await UIUtils.sleep(300);
 
-    const configPath = path.join(
-      "src",
-      "tests",
-      "ui-test-config-tools",
-      "fixtures",
-      "max32690-wlp-dual-core-blinky.cfsconfig",
-    );
     console.log("Config path:", configPath);
     if (!fs.existsSync(configPath)) {
       throw new Error(`Config file not found at: ${configPath}`);
@@ -297,16 +293,5 @@ describe("CFSIO-6338 Partition editing", () => {
       "RV Partition is empty or not matching your config",
     );
     console.log("RV Partition config OK");
-
-    // Teardown - reset cfsconfig files //
-    exec(
-      `git checkout ${path.join(
-        "src",
-        "tests",
-        "ui-test-config-tools",
-        "fixtures",
-        "max32690-wlp-dual-core-blinky.cfsconfig",
-      )}`,
-    );
   }).timeout(150000);
 });

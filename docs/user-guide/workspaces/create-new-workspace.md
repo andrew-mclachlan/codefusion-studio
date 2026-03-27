@@ -1,7 +1,7 @@
 ---
 description: Create a new workspace in CodeFusion Studio.
 author: Analog Devices
-date: 2025-10-11
+date: 2026-01-30
 ---
 
 # Create a new workspace
@@ -30,7 +30,7 @@ New workspaces are created with the Workspace Creation Wizard.
 Choose this option to set up your system configuration step by step.
 
 1. Select one or more cores to include in your workspace. The primary core is mandatory and must be enabled to proceed.
-1. Select a **Code Generation Plugin**. Choose one of the following options:
+1. Select a **Code Generation Plugin**. The available options depend on the core you select.
 
       - MSDK: Generates projects for MSDK platforms.
       - Registers-only (bare-metal) Plugin: This is intended as a reference for advanced workflows. It enables code generation for platforms that do not use Zephyr or MSDK. The generated code references registers directly using MMR access. Build or debug support is not included as the generated register definitions are intended to be integrated into custom toolchains or external workflows.
@@ -45,7 +45,7 @@ Choose this option to set up your system configuration step by step.
     | **Build System**                | Choose a build system such as **Ninja** or **Make**. **Ninja** is recommended and selected by default. |
     | **Board Name**           | Specify the board name. For MSDK projects, use standard board names such as `EvKit_V1`, `APARD`, or `FTHR`. For Zephyr projects, use the format `<platform>/<soc>/<core>` as defined by the `identifier` field in your Zephyr board’s YAML file. For example, the board name for the MAX32690 FTHR board is defined in `<CFS-Install>/SDK/zephyr/zephyr/boards/adi/max32690fthr/max32690fthr_max32690_m4.yaml` under `identifier: max32690fthr/max32690/m4`.  |
     | **Zephyr KConfig Flags**        | Add optional Zephyr configuration flags. |
-    | **Enable Core Dump**            | Enables generation of debug metadata for post-mortem crash analysis. Required for use with the [Core Dump Analysis Tool](../debugging/debug-tools/core-dump-analysis/core-dump-overview.md). |
+    | **Enable Core Dump**            | Enables generation of debug metadata for retrospective crash analysis. Required for use with the [Core Dump Analysis Tool](../debugging/debug-tools/core-dump-analysis/core-dump-overview.md). |
     | **Zephyr Additional CMake Arguments** | Provide extra compiler or linker options. |
 
 1. Click **Continue** to move to the next core configuration.

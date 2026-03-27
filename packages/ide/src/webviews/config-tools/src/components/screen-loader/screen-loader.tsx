@@ -14,10 +14,12 @@
  */
 import CfsTopBar from '@common/components/cfs-top-bar/CfsTopBar';
 import CfsNavigation from '@common/components/cfs-navigation/CfsNavigation';
-import {availableIcons} from '../../constants/navigation-icons';
 import styles from './screen-loader.module.scss';
+import useFilteredNavigationIcons from '../../hooks/use-filtered-navigation-icons';
 
 export default function ScreenLoader() {
+	const filteredIcons = useFilteredNavigationIcons();
+
 	return (
 		<div className={styles.loadingContainer}>
 			<CfsTopBar>
@@ -26,7 +28,7 @@ export default function ScreenLoader() {
 			<div className={styles.mainContentLoading}>
 				<CfsNavigation
 					activeScreen=''
-					availableIcons={availableIcons}
+					availableIcons={filteredIcons}
 					onNavItemClick={() => {
 						void 0;
 					}}

@@ -1,14 +1,20 @@
 [
 	{
-		"link": "https://www.analog.com/en/resources/media-center/videos/6368251669112.html",
-		"img": "https://www.analog.com/-/media/images/videoimages/en/video-still-6368251669112.jpg",
-		"title": "CodeFusion Studio: Accelerating Embedded Development",
+		"link": "https://developer.analog.com/newsroom/introducing-agentic-ai-workflows-as-embedded-debugging-partner-in-codefusion-studio",
+		"img": "https://developer.analog.com/api/media/file/2026-03-04-introducing-agentic-ai-workflows-ddk4l4",
+		"title": "Introducing Agentic AI Workflows as Embedded Debugging Partner in CodeFusion Studio",
+		"description": "Link — developer.analog.com"
+	},
+	{
+		"link": "https://www.analog.com/en/resources/media-center/videos/6387471887112.html",
+		"img": "https://www.analog.com/-/media/images/videoimages/en/video-still-6387471887112.jpg",
+		"title": "CodeFusion Studio: One IDE, endless possibilities",
 		"description": "Video — analog.com"
 	},
 	{
 		"link": "https://www.analog.com/en/resources/media-center/videos/6372064187112.html",
 		"img": "https://www.analog.com/-/media/images/videoimages/en/video-still-6372064187112.jpg",
-	    "title": "CodeFusion Studio: System Planner Introduction",
+		"title": "CodeFusion Studio: System Planner Introduction",
 		"description": "Video — analog.com"
 	},
 	{
@@ -26,13 +32,13 @@
 	{
 		"link": "https://www.analog.com/en/education/education-library/videos/6316304586112.html",
 		"img": "https://www.analog.com/-/media/images/videoimages/en/video-still-6316304586112.jpg?la=en&imgver=1&hash=29AC2CFF838695EDA8C5ED5B11CB2C8C",
-  		"title": "Build the Intelligent Edge with the MAX78002 AI Microcontroller",
+		"title": "Build the Intelligent Edge with the MAX78002 AI Microcontroller",
 		"description": "Video — analog.com"
 	},
 	{
 		"link": "https://www.analog.com/en/education/education-library/videos/6319992623112.html",
 		"img": "https://www.analog.com/-/media/images/videoimages/en/video-still-6319992623112.jpg?la=en&imgver=1&hash=2BE1D9DA56347FB7A24B5A1545BA5FFA",
 		"title": "Visual Identification AI at the Edge: Facial Recognition",
- 		"description": "Video — analog.com"
+		"description": "Video — analog.com"
 	}
 ]

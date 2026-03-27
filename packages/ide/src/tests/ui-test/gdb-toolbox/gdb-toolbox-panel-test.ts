@@ -62,7 +62,7 @@ describe("GDB Toolbox Panel Integration Test", () => {
 
   it("Should add Cortex Debug config, build, launch debug, and open GDB Toolbox", async () => {
     // Ensure launch.json is removed
-    await deleteFile(testDirectory + "/.vscode/launch.json");
+    deleteFile(testDirectory + "/.vscode/launch.json");
     await workbench.getDriver().sleep(2000);
 
     // Add Cortex Debug configuration

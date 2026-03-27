@@ -12,33 +12,72 @@
  * limitations under the License.
  *
  */
-import {Command} from '@oclif/core';
+import {Command, ux} from '@oclif/core';
 
-import {getPackageManager} from '../../utils/package-manager.js';
+import {
+  getCredentialProvider,
+  getPackageManager
+} from '../../utils/package-manager.js';
 
 export default class CfsPackageListRemotes extends Command {
   static description =
-    'Lists all remote servers that have been registered for package retrieval';
+    'Lists all remote servers that have been registered for package retrieval.';
 
   async run(): Promise<void> {
     const packman = await getPackageManager({
-      includeCredentialProvider: true
+      includeCredentialProvider: false
     });
     const remotes = await packman.listRemotes();
     if (remotes.length === 0) {
-      this.log('No registered remotes');
+      this.log('No registered package remotes');
       return;
     }
 
-    this.log('Registered remotes: ');
-    for (const {name, url, auth, custom} of remotes) {
-      const authDetails = auth
-        ? auth.credentialProvider
-          ? '\t(' + auth.credentialProvider + ' session)'
-          : '\t(username: ' + auth.username + ')' // manually logged in
-        : ''; // no auth
-      this.log(
-        `\t- ${name}: ${url}${authDetails}${custom ? '\t[custom]' : ''}`
+    // Check if we have an active myAnalog session
+    const myAnalogProvider = await getCredentialProvider();
+    let needsSession = false;
+
+    const data = remotes.map((r) => {
+      let authDetails = 'None';
+      if (r.auth) {
+        if (r.auth.credentialProvider) {
+          const hasSession =
+            myAnalogProvider?.name === r.auth.credentialProvider;
+
+          authDetails = `${r.auth.credentialProvider} session${hasSession ? '' : ' (inactive)'}`;
+          needsSession = needsSession || !hasSession;
+        } else {
+          authDetails = `username: ${r.auth.username}`; // manually logged in
+        }
+      }
+
+      return {
+        name: r.name,
+        url: r.url.href,
+        auth: authDetails,
+        default: r.custom ? 'No' : 'Yes'
+      };
+    });
+
+    ux.Table.table(data, {
+      name: {
+        header: 'Name'
+      },
+      url: {
+        header: 'URL'
+      },
+      auth: {
+        header: 'Authentication'
+      },
+      default: {
+        header: 'Default'
+      }
+    });
+    this.log('');
+
+    if (needsSession) {
+      this.warn(
+        `Package remotes that require an active myAnalog session are disabled.\nRun '${this.config.bin} myanalog login' to create a session.`
       );
     }
   }

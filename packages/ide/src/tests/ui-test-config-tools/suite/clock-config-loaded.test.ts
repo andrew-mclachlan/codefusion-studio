@@ -27,6 +27,7 @@ import {
 } from "vscode-extension-tester";
 
 import { UIUtils } from "../../ui-test-utils/ui-utils";
+import { asyncExecFile } from "../../ui-test-utils/exec-utils";
 import {
   accordion,
   backButton,
@@ -40,8 +41,6 @@ import {
   getConfigPathForFile,
   parseJSONFile,
 } from "../config-tools-utility/cfsconfig-utils";
-import { exec } from "child_process";
-import path from "path";
 
 /*
   * Feature: System Planner clock configuration diagram for frequencies used by different peripherals
@@ -94,6 +93,11 @@ describe("System Planner clock configuration for already loaded pins", () => {
     editor = new EditorView();
     await editor.closeAllEditors();
     await UIUtils.sleep(3000);
+  });
+
+  after(async () => {
+    // Teardown - reset cfsconfig file
+    await asyncExecFile("git", "checkout", configPath);
   });
 
   it("Should display the clock screen correctly for a pre-configured file", async () => {
@@ -227,16 +231,5 @@ describe("System Planner clock configuration for already loaded pins", () => {
       clockNodeNamesAndValues.filter((node: any) => node.name === "DMA"),
       "DMA peripheral is not present in config",
     ).to.be.empty;
-
-    // Teardown - reset cfsconfig files //
-    exec(
-      `git checkout ${path.join(
-        "src",
-        "tests",
-        "ui-test-config-tools",
-        "fixtures",
-        "max32690-wlp.cfsconfig",
-      )}`,
-    );
   }).timeout(120000);
 });

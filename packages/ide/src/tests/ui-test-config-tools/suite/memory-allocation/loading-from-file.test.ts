@@ -66,7 +66,7 @@ import {
   Workbench,
 } from "vscode-extension-tester";
 import { UIUtils } from "../../../ui-test-utils/ui-utils";
-import { exec } from "child_process";
+import { asyncExecFile } from "../../../ui-test-utils/exec-utils";
 import {
   getConfigPathForFile,
   parseJSONFile,
@@ -103,6 +103,8 @@ describe("CFSIO-6874 Loading from file", () => {
   let editor: EditorView;
   browser = VSBrowser.instance;
 
+  let configPath: string | undefined;
+
   before(async function () {
     this.timeout(10000);
     browser = VSBrowser.instance;
@@ -111,8 +113,16 @@ describe("CFSIO-6874 Loading from file", () => {
     await UIUtils.sleep(3000);
   });
 
+  after(async () => {
+    // Teardown - reset cfsconfig file
+    if (configPath) {
+      await asyncExecFile("git", "checkout", configPath);
+      configPath = undefined;
+    }
+  });
+
   it("Loading from file", async () => {
-    const configPath = getConfigPathForFile(
+    configPath = getConfigPathForFile(
       "max32690-wlp-dual-core-blinky.cfsconfig",
     );
 
@@ -279,8 +289,5 @@ describe("CFSIO-6874 Loading from file", () => {
 
     await view.switchBack();
     await workbench.executeCommand("view: close all editors");
-
-    // Teardown
-    exec(`git checkout ${configPath}`);
   }).timeout(150000);
 });

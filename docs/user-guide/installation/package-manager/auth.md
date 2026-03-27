@@ -1,7 +1,7 @@
 ---
 description: Use your myAnalog account to access restricted packages from the Command Palette or command line.
 author: Analog Devices
-date: 2025-12-15
+date: 2026-01-19
 ---
 
 # Access restricted packages (using myAnalog login)
@@ -27,12 +27,12 @@ Restricted packages require a custom package remote to be added before installat
 4. Choose **myAnalog** from the list of authentication options.
 
     !!! important
-        When the authentication prompt appears in VS Code, keep the VS Code window in focus. Clicking outside the application dismisses the prompt, which can cause the remote to be added without authentication and may lead to package installation errors. If this happens, you will need to reauthenticate to access restricted packages. For more details, see [Restricted packages not appearing](troubleshooting-package-manager.md#restricted-packages-not-appearing).
+        To cancel or restart this process, press **Escape**.
 
 5. Click **Login**, then click **Open** to launch the browser. If the browser does not open, use the **Copy link** button to copy the link and paste it in your browser.
-6. Log in to your myAnalog account.
+6. On the myAnalog login page, under **Or continue with your**, choose **Analog Devices Account** and, if prompted, enter your Analog Devices credentials to complete the login process.
     ![My Analog Login](./images/login_with-my-analog.png)
-7. When prompted, close the browser window and return to VS Code.
+7. When the **Sign-in Successful** page appears, close the browser and return to VS Code.
 8. A VS Code notification confirms you are logged in.
 
 ### Option 2: From the command line `cfsutil`
@@ -58,22 +58,22 @@ To access `cfsutil`, open a new terminal (**View > Terminal** or ``Ctrl+` ``). T
 4. Log in to the remote:
 
     ```bash
-    cfsutil pkg login <remote-name> --with-myanalog
+    cfsutil pkg auth-remote <remote-name> --myanalog
     ```
 
     !!! example
 
         ```sh
-        cfsutil pkg login myserver
+        cfsutil pkg auth-remote myserver --myanalog
         ```
 
 5. Authenticate using your myAnalog account:
 
     ```bash
-    cfsutil auth login
+    cfsutil myanalog login
     ```
 
-6. A browser opens automatically, prompting you to sign in to your myAnalog account. If the browser does not open, copy the authentication link from the terminal and paste it into your browser manually.
+6. A browser opens automatically. On the myAnalog login page, under **Or continue with your**, choose **Analog Devices Account** and, if prompted, enter your Analog Devices credentials to complete the login process. If the browser does not open, copy the authentication link from the terminal and paste it into your browser manually. When the **Sign-in Successful** page appears, close the browser and return to VS Code.
 
 !!! note
     To run `cfsutil` from a system terminal outside VS Code, run the following executable:  

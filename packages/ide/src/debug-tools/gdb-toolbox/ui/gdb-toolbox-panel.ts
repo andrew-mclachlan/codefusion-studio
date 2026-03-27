@@ -102,6 +102,7 @@ export class GdbToolboxPanel
             const executor = GDBToolbox.getInstance().getExecutor();
             const result = await executor.executeCommand(
               { command: "show architecture" },
+              [],
               session,
             );
             let core = "";
